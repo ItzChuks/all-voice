@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Event | All Voices Society</title>
+<meta name="description" content="Event details from All Voices Society." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0E13', ink2: '#161B24',
+          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
+          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
+          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
+  *{ scroll-behavior: smooth; }
+  body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#FFFFFF; -webkit-font-smoothing:antialiased; font-size:17px; line-height:1.7; }
+  h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
+  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease; }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(30,123,255,.55); }
+  .btn-primary::after{ content:''; position:absolute; inset:0; background:linear-gradient(95deg,var(--blue),var(--cyan)); opacity:0; transition:opacity .35s ease; z-index:0; }
+  .btn-primary:hover::after{ opacity:1; }
+  .btn-primary span{ position:relative; z-index:1; display:flex; align-items:center; gap:.5rem;}
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1); }
+  .nav-link:hover::after{ width:100%; }
+  #mobile-menu{ transform:translateY(-100%); transition:transform .55s cubic-bezier(.16,.84,.44,1); }
+  #mobile-menu.open{ transform:translateY(0); }
+  .hamburger span{ transition:transform .35s ease, opacity .35s ease; transform-origin:center; }
+  .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+  /* lightbox for full-size photo view */
+  #lightbox{ position:fixed; inset:0; background:rgba(11,14,19,.95); z-index:100; display:none; align-items:center; justify-content:center; padding:24px; }
+  #lightbox.open{ display:flex; }
+  .thumb-btn{ transition:opacity .2s ease, transform .2s ease; }
+  .thumb-btn:hover{ transform:translateY(-2px); }
+  .thumb-btn.active{ outline:2px solid var(--blue); outline-offset:2px; }
+</style>
+</head>
+<body class="bg-surface">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+
+<!-- NAV -->
+<header id="site-nav" class="fixed top-0 left-0 right-0 z-50" style="background:rgba(11,14,19,0.92); backdrop-filter:blur(10px);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <span class="relative w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+        <span class="text-white font-display font-bold text-sm relative">AV</span>
+      </span>
+      <span class="font-display font-semibold tracking-tight text-white text-[15px] leading-tight">All Voices<br class="hidden sm:block"/> Society</span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
+      <a href="index.html#about" class="nav-link text-white/90 hover:text-white">About</a>
+      <a href="events.html" class="nav-link text-white hover:text-white">Events</a>
+      <a href="stories.html" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="index.html#board" class="nav-link text-white/90 hover:text-white">Board</a>
+      <a href="index.html#get-involved" class="nav-link text-white/90 hover:text-white">Get Involved</a>
+      <a href="index.html#contact" class="nav-link text-white/90 hover:text-white">Contact</a>
+      <a href="index.html#donate" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
+    </nav>
+
+    <button id="hamburger" class="hamburger lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] relative z-[70]" aria-label="Toggle menu" aria-expanded="false">
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" class="fixed inset-0 bg-ink z-[60] flex flex-col justify-center px-10 lg:hidden">
+  <nav class="flex flex-col gap-6 font-display text-4xl font-semibold text-white">
+    <a href="index.html#about" class="nav-link w-fit">About</a>
+    <a href="events.html" class="nav-link w-fit">Events</a>
+    <a href="stories.html" class="nav-link w-fit">Stories</a>
+    <a href="index.html#board" class="nav-link w-fit">Board</a>
+    <a href="index.html#get-involved" class="nav-link w-fit">Get Involved</a>
+    <a href="index.html#contact" class="nav-link w-fit">Contact</a>
+    <a href="index.html#donate" class="btn btn-primary w-fit px-6 py-3 rounded-full text-lg mt-4"><span>Donate</span></a>
+  </nav>
+</div>
+
+<main id="main" class="pt-32 pb-24">
+  <div class="max-w-6xl mx-auto px-6 lg:px-10">
+    <a href="events.html" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
+      Back to events
+    </a>
+
+    <div id="event-loading" class="text-muted">Loading event…</div>
+    <div id="event-notfound" class="hidden text-center py-24">
+      <p class="font-display font-semibold text-2xl mb-3">Event not found</p>
+      <p class="text-muted mb-6">This event may have been removed or the link is incorrect.</p>
+      <a href="events.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm inline-flex"><span>Back to all events</span></a>
+    </div>
+
+    <div id="event-content" class="hidden grid lg:grid-cols-2 gap-10 lg:gap-16">
+      <!-- Gallery -->
+      <div>
+        <div id="event-main-image" class="relative aspect-video rounded-2xl overflow-hidden border border-line bg-alt cursor-zoom-in"></div>
+        <div id="event-thumbs" class="grid grid-cols-5 gap-2 mt-3"></div>
+      </div>
+
+      <!-- Details -->
+      <div>
+        <p id="event-date" class="eyebrow text-blue mb-3"></p>
+        <h1 id="event-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-6"></h1>
+        <p id="event-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
+        <div class="mt-10 pt-8 border-t border-line">
+          <p class="text-muted text-sm mb-4">Interested in more from All Voices Society?</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="events.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more events</span></a>
+            <a href="index.html#donate" class="btn px-5 py-2.5 rounded-full text-sm border border-line hover:border-ink transition-colors">Donate</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- LIGHTBOX for full-size photo view -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Event photo, full size">
+  <button id="lightbox-close" aria-label="Close" class="absolute top-6 right-6 text-white/70 hover:text-white w-10 h-10 flex items-center justify-center">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button id="lightbox-prev" aria-label="Previous photo" class="absolute left-4 sm:left-8 text-white/70 hover:text-white w-10 h-10 flex items-center justify-center">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" class="max-h-[85vh] max-w-[85vw] rounded-lg object-contain" />
+  <button id="lightbox-next" aria-label="Next photo" class="absolute right-4 sm:right-8 text-white/70 hover:text-white w-10 h-10 flex items-center justify-center">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-white/70 pt-16 pb-8 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col sm:flex-row justify-between gap-4 text-xs text-white/40">
+    <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
+    <div class="flex gap-6">
+      <a href="index.html" class="hover:text-cyan transition-colors">Home</a>
+      <a href="stories.html" class="hover:text-cyan transition-colors">Stories</a>
+      <a href="admin.html" class="hover:text-cyan transition-colors">Admin</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/appwrite-config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function(){
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.remove('open'); hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }));
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  let photos = [];
+  let currentIdx = 0;
+  const mainImageEl = document.getElementById('event-main-image');
+  const thumbsEl = document.getElementById('event-thumbs');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+
+  function showMain(idx){
+    currentIdx = idx;
+    mainImageEl.innerHTML = photos[idx]
+      ? `<img src="${escapeHtml(photos[idx])}" alt="" class="absolute inset-0 w-full h-full object-cover" />`
+      : `<div class="absolute inset-0 flex items-center justify-center frame-label text-muted text-xs">No photo</div>`;
+    thumbsEl.querySelectorAll('.thumb-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  }
+
+  function renderGallery(images, title){
+    photos = images;
+    if(photos.length === 0){
+      mainImageEl.innerHTML = `<div class="absolute inset-0 flex items-center justify-center frame-label text-muted text-xs text-center px-4">[ ${escapeHtml(title)} ]</div>`;
+      mainImageEl.classList.remove('cursor-zoom-in');
+      thumbsEl.innerHTML = '';
+      return;
+    }
+    showMain(0);
+    mainImageEl.addEventListener('click', () => openLightbox(currentIdx));
+    thumbsEl.innerHTML = photos.map((src, i) => `
+      <button type="button" class="thumb-btn aspect-square rounded-md overflow-hidden border border-line ${i === 0 ? 'active' : ''}" data-idx="${i}">
+        <img src="${escapeHtml(src)}" alt="" class="w-full h-full object-cover" />
+      </button>`).join('');
+    thumbsEl.querySelectorAll('.thumb-btn').forEach(btn => {
+      btn.addEventListener('click', () => showMain(Number(btn.dataset.idx)));
+    });
+  }
+
+  function openLightbox(idx){
+    if(photos.length === 0) return;
+    currentIdx = idx;
+    lightboxImg.src = photos[currentIdx];
+    lightbox.classList.add('open');
+  }
+  function closeLightbox(){ lightbox.classList.remove('open'); }
+  function stepLightbox(dir){
+    currentIdx = (currentIdx + dir + photos.length) % photos.length;
+    lightboxImg.src = photos[currentIdx];
+    showMain(currentIdx);
+  }
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-prev').addEventListener('click', () => stepLightbox(-1));
+  document.getElementById('lightbox-next').addEventListener('click', () => stepLightbox(1));
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if(!lightbox.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') stepLightbox(-1);
+    if(e.key === 'ArrowRight') stepLightbox(1);
+  });
+
+  async function init(){
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const loading = document.getElementById('event-loading');
+    const notfound = document.getElementById('event-notfound');
+    const content = document.getElementById('event-content');
+
+    if(!id || !window.AVSStore){
+      loading.classList.add('hidden');
+      notfound.classList.remove('hidden');
+      return;
+    }
+
+    const ev = await AVSStore.getEvent(id);
+    loading.classList.add('hidden');
+
+    if(!ev){
+      notfound.classList.remove('hidden');
+      return;
+    }
+
+    document.title = `${ev.title} | All Voices Society`;
+    document.getElementById('event-date').textContent = ev.date || '';
+    document.getElementById('event-date').classList.toggle('hidden', !ev.date);
+    document.getElementById('event-title').textContent = ev.title;
+    document.getElementById('event-description').textContent = ev.description || 'No description provided.';
+    renderGallery(Array.isArray(ev.images) ? ev.images.filter(Boolean) : [], ev.title);
+
+    content.classList.remove('hidden');
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

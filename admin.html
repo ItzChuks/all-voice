@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin | All Voices Society</title>
+<meta name="robots" content="noindex, nofollow" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0E13', ink2: '#161B24',
+          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
+          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
+          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
+  body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#F4F6F8; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
+  input, textarea, select{ font-family:'Source Serif 4', serif; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; border-radius:2px; }
+  .btn{ display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .25s ease, background .25s ease, color .25s ease, opacity .25s ease; }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .btn-ghost{ border:1.5px solid var(--line); color:var(--ink); background:#fff; }
+  .btn-ghost:hover{ border-color:var(--ink); }
+  .btn-danger{ color:#B3261E; border:1.5px solid #F3D3D0; background:#fff; }
+  .btn-danger:hover{ background:#FBEAE8; }
+  .tab-btn{ font-family:'Space Grotesk',sans-serif; font-weight:600; }
+  .tab-btn.active{ background:var(--ink); color:#fff; }
+  .field-input{ width:100%; background:#fff; border:1px solid var(--line); border-radius:.5rem; padding:.65rem .9rem; font-size:15px; }
+  .field-input:focus{ border-color:var(--blue); }
+  .thumb{ position:relative; }
+  .thumb button{ position:absolute; top:-8px; right:-8px; width:22px; height:22px; border-radius:999px; background:#B3261E; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1; }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN GATE ============ -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center px-6">
+  <div class="max-w-sm w-full bg-white border border-line rounded-2xl p-8">
+    <p class="eyebrow text-blue mb-3">All Voices Society</p>
+    <h1 class="font-display font-semibold text-2xl mb-2">Admin sign-in</h1>
+    <p class="text-muted text-sm mb-6">Sign in with your Appwrite admin account to manage board members, events, and stories.</p>
+    <form id="login-form">
+      <label for="login-email" class="eyebrow text-muted block mb-2">Email</label>
+      <input id="login-email" type="email" class="field-input mb-4" autocomplete="username" required />
+      <label for="login-password" class="eyebrow text-muted block mb-2">Password</label>
+      <input id="login-password" type="password" class="field-input mb-2" autocomplete="current-password" required />
+      <p id="login-error" class="text-sm text-red-600 mb-3 hidden">Sign-in failed. Check your email and password and try again.</p>
+      <button id="login-submit" type="submit" class="btn btn-primary px-6 py-3 rounded-full text-sm w-full justify-center">Sign in</button>
+    </form>
+    <p class="text-xs text-muted mt-6 leading-relaxed">This account is managed in your Appwrite Console (Auth &gt; Users) and must belong to the Admins team to save changes. Content is stored in your Appwrite project, not in this browser.</p>
+    <a href="index.html" class="text-xs text-muted hover:text-ink underline block mt-4">&larr; Back to the site</a>
+  </div>
+</div>
+
+<!-- ============ ADMIN APP ============ -->
+<div id="admin-app" class="hidden min-h-screen">
+  <header class="bg-ink text-white">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));"><span class="text-white font-display font-bold text-sm">AV</span></span>
+        <div>
+          <p class="font-display font-semibold leading-tight">All Voices Society</p>
+          <p class="eyebrow text-white/50">Admin</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-sm text-white/70 hover:text-white">View site</a>
+        <button id="logout-btn" class="btn btn-ghost px-4 py-2 rounded-full text-sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.25);">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <!-- TABS -->
+    <div class="flex flex-wrap gap-2 mb-10">
+      <button class="tab-btn active px-5 py-2.5 rounded-full text-sm border border-line" data-tab="board">Board members</button>
+      <button class="tab-btn px-5 py-2.5 rounded-full text-sm border border-line" data-tab="events">Events</button>
+      <button class="tab-btn px-5 py-2.5 rounded-full text-sm border border-line" data-tab="stories">Stories</button>
+    </div>
+
+    <!-- ============ BOARD TAB ============ -->
+    <section id="tab-board" class="tab-panel">
+      <div class="grid lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
+          <h2 id="board-form-title" class="font-display font-semibold text-lg mb-4">Add a board member</h2>
+          <form id="board-form" class="space-y-4">
+            <input type="hidden" id="board-id" />
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="board-name">Name</label>
+              <input id="board-name" class="field-input" required />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="board-role">Role</label>
+              <input id="board-role" class="field-input" placeholder="e.g. President &amp; Director" />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="board-bio">Bio</label>
+              <textarea id="board-bio" rows="4" class="field-input"></textarea>
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="board-photo">Photo</label>
+              <input id="board-photo" type="file" accept="image/*" class="field-input" />
+              <div id="board-photo-preview" class="mt-3 hidden">
+                <img class="w-20 h-20 rounded-full object-cover border border-line" />
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">Save member</button>
+              <button type="button" id="board-cancel" class="btn btn-ghost px-5 py-2.5 rounded-full text-sm hidden">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-3">
+          <h2 class="font-display font-semibold text-lg mb-4">Current board (<span id="board-count">0</span>)</h2>
+          <div id="board-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EVENTS TAB ============ -->
+    <section id="tab-events" class="tab-panel hidden">
+      <div class="grid lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
+          <h2 id="event-form-title" class="font-display font-semibold text-lg mb-4">Add an event</h2>
+          <form id="event-form" class="space-y-4">
+            <input type="hidden" id="event-id" />
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="event-title">Event title</label>
+              <input id="event-title" class="field-input" required />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="event-date">Date / time (optional)</label>
+              <input id="event-date" class="field-input" placeholder="e.g. Sat, Sept 12 · 6:00 PM" />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="event-description">Description</label>
+              <textarea id="event-description" rows="4" class="field-input"></textarea>
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="event-photos">Photos (up to 5)</label>
+              <input id="event-photos" type="file" accept="image/*" multiple class="field-input" />
+              <p id="event-photos-hint" class="text-xs text-muted mt-2"></p>
+              <div id="event-photos-preview" class="grid grid-cols-5 gap-2 mt-3"></div>
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">Save event</button>
+              <button type="button" id="event-cancel" class="btn btn-ghost px-5 py-2.5 rounded-full text-sm hidden">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-3">
+          <h2 class="font-display font-semibold text-lg mb-4">Current events (<span id="events-count">0</span>)</h2>
+          <div id="events-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STORIES TAB ============ -->
+    <section id="tab-stories" class="tab-panel hidden">
+      <div class="grid lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
+          <h2 id="story-form-title" class="font-display font-semibold text-lg mb-4">Add a story</h2>
+          <form id="story-form" class="space-y-4">
+            <input type="hidden" id="story-id" />
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="story-youtube">YouTube link</label>
+              <input id="story-youtube" class="field-input" placeholder="https://www.youtube.com/watch?v=..." required />
+              <p id="story-youtube-hint" class="text-xs text-muted mt-2"></p>
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="story-title">Title</label>
+              <input id="story-title" class="field-input" required />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="story-description">Description</label>
+              <textarea id="story-description" rows="4" class="field-input"></textarea>
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">Save story</button>
+              <button type="button" id="story-cancel" class="btn btn-ghost px-5 py-2.5 rounded-full text-sm hidden">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-3">
+          <h2 class="font-display font-semibold text-lg mb-4">Current stories (<span id="stories-count">0</span>)</h2>
+          <div id="stories-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/appwrite-config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function(){
+  const loginScreen = document.getElementById('login-screen');
+  const adminApp = document.getElementById('admin-app');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const loginSubmit = document.getElementById('login-submit');
+
+  function unlock(){
+    loginScreen.classList.add('hidden');
+    adminApp.classList.remove('hidden');
+    renderAll();
+  }
+
+  (async () => {
+    const user = await AVSAuth.currentUser();
+    if(user){ unlock(); }
+  })();
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.classList.add('hidden');
+    loginSubmit.disabled = true;
+    loginSubmit.textContent = 'Signing in…';
+    try {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      await AVSAuth.login(email, password);
+      unlock();
+    } catch (err) {
+      loginError.textContent = err && err.message ? err.message : 'Sign-in failed. Check your email and password and try again.';
+      loginError.classList.remove('hidden');
+    } finally {
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = 'Sign in';
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await AVSAuth.logout();
+    location.reload();
+  });
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  /* ---------- Tabs ---------- */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = { board: document.getElementById('tab-board'), events: document.getElementById('tab-events'), stories: document.getElementById('tab-stories') };
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.entries(panels).forEach(([key, el]) => el.classList.toggle('hidden', key !== btn.dataset.tab));
+    });
+  });
+
+  function renderAll(){ renderBoardList(); renderEventsList(); renderStoriesList(); }
+
+  function setBusy(btn, busy, busyLabel, idleLabel){
+    if(!btn) return;
+    btn.disabled = busy;
+    if(busy) btn.dataset.idleLabel = idleLabel !== undefined ? idleLabel : btn.textContent;
+    btn.textContent = busy ? busyLabel : (btn.dataset.idleLabel || idleLabel || btn.textContent);
+  }
+
+  /* ==================== BOARD MEMBERS ==================== */
+  const boardForm = document.getElementById('board-form');
+  const boardIdField = document.getElementById('board-id');
+  const boardPhotoInput = document.getElementById('board-photo');
+  const boardPhotoPreview = document.getElementById('board-photo-preview');
+  const boardCancelBtn = document.getElementById('board-cancel');
+  const boardSubmitBtn = boardForm.querySelector('button[type="submit"]');
+  let pendingBoardPhotoId = '';   // newly-uploaded file id, staged until Save
+  let currentBoardPhotoId = '';   // the photo already saved on the member being edited
+  let boardCache = [];
+  let boardPhotoUploading = false; // true while a photo is compressing/uploading — blocks Save
+
+  boardPhotoInput.addEventListener('change', async () => {
+    const file = boardPhotoInput.files[0];
+    if(!file) return;
+    boardPhotoInput.disabled = true;
+    boardPhotoUploading = true;
+    setBusy(boardSubmitBtn, true, 'Uploading photo…');
+    try {
+      const compressed = await AVSStore.compressImage(file, 500, 0.85);
+      pendingBoardPhotoId = await AVSStore.uploadImage(compressed);
+      boardPhotoPreview.classList.remove('hidden');
+      boardPhotoPreview.querySelector('img').src = AVSStore.fileUrl(pendingBoardPhotoId);
+    } catch (err) {
+      alert('Could not upload photo: ' + (err && err.message ? err.message : err));
+    } finally {
+      boardPhotoInput.disabled = false;
+      boardPhotoInput.value = '';
+      boardPhotoUploading = false;
+      setBusy(boardSubmitBtn, false);
+    }
+  });
+
+  function resetBoardForm(){
+    boardForm.reset();
+    boardIdField.value = '';
+    pendingBoardPhotoId = '';
+    currentBoardPhotoId = '';
+    boardPhotoPreview.classList.add('hidden');
+    document.getElementById('board-form-title').textContent = 'Add a board member';
+    boardCancelBtn.classList.add('hidden');
+  }
+  boardCancelBtn.addEventListener('click', resetBoardForm);
+
+  boardForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(boardPhotoUploading){
+      alert('The photo is still uploading — please wait a moment and try again.');
+      return;
+    }
+    const id = boardIdField.value;
+    const data = {
+      name: document.getElementById('board-name').value.trim(),
+      role: document.getElementById('board-role').value.trim(),
+      bio: document.getElementById('board-bio').value.trim(),
+    };
+    if(pendingBoardPhotoId) data.photoId = pendingBoardPhotoId;
+    setBusy(boardSubmitBtn, true, 'Saving…');
+    try {
+      if(id){
+        await AVSStore.updateBoardMember(id, data);
+        // if a new photo replaced an old one, clean up the old file
+        if(pendingBoardPhotoId && currentBoardPhotoId && currentBoardPhotoId !== pendingBoardPhotoId){
+          AVSStore.deleteImage(currentBoardPhotoId);
+        }
+      } else {
+        if(!data.photoId) data.photoId = '';
+        await AVSStore.addBoardMember(data);
+      }
+      resetBoardForm();
+      await renderBoardList();
+    } catch (err) {
+      alert('Could not save board member: ' + (err && err.message ? err.message : err));
+    } finally {
+      setBusy(boardSubmitBtn, false);
+    }
+  });
+
+  function editBoardMember(id){
+    const member = boardCache.find(m => m.id === id);
+    if(!member) return;
+    boardIdField.value = member.id;
+    document.getElementById('board-name').value = member.name || '';
+    document.getElementById('board-role').value = member.role || '';
+    document.getElementById('board-bio').value = member.bio || '';
+    pendingBoardPhotoId = '';
+    currentBoardPhotoId = member.photoId || '';
+    if(member.photo){
+      boardPhotoPreview.classList.remove('hidden');
+      boardPhotoPreview.querySelector('img').src = member.photo;
+    } else {
+      boardPhotoPreview.classList.add('hidden');
+    }
+    document.getElementById('board-form-title').textContent = 'Edit board member';
+    boardCancelBtn.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteBoardMember(id){
+    if(!confirm('Remove this board member? This cannot be undone.')) return;
+    const member = boardCache.find(m => m.id === id);
+    await AVSStore.deleteBoardMember(id, member ? member.photoId : '');
+    await renderBoardList();
+  }
+
+  async function renderBoardList(){
+    const list = document.getElementById('board-list');
+    list.innerHTML = '<p class="text-muted text-sm">Loading…</p>';
+    boardCache = await AVSStore.getBoard();
+    document.getElementById('board-count').textContent = boardCache.length;
+    if(boardCache.length === 0){
+      list.innerHTML = '<p class="text-muted text-sm">No board members yet.</p>';
+      return;
+    }
+    list.innerHTML = boardCache.map(m => `
+      <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4">
+        ${m.photo ? `<img src="${escapeHtml(m.photo)}" alt="" class="w-12 h-12 rounded-full object-cover shrink-0" />` : `<div class="w-12 h-12 rounded-full bg-alt flex items-center justify-center font-display font-semibold text-muted shrink-0">${escapeHtml(AVSStore.initials(m.name))}</div>`}
+        <div class="flex-1 min-w-0">
+          <p class="font-display font-semibold truncate">${escapeHtml(m.name)}</p>
+          <p class="text-cyan text-sm truncate">${escapeHtml(m.role || '')}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-edit="${m.id}">Edit</button>
+          <button class="btn btn-danger px-3 py-1.5 rounded-full text-xs" data-delete="${m.id}">Delete</button>
+        </div>
+      </div>`).join('');
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editBoardMember(b.dataset.edit)));
+    list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteBoardMember(b.dataset.delete)));
+  }
+
+  /* ==================== EVENTS ==================== */
+  const eventForm = document.getElementById('event-form');
+  const eventIdField = document.getElementById('event-id');
+  const eventPhotosInput = document.getElementById('event-photos');
+  const eventPhotosPreview = document.getElementById('event-photos-preview');
+  const eventPhotosHint = document.getElementById('event-photos-hint');
+  const eventCancelBtn = document.getElementById('event-cancel');
+  const eventSubmitBtn = eventForm.querySelector('button[type="submit"]');
+  let pendingEventImages = [];  // [{id, url}], staged (already uploaded) photos for the current form
+  let removedEventImageIds = []; // photos removed from an event being edited — deleted from storage on Save
+  let eventsCache = [];
+  let eventPhotosUploading = false; // true while photos are compressing/uploading — blocks Save
+
+  function renderEventPhotoPreview(){
+    eventPhotosPreview.innerHTML = pendingEventImages.map((img, i) => `
+      <div class="thumb">
+        <img src="${escapeHtml(img.url)}" class="w-full aspect-square object-cover rounded-md border border-line" />
+        <button type="button" data-remove="${i}" aria-label="Remove photo">&times;</button>
+      </div>`).join('');
+    eventPhotosPreview.querySelectorAll('[data-remove]').forEach(b => b.addEventListener('click', () => {
+      const [removed] = pendingEventImages.splice(Number(b.dataset.remove), 1);
+      if(removed) removedEventImageIds.push(removed.id);
+      renderEventPhotoPreview();
+      updateEventPhotosHint();
+    }));
+    updateEventPhotosHint();
+  }
+  function updateEventPhotosHint(){
+    eventPhotosHint.textContent = `${pendingEventImages.length} / 5 photo${pendingEventImages.length === 1 ? '' : 's'} attached`;
+  }
+
+  eventPhotosInput.addEventListener('change', async () => {
+    const files = Array.from(eventPhotosInput.files);
+    const room = 5 - pendingEventImages.length;
+    if(room <= 0){
+      alert('You already have 5 photos on this event. Remove one first.');
+      eventPhotosInput.value = '';
+      return;
+    }
+    const toAdd = files.slice(0, room);
+    if(files.length > room){
+      alert(`Only ${room} more photo(s) can be added (max 5 per event). The rest were skipped.`);
+    }
+    eventPhotosInput.disabled = true;
+    eventPhotosUploading = true;
+    setBusy(eventSubmitBtn, true, 'Uploading photos…');
+    try {
+      for(const file of toAdd){
+        const compressed = await AVSStore.compressImage(file, 1200, 0.8);
+        const id = await AVSStore.uploadImage(compressed);
+        pendingEventImages.push({ id, url: AVSStore.fileUrl(id) });
+        renderEventPhotoPreview();
+      }
+    } catch (err) {
+      alert('Could not upload photo: ' + (err && err.message ? err.message : err));
+    } finally {
+      eventPhotosInput.disabled = false;
+      eventPhotosInput.value = '';
+      eventPhotosUploading = false;
+      setBusy(eventSubmitBtn, false);
+    }
+  });
+
+  function resetEventForm(){
+    eventForm.reset();
+    eventIdField.value = '';
+    pendingEventImages = [];
+    removedEventImageIds = [];
+    renderEventPhotoPreview();
+    document.getElementById('event-form-title').textContent = 'Add an event';
+    eventCancelBtn.classList.add('hidden');
+  }
+  eventCancelBtn.addEventListener('click', resetEventForm);
+
+  eventForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(eventPhotosUploading){
+      alert('Photos are still uploading — please wait a moment and try again.');
+      return;
+    }
+    const id = eventIdField.value;
+    const data = {
+      title: document.getElementById('event-title').value.trim(),
+      date: document.getElementById('event-date').value.trim(),
+      description: document.getElementById('event-description').value.trim(),
+      imageIds: pendingEventImages.slice(0, 5).map(img => img.id),
+    };
+    setBusy(eventSubmitBtn, true, 'Saving…');
+    try {
+      if(id){
+        await AVSStore.updateEvent(id, data);
+      } else {
+        await AVSStore.addEvent(data);
+      }
+      if(removedEventImageIds.length) await Promise.all(removedEventImageIds.map(fid => AVSStore.deleteImage(fid)));
+      resetEventForm();
+      await renderEventsList();
+    } catch (err) {
+      alert('Could not save event: ' + (err && err.message ? err.message : err));
+    } finally {
+      setBusy(eventSubmitBtn, false);
+    }
+  });
+
+  function editEvent(id){
+    const ev = eventsCache.find(e => e.id === id);
+    if(!ev) return;
+    eventIdField.value = ev.id;
+    document.getElementById('event-title').value = ev.title || '';
+    document.getElementById('event-date').value = ev.date || '';
+    document.getElementById('event-description').value = ev.description || '';
+    pendingEventImages = Array.isArray(ev.imageIds) ? ev.imageIds.map((fid, i) => ({ id: fid, url: ev.images[i] || AVSStore.fileUrl(fid) })) : [];
+    removedEventImageIds = [];
+    renderEventPhotoPreview();
+    document.getElementById('event-form-title').textContent = 'Edit event';
+    eventCancelBtn.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteEvent(id){
+    if(!confirm('Delete this event? This cannot be undone.')) return;
+    const ev = eventsCache.find(e => e.id === id);
+    await AVSStore.deleteEvent(id, ev ? ev.imageIds : []);
+    await renderEventsList();
+  }
+
+  async function renderEventsList(){
+    const list = document.getElementById('events-list');
+    list.innerHTML = '<p class="text-muted text-sm">Loading…</p>';
+    eventsCache = (await AVSStore.getEvents()).slice().reverse();
+    const events = eventsCache;
+    document.getElementById('events-count').textContent = events.length;
+    if(events.length === 0){
+      list.innerHTML = '<p class="text-muted text-sm">No events yet.</p>';
+      return;
+    }
+    list.innerHTML = events.map(ev => {
+      const cover = (ev.images && ev.images[0]) ? `<img src="${escapeHtml(ev.images[0])}" alt="" class="w-14 h-14 rounded-lg object-cover shrink-0" />` : `<div class="w-14 h-14 rounded-lg bg-alt shrink-0"></div>`;
+      return `
+      <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4">
+        ${cover}
+        <div class="flex-1 min-w-0">
+          <p class="font-display font-semibold truncate">${escapeHtml(ev.title)}</p>
+          <p class="text-muted text-sm truncate">${escapeHtml(ev.date || '')} ${ev.images && ev.images.length ? '· ' + ev.images.length + ' photo(s)' : ''}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-edit="${ev.id}">Edit</button>
+          <button class="btn btn-danger px-3 py-1.5 rounded-full text-xs" data-delete="${ev.id}">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editEvent(b.dataset.edit)));
+    list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteEvent(b.dataset.delete)));
+  }
+  renderEventPhotoPreview();
+
+  /* ==================== STORIES ==================== */
+  const storyForm = document.getElementById('story-form');
+  const storyIdField = document.getElementById('story-id');
+  const storyYoutubeInput = document.getElementById('story-youtube');
+  const storyYoutubeHint = document.getElementById('story-youtube-hint');
+  const storyCancelBtn = document.getElementById('story-cancel');
+  const storySubmitBtn = storyForm.querySelector('button[type="submit"]');
+  let storiesCache = [];
+
+  storyYoutubeInput.addEventListener('input', () => {
+    const yid = AVSStore.youtubeId(storyYoutubeInput.value.trim());
+    storyYoutubeHint.textContent = yid ? 'Looks like a valid YouTube link.' : (storyYoutubeInput.value.trim() ? 'This doesn\'t look like a YouTube link yet.' : '');
+  });
+
+  function resetStoryForm(){
+    storyForm.reset();
+    storyIdField.value = '';
+    storyYoutubeHint.textContent = '';
+    document.getElementById('story-form-title').textContent = 'Add a story';
+    storyCancelBtn.classList.add('hidden');
+  }
+  storyCancelBtn.addEventListener('click', resetStoryForm);
+
+  storyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const youtubeUrl = storyYoutubeInput.value.trim();
+    if(!AVSStore.youtubeId(youtubeUrl)){
+      alert('Please enter a valid YouTube video link.');
+      return;
+    }
+    const id = storyIdField.value;
+    const data = {
+      youtubeUrl,
+      title: document.getElementById('story-title').value.trim(),
+      description: document.getElementById('story-description').value.trim(),
+    };
+    setBusy(storySubmitBtn, true, 'Saving…');
+    try {
+      if(id){
+        await AVSStore.updateStory(id, data);
+      } else {
+        await AVSStore.addStory(data);
+      }
+      resetStoryForm();
+      await renderStoriesList();
+    } catch (err) {
+      alert('Could not save story: ' + (err && err.message ? err.message : err));
+    } finally {
+      setBusy(storySubmitBtn, false);
+    }
+  });
+
+  function editStory(id){
+    const s = storiesCache.find(s => s.id === id);
+    if(!s) return;
+    storyIdField.value = s.id;
+    storyYoutubeInput.value = s.youtubeUrl || '';
+    document.getElementById('story-title').value = s.title || '';
+    document.getElementById('story-description').value = s.description || '';
+    document.getElementById('story-form-title').textContent = 'Edit story';
+    storyCancelBtn.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteStory(id){
+    if(!confirm('Delete this story? This cannot be undone.')) return;
+    await AVSStore.deleteStory(id);
+    await renderStoriesList();
+  }
+
+  async function renderStoriesList(){
+    const list = document.getElementById('stories-list');
+    list.innerHTML = '<p class="text-muted text-sm">Loading…</p>';
+    storiesCache = (await AVSStore.getStories()).slice().reverse();
+    const stories = storiesCache;
+    document.getElementById('stories-count').textContent = stories.length;
+    if(stories.length === 0){
+      list.innerHTML = '<p class="text-muted text-sm">No stories yet.</p>';
+      return;
+    }
+    list.innerHTML = stories.map(s => {
+      const yid = AVSStore.youtubeId(s.youtubeUrl);
+      const thumb = yid ? `<img src="https://img.youtube.com/vi/${yid}/default.jpg" alt="" class="w-14 h-14 rounded-lg object-cover shrink-0" />` : `<div class="w-14 h-14 rounded-lg bg-alt shrink-0"></div>`;
+      return `
+      <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4">
+        ${thumb}
+        <div class="flex-1 min-w-0">
+          <p class="font-display font-semibold truncate">${escapeHtml(s.title)}</p>
+          <p class="text-muted text-sm truncate">${escapeHtml(s.description || '')}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-edit="${s.id}">Edit</button>
+          <button class="btn btn-danger px-3 py-1.5 rounded-full text-xs" data-delete="${s.id}">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editStory(b.dataset.edit)));
+    list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteStory(b.dataset.delete)));
+  }
+})();
+</script>
+
+</body>
+</html>

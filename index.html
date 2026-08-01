@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>All Voices Society | Unity, Diversity, and Social Inclusion Through Storytelling</title>
+<meta name="description" content="All Voices Society is a Halifax-based non-profit promoting unity, diversity, and social inclusion through media and storytelling." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0E13',
+          ink2: '#161B24',
+          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
+          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
+          surface: '#FFFFFF',
+          alt: '#F4F6F8',
+          muted: '#5B6472',
+          line: '#E4E8ED',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{
+    --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13;
+  }
+  *{ scroll-behavior: smooth; }
+  body{
+    font-family:'Source Serif 4', serif;
+    color:#1a1d24;
+    background:#FFFFFF;
+    -webkit-font-smoothing:antialiased;
+    font-size:17px;
+    line-height:1.7;
+  }
+  h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:.72rem;
+  }
+
+  /* focus visibility for accessibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  ::selection{ background:var(--cyan); color:#04121c; }
+
+  /* grain texture overlay */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* gradient text */
+  .grad-text{
+    background:linear-gradient(95deg, var(--blue), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* reveal-on-scroll */
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.16,.84,.44,1), transform .8s cubic-bezier(.16,.84,.44,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-stagger > *{ opacity:0; transform:translateY(24px); transition:opacity .7s cubic-bezier(.16,.84,.44,1), transform .7s cubic-bezier(.16,.84,.44,1); }
+  .reveal-stagger.in > *{ opacity:1; transform:translateY(0); }
+  .reveal-stagger.in > *:nth-child(1){ transition-delay:.02s }
+  .reveal-stagger.in > *:nth-child(2){ transition-delay:.10s }
+  .reveal-stagger.in > *:nth-child(3){ transition-delay:.18s }
+  .reveal-stagger.in > *:nth-child(4){ transition-delay:.26s }
+  .reveal-stagger.in > *:nth-child(5){ transition-delay:.34s }
+  .reveal-stagger.in > *:nth-child(6){ transition-delay:.42s }
+
+  /* hero word reveal */
+  .word-wrap{ overflow:hidden; display:inline-block; vertical-align:top; }
+  .word{ display:inline-block; transform:translateY(115%); transition:transform .9s cubic-bezier(.16,.84,.44,1); }
+  .hero-ready .word{ transform:translateY(0); }
+
+  /* buttons */
+  .btn{
+    position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem;
+    font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em;
+    transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease, background .35s ease, color .35s ease;
+  }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(30,123,255,.55); }
+  .btn-primary::after{
+    content:''; position:absolute; inset:0; background:linear-gradient(95deg,var(--blue),var(--cyan));
+    opacity:0; transition:opacity .35s ease; z-index:0;
+  }
+  .btn-primary:hover::after{ opacity:1; }
+  .btn-primary span{ position:relative; z-index:1; display:flex; align-items:center; gap:.5rem;}
+  .btn-ghost{ border:1.5px solid rgba(255,255,255,.35); color:#fff; }
+  .btn-ghost:hover{ border-color:#fff; transform:translateY(-3px); background:rgba(255,255,255,.08); }
+  .btn-dark-ghost{ border:1.5px solid var(--ink); color:var(--ink); }
+  .btn-dark-ghost:hover{ transform:translateY(-3px); background:var(--ink); color:#fff; }
+
+  /* nav underline */
+  .nav-link{ position:relative; }
+  .nav-link::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px;
+    background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1);
+  }
+  .nav-link:hover::after{ width:100%; }
+
+  /* waveform rail */
+  #wave-rail{ position:fixed; left:0; top:0; bottom:0; width:44px; display:none; z-index:40; }
+  #wave-rail svg rect{ transition: fill .25s ease; }
+
+  /* waveform hero divider */
+  .wave-divider path{ transition: d 1.4s cubic-bezier(.16,.84,.44,1); }
+
+  /* marquee */
+  .marquee-track{ display:flex; width:max-content; animation:marquee 28s linear infinite; }
+  @keyframes marquee{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .marquee-wrap:hover .marquee-track{ animation-play-state:paused; }
+
+  /* card tilt */
+  .tilt-card{ transition:transform .5s cubic-bezier(.16,.84,.44,1), box-shadow .5s ease; }
+  .tilt-card:hover{ transform:translateY(-8px) rotate(-0.4deg); box-shadow:0 30px 60px -20px rgba(11,14,19,.25); }
+
+  /* ambient blobs */
+  .blob{ filter:blur(70px); }
+
+  /* mobile menu */
+  #mobile-menu{ transform:translateY(-100%); transition:transform .55s cubic-bezier(.16,.84,.44,1); }
+  #mobile-menu.open{ transform:translateY(0); }
+  #mobile-menu .m-link{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+  #mobile-menu.open .m-link{ opacity:1; transform:translateY(0); }
+  #mobile-menu.open .m-link:nth-child(1){ transition-delay:.1s }
+  #mobile-menu.open .m-link:nth-child(2){ transition-delay:.16s }
+  #mobile-menu.open .m-link:nth-child(3){ transition-delay:.22s }
+  #mobile-menu.open .m-link:nth-child(4){ transition-delay:.28s }
+  #mobile-menu.open .m-link:nth-child(5){ transition-delay:.34s }
+  #mobile-menu.open .m-link:nth-child(6){ transition-delay:.40s }
+  #mobile-menu.open .m-link:nth-child(7){ transition-delay:.46s }
+
+  .hamburger span{ transition:transform .35s ease, opacity .35s ease; transform-origin:center; }
+  .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  /* placeholder media frame */
+  .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+
+  input, textarea, select{ font-family:'Source Serif 4', serif; }
+
+  /* fixed header covers the top of each section unless we offset the anchor target */
+  section[id]{ scroll-margin-top: 96px; }
+
+  @media (min-width: 1024px){
+    #wave-rail{ display:block; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+    .word{ transform:none !important; }
+  }
+</style>
+</head>
+<body class="bg-surface">
+
+<div class="grain"></div>
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+
+<!-- WAVEFORM SCROLL RAIL (desktop) -->
+<div id="wave-rail" aria-hidden="true">
+  <svg width="44" height="100%" viewBox="0 0 44 800" preserveAspectRatio="none" class="h-full w-full">
+    <g id="wave-bars" fill="#D8DEE6"></g>
+  </svg>
+</div>
+
+<!-- NAV -->
+<header id="site-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" style="background:transparent;">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20 lg:pl-[70px]">
+    <a href="#home" class="flex items-center gap-2.5 group">
+      <span class="relative w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+        <span class="absolute inset-0 rounded-full animate-ping opacity-20" style="background:var(--cyan);"></span>
+        <span class="text-white font-display font-bold text-sm relative">AV</span>
+      </span>
+      <span id="nav-logo-text" class="font-display font-semibold tracking-tight text-white text-[15px] leading-tight">All Voices<br class="hidden sm:block"/> Society</span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
+      <a href="#about" id="nav-link-1" class="nav-link text-white/90 hover:text-white">About</a>
+      <a href="events.html" id="nav-link-2" class="nav-link text-white/90 hover:text-white">Events</a>
+      <a href="stories.html" id="nav-link-3" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="#board" id="nav-link-6" class="nav-link text-white/90 hover:text-white">Board</a>
+      <a href="#get-involved" id="nav-link-4" class="nav-link text-white/90 hover:text-white">Get Involved</a>
+      <a href="#contact" id="nav-link-5" class="nav-link text-white/90 hover:text-white">Contact</a>
+      <a href="#donate" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
+    </nav>
+
+    <button id="hamburger" class="hamburger lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] relative z-[70]" aria-label="Toggle menu" aria-expanded="false">
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" class="fixed inset-0 bg-ink z-[60] flex flex-col justify-center px-10 lg:hidden">
+  <nav class="flex flex-col gap-6 font-display text-4xl font-semibold text-white">
+    <a href="#about" class="m-link nav-link w-fit">About</a>
+    <a href="events.html" class="m-link nav-link w-fit">Events</a>
+    <a href="stories.html" class="m-link nav-link w-fit">Stories</a>
+    <a href="#board" class="m-link nav-link w-fit">Board</a>
+    <a href="#get-involved" class="m-link nav-link w-fit">Get Involved</a>
+    <a href="#contact" class="m-link nav-link w-fit">Contact</a>
+    <a href="#donate" class="m-link btn btn-primary w-fit px-6 py-3 rounded-full text-lg mt-4"><span>Donate</span></a>
+  </nav>
+  <p class="m-link text-white/40 eyebrow mt-14">Halifax, Nova Scotia — Registry ID 4739049</p>
+</div>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section id="home" class="relative min-h-[100svh] flex flex-col justify-end overflow-hidden bg-ink text-white">
+    <!-- ambient gradient blobs standing in for muted video loop -->
+    <div class="absolute inset-0">
+      <div class="absolute -top-40 -left-20 w-[520px] h-[520px] rounded-full blob opacity-30" style="background:var(--blue);"></div>
+      <div class="absolute top-1/3 -right-24 w-[460px] h-[460px] rounded-full blob opacity-25" style="background:var(--cyan);"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/70 to-ink"></div>
+      <div class="absolute inset-0 flex items-center justify-center opacity-[0.06]">
+        <svg viewBox="0 0 400 100" class="w-full max-w-4xl"><g id="hero-waveform" stroke="#ffffff" stroke-width="3" stroke-linecap="round"></g></svg>
+      </div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto w-full px-6 lg:px-10 lg:pl-[86px] pb-20 pt-40">
+      <p class="reveal eyebrow text-cyan mb-6">Halifax, Nova Scotia &middot; Media &amp; Storytelling Non&#8209;Profit</p>
+
+      <h1 id="hero-headline" class="font-display font-semibold text-[13vw] sm:text-[9vw] lg:text-[5.4rem] leading-[0.98] tracking-tight max-w-5xl">
+        <span class="block"><span class="word-wrap"><span class="word">Every</span></span> <span class="word-wrap"><span class="word">voice</span></span></span>
+        <span class="block"><span class="word-wrap"><span class="word grad-text">carries</span></span> <span class="word-wrap"><span class="word">a</span></span></span>
+        <span class="block"><span class="word-wrap"><span class="word">story.</span></span></span>
+      </h1>
+
+      <p class="reveal font-serif text-lg sm:text-xl text-white/70 max-w-xl mt-8 leading-relaxed" style="transition-delay:.15s">
+        All Voices Society empowers people across Nova Scotia to tell their own stories through media, film, and shared conversation.
+      </p>
+
+      <div class="reveal flex flex-wrap gap-4 mt-10" style="transition-delay:.28s">
+        <a href="#stories" class="btn btn-primary px-7 py-4 rounded-full text-[15px]">
+          <span>Watch Our Stories
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+        <a href="#get-involved" class="btn btn-ghost px-7 py-4 rounded-full text-[15px]">Join a Programme</a>
+      </div>
+    </div>
+
+    <button id="scroll-cue" aria-label="Scroll to content" class="reveal relative z-10 mx-auto mb-8 flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors" style="transition-delay:.4s">
+      <span class="eyebrow">Scroll</span>
+      <span class="w-[1px] h-10 bg-white/30 relative overflow-hidden"><span class="absolute top-0 left-0 w-full h-full bg-cyan animate-[scrolldrop_1.8s_ease-in-out_infinite]"></span></span>
+    </button>
+  </section>
+
+  <style>@keyframes scrolldrop{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}</style>
+
+  <!-- waveform divider -->
+  <div class="bg-ink pt-2 pb-8 lg:pl-11">
+    <svg viewBox="0 0 1200 60" class="w-full h-10 wave-divider" preserveAspectRatio="none">
+      <path id="divider-path" d="M0,30 L1200,30" stroke="url(#gradLine)" stroke-width="2" fill="none"/>
+      <defs><linearGradient id="gradLine" x1="0" x2="1"><stop offset="0" stop-color="#1E7BFF"/><stop offset="1" stop-color="#29B6F6"/></linearGradient></defs>
+    </svg>
+  </div>
+
+  <!-- ============ INTRO / ABOUT SNAPSHOT ============ -->
+  <section id="about" class="bg-surface py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-12 lg:gap-8">
+      <div class="lg:col-span-5 reveal">
+        <p class="eyebrow text-blue mb-4">01 &nbsp;/&nbsp; About Us</p>
+        <h2 class="font-display font-semibold text-4xl sm:text-5xl leading-[1.05] text-ink">A registered Nova&nbsp;Scotia non&#8209;profit, based in Halifax.</h2>
+      </div>
+      <div class="lg:col-span-7 reveal" style="transition-delay:.12s">
+        <p class="text-muted text-lg leading-relaxed mb-6">We believe that when people are given the tools and the space to tell their own stories, communities grow closer, understanding deepens, and change follows.</p>
+        <p class="text-muted text-lg leading-relaxed mb-8">We run storytelling workshops, media production labs, and community screenings with seniors, youth, newcomers, and racialised communities across the province. Participants learn to write, film, and edit. What they produce is theirs, and it is shared on their terms.</p>
+        <a href="#events" class="inline-flex items-center gap-2 font-display font-semibold text-ink border-b-2 border-cyan pb-1 hover:gap-3.5 transition-all">
+          See our events
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 mt-24">
+      <div class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-line rounded-2xl overflow-hidden border border-line">
+        <!-- value cards injected below -->
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><circle cx="12" cy="8" r="3.4"/><circle cx="5" cy="16" r="2.6"/><circle cx="19" cy="16" r="2.6"/><path d="M9 10.5 6.5 14M15 10.5 17.5 14M8 17h8"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Ubuntu</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We embrace the philosophy that I am because we are, and we work from a belief in our interconnectedness.</p>
+        </div>
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><path d="M12 3v18M4 8c2 2 4 2 8 0s6-2 8 0M4 16c2-2 4-2 8 0s6 2 8 0"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Inclusivity</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We welcome diversity and create spaces where all voices are heard and respected.</p>
+        </div>
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><path d="M12 2v6M12 16v6M4.9 4.9l4.2 4.2M15 15l4.2 4.2M2 12h6M16 12h6M4.9 19.1l4.2-4.2M15 9l4.2-4.2"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Empowerment</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We help people find their voice, tell their stories, and create positive change.</p>
+        </div>
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><path d="M12 3 4 6.5v5c0 5 3.4 8.4 8 9.5 4.6-1.1 8-4.5 8-9.5v-5L12 3Z"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Respect</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We treat everyone with dignity, building a culture of understanding and acceptance.</p>
+        </div>
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 20c0-3 2.5-5 5-5s5 2 5 5M11 20c0-3 2.5-5 5-5s5 2 5 5"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Collaboration</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We work alongside partners, volunteers, and community members to achieve our mission.</p>
+        </div>
+        <div class="bg-surface p-8 hover:bg-alt transition-colors">
+          <svg class="mb-4" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E7BFF" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3 class="font-display font-semibold text-lg mb-2">Integrity</h3>
+          <p class="text-muted text-[15px] leading-relaxed">We hold to high ethical standards, transparency, and accountability in everything we do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EVENTS ============ -->
+  <section id="events" class="bg-alt py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
+        <div>
+          <p class="eyebrow text-blue mb-4">02 &nbsp;/&nbsp; Events</p>
+          <h2 class="font-display font-semibold text-4xl sm:text-5xl text-ink max-w-xl leading-[1.05]">Screenings, workshops, and gatherings — come and be part of the room.</h2>
+        </div>
+        <p class="text-muted max-w-xs">Every event here is added by our team and kept current. See the full calendar, with photos and details, on the events page.</p>
+      </div>
+
+      <div id="home-events-grid" class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- populated by assets/store.js -->
+      </div>
+
+      <div class="mt-12">
+        <a href="events.html" class="btn btn-dark-ghost px-7 py-3.5 rounded-full text-[15px]">View all events</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED STORY ============ -->
+  <section id="featured-story-section" class="bg-ink text-white py-24 lg:py-32 lg:pl-11 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blob opacity-20" style="background:var(--blue);"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <p class="reveal eyebrow text-cyan mb-4">Featured Story</p>
+
+      <p id="featured-story-empty" class="reveal hidden text-white/60 max-w-lg">Stories will appear here as soon as one is published — <a href="stories.html" class="underline hover:text-cyan">visit the stories page</a> to check.</p>
+
+      <div id="featured-story-content" class="hidden grid lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7 reveal">
+          <a id="featured-story-video-link" href="stories.html" class="group block relative aspect-video rounded-2xl overflow-hidden border border-white/10" style="background:linear-gradient(140deg,#1E7BFF,#0B0E13,#29B6F6);">
+            <img id="featured-story-thumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover hidden" />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="w-20 h-20 rounded-full bg-white/10 backdrop-blur border border-white/30 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5Z"/></svg>
+              </span>
+            </div>
+            <div id="featured-story-label" class="absolute bottom-4 left-4 frame-label text-white/60 text-[11px]"></div>
+          </a>
+        </div>
+        <div class="lg:col-span-5 reveal" style="transition-delay:.15s">
+          <h2 id="featured-story-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-4"></h2>
+          <p id="featured-story-desc" class="text-white/60 leading-relaxed mb-6"></p>
+          <a href="stories.html" class="inline-flex items-center gap-2 font-display font-semibold border-b-2 border-cyan pb-1 hover:gap-3.5 transition-all">
+            Watch more stories
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ IMPACT STRIP ============ -->
+  <section class="py-20 lg:pl-11" style="background:linear-gradient(95deg,#1E7BFF,#29B6F6);">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 reveal-stagger grid grid-cols-2 lg:grid-cols-4 gap-8 text-white">
+      <div class="text-center lg:text-left">
+        <p class="font-display font-bold text-5xl sm:text-6xl"><span class="counter" data-target="120">0</span>+</p>
+        <p class="eyebrow mt-2 text-white/85">Stories told</p>
+      </div>
+      <div class="text-center lg:text-left">
+        <p class="font-display font-bold text-5xl sm:text-6xl"><span class="counter" data-target="300">0</span>+</p>
+        <p class="eyebrow mt-2 text-white/85">Participants supported</p>
+      </div>
+      <div class="text-center lg:text-left">
+        <p class="font-display font-bold text-5xl sm:text-6xl"><span class="counter" data-target="45">0</span></p>
+        <p class="eyebrow mt-2 text-white/85">Community screenings held</p>
+      </div>
+      <div class="text-center lg:text-left">
+        <p class="font-display font-bold text-5xl sm:text-6xl"><span class="counter" data-target="12">0</span></p>
+        <p class="eyebrow mt-2 text-white/85">Partner organisations</p>
+      </div>
+    </div>
+    <p class="text-center lg:text-left max-w-7xl mx-auto px-6 lg:px-10 lg:pl-[86px] mt-6 text-white/70 text-xs eyebrow">Figures for illustration — update as reporting firms up</p>
+  </section>
+
+  <!-- ============ PARTNERS MARQUEE ============ -->
+  <section class="bg-surface py-16 border-b border-line lg:pl-11">
+    <p class="eyebrow text-center text-muted mb-8">In partnership with</p>
+    <div class="marquee-wrap overflow-hidden">
+      <div class="marquee-track gap-16 items-center opacity-70">
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">Northwood Care</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">ISANS</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">ANSMA</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">AFCOOP</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">Carbon Arc Cinema</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">Northwood Care</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">ISANS</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">ANSMA</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">AFCOOP</span>
+        <span class="font-display font-semibold text-xl text-ink px-6 whitespace-nowrap">Carbon Arc Cinema</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STORIES (teaser) ============ -->
+  <section id="stories" class="bg-surface py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
+        <div>
+          <p class="eyebrow text-blue mb-4">03 &nbsp;/&nbsp; Stories</p>
+          <h2 class="font-display font-semibold text-4xl sm:text-5xl text-ink max-w-lg leading-[1.05]">This is the work.</h2>
+        </div>
+        <p class="text-muted max-w-sm">Every film here was made by someone who came to us with a story and left with the skills to tell it. Watch, share, and if a story moves you, tell the person who made it.</p>
+      </div>
+
+      <div id="home-stories-grid" class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- populated by assets/store.js -->
+      </div>
+
+      <div class="mt-10">
+        <a href="stories.html" class="btn btn-dark-ghost px-7 py-3.5 rounded-full text-[15px]">Watch all stories</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOARD ============ -->
+  <section id="board" class="bg-alt py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <p class="reveal eyebrow text-blue mb-4">04 &nbsp;/&nbsp; Board of Directors</p>
+      <h2 class="reveal font-display font-semibold text-4xl sm:text-5xl text-ink max-w-xl leading-[1.05] mb-4">Experience in media, community development, public service, design, and finance.</h2>
+      <p class="reveal text-muted max-w-xl mb-14">Directors serve on a voluntary basis and are drawn from the communities we work with.</p>
+
+      <div id="board-grid" class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- populated by assets/store.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAND ACKNOWLEDGEMENT ============ -->
+  <section class="bg-ink text-white py-24 lg:pl-11">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10 text-center reveal">
+      <p class="eyebrow text-cyan mb-6">Land Acknowledgement</p>
+      <p class="font-serif text-xl sm:text-2xl leading-relaxed text-white/85">All Voices Society acknowledges that we live and work in Mi'kma'ki, the ancestral and unceded territory of the Mi'kmaq People, covered by the Treaties of Peace and Friendship first signed in 1725. We also acknowledge the enduring presence and contributions of African Nova Scotians, whose ancestors have lived here for more than four hundred years across fifty-two historic communities.</p>
+      <a href="#" class="inline-block mt-8 text-sm font-display font-semibold border-b border-cyan pb-1 text-cyan hover:text-white hover:border-white transition-colors">Read the full statement</a>
+    </div>
+  </section>
+
+  <!-- ============ GET INVOLVED ============ -->
+  <section id="get-involved" class="bg-surface py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="reveal mb-14 max-w-xl">
+        <p class="eyebrow text-blue mb-4">05 &nbsp;/&nbsp; Get Involved</p>
+        <h2 class="font-display font-semibold text-4xl sm:text-5xl text-ink leading-[1.05] mb-4">There are several ways into this work.</h2>
+        <p class="text-muted">Take part in a programme, give your time as a volunteer, or support us financially so that more people can tell their stories.</p>
+      </div>
+
+      <div class="reveal-stagger grid lg:grid-cols-3 gap-6 mb-20">
+        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt">
+          <span class="eyebrow text-blue">Participate</span>
+          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Tell your story</h3>
+          <p class="text-muted text-[15px] leading-relaxed">Our programmes are free to participants. No previous experience with cameras, writing, or editing is needed — we'll teach you what you need to know.</p>
+        </div>
+        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt">
+          <span class="eyebrow text-blue">Volunteer</span>
+          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Lend your time</h3>
+          <p class="text-muted text-[15px] leading-relaxed">Help run workshops, support screenings, and keep the equipment moving. Skills help — enthusiasm counts for just as much.</p>
+        </div>
+        <div id="donate" class="tilt-card rounded-2xl p-8 text-white relative overflow-hidden" style="background:linear-gradient(150deg,#1E7BFF,#29B6F6);">
+          <span class="eyebrow text-white/80">Donate</span>
+          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Widen the circle</h3>
+          <p class="text-white/85 text-[15px] leading-relaxed mb-5">Every donation goes directly into programming — camera time, editing software, and facilitator hours.</p>
+          <a href="mailto:info@allvoicessociety.com?subject=Donation%20enquiry" class="btn px-5 py-2.5 rounded-full text-sm bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform inline-block">Give today</a>
+        </div>
+      </div>
+
+      <!-- expression of interest form -->
+      <div class="reveal grid lg:grid-cols-12 gap-10 bg-alt rounded-3xl p-8 sm:p-12 border border-line">
+        <div class="lg:col-span-4">
+          <h3 class="font-display font-semibold text-2xl mb-3">Express your interest</h3>
+          <p class="text-muted text-[15px] leading-relaxed">Tell us a little about what you'd like to make, and someone from our team will be in touch.</p>
+        </div>
+        <form id="interest-form" class="lg:col-span-8 grid sm:grid-cols-2 gap-5" novalidate>
+          <div class="sm:col-span-1">
+            <label for="name" class="eyebrow text-muted block mb-2">Name</label>
+            <input id="name" name="name" type="text" required class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors" />
+          </div>
+          <div class="sm:col-span-1">
+            <label for="contact" class="eyebrow text-muted block mb-2">Email or phone</label>
+            <input id="contact" name="contact" type="text" required class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="programme" class="eyebrow text-muted block mb-2">Programme</label>
+            <select id="programme" name="programme" class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors">
+              <option>This Is My Story</option>
+              <option>Voices Rising</option>
+              <option>Voices Within</option>
+              <option>Beyond The Screen</option>
+              <option>CISF Connect</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="message" class="eyebrow text-muted block mb-2">What would you like to make?</label>
+            <textarea id="message" name="message" rows="3" class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors"></textarea>
+          </div>
+          <div class="sm:col-span-2 flex items-center gap-4">
+            <button type="submit" class="btn btn-primary px-7 py-3.5 rounded-full text-[15px]"><span>Submit interest</span></button>
+            <span id="interest-status" class="text-sm text-muted"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="bg-ink text-white py-24 lg:py-32 lg:pl-11">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-5 reveal">
+        <p class="eyebrow text-cyan mb-4">06 &nbsp;/&nbsp; Contact</p>
+        <h2 class="font-display font-semibold text-4xl sm:text-5xl leading-[1.05] mb-6">We'd like to hear from you.</h2>
+        <p class="text-white/60 leading-relaxed mb-10">Whether you have a story to tell, a partnership to propose, or a question about our work.</p>
+
+        <dl class="space-y-5 text-[15px]">
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Address</dt><dd class="text-white/85">159 Radcliffe Drive, Apartment 103<br/>Halifax, Nova Scotia B3M 4K2</dd></div>
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Phone</dt><dd class="text-white/85"><a href="tel:+19023058172" class="hover:text-cyan transition-colors">902-305-8172</a></dd></div>
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Email</dt><dd class="text-white/85"><a href="mailto:info@allvoicessociety.com" class="hover:text-cyan transition-colors">info@allvoicessociety.com</a></dd></div>
+        </dl>
+      </div>
+
+      <form id="contact-form" class="lg:col-span-7 reveal grid sm:grid-cols-2 gap-5" style="transition-delay:.12s" novalidate>
+        <div>
+          <label for="c-name" class="eyebrow text-white/50 block mb-2">Name</label>
+          <input id="c-name" required type="text" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors" />
+        </div>
+        <div>
+          <label for="c-email" class="eyebrow text-white/50 block mb-2">Email</label>
+          <input id="c-email" required type="email" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors" />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="c-subject" class="eyebrow text-white/50 block mb-2">Subject</label>
+          <select id="c-subject" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white focus:border-cyan transition-colors">
+            <option class="text-ink">General enquiry</option>
+            <option class="text-ink">Programme participation</option>
+            <option class="text-ink">Partnership</option>
+            <option class="text-ink">Media / press</option>
+            <option class="text-ink">Donation</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="c-message" class="eyebrow text-white/50 block mb-2">Message</label>
+          <textarea id="c-message" required rows="4" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors"></textarea>
+        </div>
+        <div class="sm:col-span-2 flex items-center gap-4">
+          <button type="submit" class="btn px-7 py-3.5 rounded-full text-[15px] bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform">Send message</button>
+          <span id="contact-status" class="text-sm text-white/50"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-white/70 pt-20 pb-8 lg:pl-11 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2.5 mb-4">
+          <span class="w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));"><span class="text-white font-display font-bold text-sm">AV</span></span>
+          <span class="font-display font-semibold text-white">All Voices Society</span>
+        </div>
+        <p class="text-sm leading-relaxed max-w-xs">Unity, diversity, and social inclusion through media and storytelling.</p>
+        <div class="flex gap-3 mt-6">
+          <a href="PASTE_INSTAGRAM_URL_HERE" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="PASTE_FACEBOOK_URL_HERE" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h2V4h-2c-2.2 0-4 1.8-4 4v2H9v4h2v6h4v-6h2.5l.5-4H15V8Z"/></svg></a>
+          <a href="PASTE_YOUTUBE_URL_HERE" target="_blank" rel="noopener" aria-label="YouTube" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 10l4 2-4 2v-4Z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <p class="eyebrow text-white/40 mb-4">Explore</p>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="events.html" class="hover:text-cyan transition-colors">Events</a></li>
+          <li><a href="stories.html" class="hover:text-cyan transition-colors">Stories</a></li>
+          <li><a href="#donate" class="hover:text-cyan transition-colors">Donate</a></li>
+          <li><a href="#contact" class="hover:text-cyan transition-colors">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow text-white/40 mb-4">Organisation</p>
+        <ul class="space-y-2.5 text-sm">
+          <li><a href="#about" class="hover:text-cyan transition-colors">About</a></li>
+          <li><a href="#board" class="hover:text-cyan transition-colors">Board of Directors</a></li>
+          <li><a href="#" class="hover:text-cyan transition-colors">Policies &amp; Governance</a></li>
+          <li><a href="#" class="hover:text-cyan transition-colors">Annual Reports</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow text-white/40 mb-4">Stay in touch</p>
+        <form id="newsletter-form" class="flex gap-2" novalidate>
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <input id="newsletter-email" type="email" required placeholder="you@email.com" class="min-w-0 flex-1 bg-white/5 border border-white/15 rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/30 focus:border-cyan transition-colors" />
+          <button type="submit" aria-label="Subscribe" class="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+        <p id="newsletter-status" class="text-xs text-white/40 mt-2"></p>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-8">
+      <p class="text-xs text-white/40 max-w-2xl leading-relaxed mb-6">We acknowledge that we live and work in Mi'kma'ki, the ancestral and unceded territory of the Mi'kmaq People. <a href="#" class="underline hover:text-cyan">Read the full land acknowledgement</a>.</p>
+      <div class="flex flex-col sm:flex-row justify-between gap-4 text-xs text-white/40">
+        <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-cyan transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-cyan transition-colors">Accessibility Statement</a>
+          <a href="admin.html" class="hover:text-cyan transition-colors">Admin</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/appwrite-config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function(){
+  /* ---------- Nav shrink + background on scroll ---------- */
+  const nav = document.getElementById('site-nav');
+  const heroH = () => window.innerHeight * 0.7;
+  function onScroll(){
+    if(window.scrollY > heroH()){
+      nav.style.background = 'rgba(11,14,19,0.85)';
+      nav.style.backdropFilter = 'blur(10px)';
+      nav.style.boxShadow = '0 1px 0 rgba(255,255,255,0.06)';
+    } else {
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.boxShadow = 'none';
+    }
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* ---------- Mobile menu ---------- */
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.remove('open'); hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }));
+
+  /* ---------- Hero word reveal on load ---------- */
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      document.getElementById('hero-headline').classList.add('hero-ready');
+    });
+  });
+
+  /* ---------- Hero ambient waveform ---------- */
+  (function drawHeroWave(){
+    const g = document.getElementById('hero-waveform');
+    const bars = 60;
+    for(let i=0;i<bars;i++){
+      const x = (i/bars)*400;
+      const h = 8 + Math.abs(Math.sin(i*0.5)) * 30 + Math.random()*8;
+      const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1', x); line.setAttribute('x2', x);
+      line.setAttribute('y1', 50-h/2); line.setAttribute('y2', 50+h/2);
+      g.appendChild(line);
+    }
+  })();
+
+  /* ---------- Waveform divider settle animation ---------- */
+  const dividerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        let d = 'M0,30 ';
+        for(let x=0;x<=1200;x+=24){
+          const h = Math.sin(x*0.02) * 18 + Math.sin(x*0.05)*8;
+          d += `L${x},${30+h} `;
+        }
+        document.getElementById('divider-path').setAttribute('d', d);
+        dividerObserver.disconnect();
+      }
+    });
+  });
+  const dividerEl = document.querySelector('.wave-divider');
+  if(dividerEl) dividerObserver.observe(dividerEl);
+
+  /* ---------- Scroll-linked waveform rail (signature element) ---------- */
+  const railGroup = document.getElementById('wave-bars');
+  const BAR_COUNT = 46;
+  const barEls = [];
+  if(railGroup){
+    for(let i=0;i<BAR_COUNT;i++){
+      const w = 14 + Math.abs(Math.sin(i*0.7))*10 + Math.random()*6;
+      const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x', (44-w)/2);
+      rect.setAttribute('width', w);
+      rect.setAttribute('height', 800/BAR_COUNT - 4);
+      rect.setAttribute('y', i*(800/BAR_COUNT));
+      rect.setAttribute('rx', 2);
+      railGroup.appendChild(rect);
+      barEls.push(rect);
+    }
+  }
+  function updateRail(){
+    const scrolled = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? scrolled/max : 0;
+    const litCount = Math.round(progress * BAR_COUNT);
+    barEls.forEach((el, i) => {
+      el.setAttribute('fill', i < litCount ? (i % 2 === 0 ? '#1E7BFF' : '#29B6F6') : '#E4E8ED');
+    });
+  }
+  document.addEventListener('scroll', updateRail, {passive:true});
+  updateRail();
+
+  /* ---------- Reveal on scroll ---------- */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  /* ---------- Animated counters ---------- */
+  const counters = document.querySelectorAll('.counter');
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = parseInt(el.dataset.target, 10);
+        const duration = 1600;
+        const start = performance.now();
+        function tick(now){
+          const p = Math.min((now-start)/duration, 1);
+          const eased = 1 - Math.pow(1-p, 3);
+          el.textContent = Math.round(eased * target);
+          if(p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+        cio.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(el => cio.observe(el));
+
+  /* ---------- Board of Directors (from shared store) ---------- */
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  async function renderBoard(){
+    const grid = document.getElementById('board-grid');
+    if(!grid || !window.AVSStore) return;
+    const members = await AVSStore.getBoard();
+    if(members.length === 0){
+      grid.innerHTML = '<p class="text-muted">Board member profiles will appear here soon.</p>';
+      return;
+    }
+    grid.innerHTML = members.map((m, i) => {
+      const grads = ['135deg,#1E7BFF,#29B6F6','135deg,#29B6F6,#1E7BFF','135deg,#0B0E13,#1E7BFF','135deg,#1E7BFF,#0B0E13','135deg,#29B6F6,#0B0E13','135deg,#1E7BFF,#29B6F6'];
+      const avatar = m.photo
+        ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}" class="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover shrink-0 ring-4 ring-white shadow-xl" />`
+        : `<div class="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full flex items-center justify-center font-display font-bold text-2xl sm:text-3xl text-white shrink-0 ring-4 ring-white shadow-xl" style="background:linear-gradient(${grads[i % grads.length]});">${escapeHtml(AVSStore.initials(m.name))}</div>`;
+      return `
+        <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-line flex flex-col items-center text-center">
+          ${avatar}
+          <div class="mt-5">
+            <h3 class="font-display font-semibold text-lg">${escapeHtml(m.name)}</h3>
+            <p class="text-cyan text-sm mb-2">${escapeHtml(m.role || '')}</p>
+            <p class="text-muted text-sm">${escapeHtml(m.bio || 'Full biography coming soon.')}</p>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ---------- Upcoming events teaser (from shared store) ---------- */
+  async function renderHomeEvents(){
+    const grid = document.getElementById('home-events-grid');
+    if(!grid || !window.AVSStore) return;
+    const events = (await AVSStore.getEvents()).slice(-3).reverse();
+    if(events.length === 0){
+      grid.innerHTML = '<p class="text-muted">No events are scheduled right now — check back soon.</p>';
+      return;
+    }
+    const grads = ['140deg,#1E7BFF,#0B0E13','140deg,#29B6F6,#0B0E13','140deg,#1E7BFF,#29B6F6'];
+    grid.innerHTML = events.map((ev, i) => {
+      const cover = (ev.images && ev.images[0])
+        ? `<img src="${escapeHtml(ev.images[0])}" alt="" class="absolute inset-0 w-full h-full object-cover" />`
+        : `<div class="absolute inset-0 flex items-center justify-center frame-label text-white/70 text-[11px] text-center px-4">[ ${escapeHtml(ev.title)} ]</div>`;
+      return `
+        <article class="tilt-card group bg-surface rounded-2xl overflow-hidden border border-line flex flex-col">
+          <div class="relative h-44 overflow-hidden" style="background:linear-gradient(${grads[i % grads.length]});">${cover}</div>
+          <div class="p-6 flex flex-col flex-1">
+            ${ev.date ? `<p class="eyebrow text-blue mb-2">${escapeHtml(ev.date)}</p>` : ''}
+            <h3 class="font-display font-semibold text-lg mb-2">${escapeHtml(ev.title)}</h3>
+            <p class="text-muted text-[15px] leading-relaxed flex-1 line-clamp-3">${escapeHtml(ev.description || '')}</p>
+            <a href="events.html" class="mt-4 inline-flex items-center gap-1.5 text-sm font-display font-semibold text-ink group-hover:gap-2.5 transition-all">Details <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </article>`;
+    }).join('');
+  }
+
+  /* ---------- Featured story (latest published, from shared store) ---------- */
+  async function renderFeaturedStory(){
+    const empty = document.getElementById('featured-story-empty');
+    const content = document.getElementById('featured-story-content');
+    if(!content || !window.AVSStore) return;
+    const stories = await AVSStore.getStories(); // ordered oldest -> newest
+    if(stories.length === 0){
+      content.classList.add('hidden');
+      empty.classList.remove('hidden');
+      return;
+    }
+    const latest = stories[stories.length - 1];
+    empty.classList.add('hidden');
+    content.classList.remove('hidden');
+
+    const yid = AVSStore.youtubeId(latest.youtubeUrl);
+    const thumbImg = document.getElementById('featured-story-thumb');
+    const label = document.getElementById('featured-story-label');
+    if(yid){
+      thumbImg.src = `https://img.youtube.com/vi/${yid}/hqdefault.jpg`;
+      thumbImg.classList.remove('hidden');
+      label.classList.add('hidden');
+    } else {
+      thumbImg.classList.add('hidden');
+      label.textContent = `[ ${latest.title} ]`;
+      label.classList.remove('hidden');
+    }
+    document.getElementById('featured-story-video-link').href = `story.html?id=${encodeURIComponent(latest.id)}`;
+    document.getElementById('featured-story-title').textContent = latest.title;
+    document.getElementById('featured-story-desc').textContent = latest.description || '';
+  }
+
+  /* ---------- Stories teaser (from shared store) ---------- */
+  async function renderHomeStories(){
+    const grid = document.getElementById('home-stories-grid');
+    if(!grid || !window.AVSStore) return;
+    const stories = (await AVSStore.getStories()).slice(-3).reverse();
+    if(stories.length === 0){
+      grid.innerHTML = '<p class="text-muted">Stories will appear here as soon as they\'re published — visit the stories page to check.</p>';
+      return;
+    }
+    const grads = ['150deg,#1E7BFF,#0B0E13','150deg,#29B6F6,#0B0E13','150deg,#1E7BFF,#29B6F6'];
+    grid.innerHTML = stories.map((s, i) => {
+      const yid = AVSStore.youtubeId(s.youtubeUrl);
+      const thumb = yid ? `https://img.youtube.com/vi/${yid}/hqdefault.jpg` : '';
+      const cover = thumb
+        ? `<img src="${thumb}" alt="" class="absolute inset-0 w-full h-full object-cover" />`
+        : '';
+      return `
+        <a href="story.html?id=${encodeURIComponent(s.id)}" class="story-card tilt-card group rounded-2xl overflow-hidden border border-line block">
+          <div class="relative aspect-video" style="background:linear-gradient(${grads[i % grads.length]});">
+            ${cover}
+            <div class="absolute inset-0 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity"><svg width="44" height="44" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5Z"/></svg></div>
+          </div>
+          <div class="p-5"><h3 class="font-display font-semibold mb-1">${escapeHtml(s.title)}</h3><p class="text-muted text-sm">${escapeHtml(s.description || '')}</p></div>
+        </a>`;
+    }).join('');
+  }
+
+  renderBoard();
+  renderHomeEvents();
+  renderFeaturedStory();
+  renderHomeStories();
+
+  /* ---------- Forms (front-end only) ---------- */
+  function wireForm(formId, statusId, msg){
+    const form = document.getElementById(formId);
+    const status = document.getElementById(statusId);
+    if(!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(!form.checkValidity()){ form.reportValidity(); return; }
+      status.textContent = msg;
+      form.reset();
+    });
+  }
+
+  /* Forms with no backend send their content as a pre-filled email instead.
+     window.location.href alone can silently fail if the browser has no
+     default mail app registered, or the page is inside a sandboxed preview
+     — so we also drop a real clickable mailto link in as a guaranteed fallback. */
+  function wireMailtoForm(formId, statusId, buildSubjectAndBody){
+    const form = document.getElementById(formId);
+    const status = document.getElementById(statusId);
+    if(!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(!form.checkValidity()){ form.reportValidity(); return; }
+      const { subject, body } = buildSubjectAndBody();
+      const mailto = `mailto:info@allvoicessociety.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      // Try to launch the mail app directly via a real anchor click —
+      // more reliable across browsers than setting window.location.href.
+      const link = document.createElement('a');
+      link.href = mailto;
+      link.rel = 'noopener';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Always show a manual fallback too, in case nothing opened.
+      status.innerHTML = `Didn't open automatically? <a href="${mailto}" class="underline">Click here to email us</a>.`;
+      form.reset();
+    });
+  }
+
+  wireMailtoForm('interest-form', 'interest-status', () => {
+    const name = document.getElementById('name').value.trim();
+    const contact = document.getElementById('contact').value.trim();
+    const programme = document.getElementById('programme').value;
+    const message = document.getElementById('message').value.trim();
+    return {
+      subject: `Expression of interest — ${programme}`,
+      body: `Name: ${name}\nEmail/phone: ${contact}\nProgramme: ${programme}\n\n${message}`,
+    };
+  });
+
+  wireMailtoForm('contact-form', 'contact-status', () => {
+    const name = document.getElementById('c-name').value.trim();
+    const email = document.getElementById('c-email').value.trim();
+    const subject = document.getElementById('c-subject').value;
+    const message = document.getElementById('c-message').value.trim();
+    return {
+      subject: `${subject} — from ${name}`,
+      body: `Name: ${name}\nEmail: ${email}\n\n${message}`,
+    };
+  });
+
+  wireForm('newsletter-form','newsletter-status','Subscribed — welcome aboard.');
+
+})();
+</script>
+
+</body>
+</html>
