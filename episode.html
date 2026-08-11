@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Story | All Voices Society</title>
-<meta name="description" content="A participant-made film from All Voices Society." />
+<title>Episode | All Voices Society</title>
+<meta name="description" content="Podcast episode from All Voices Society." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,6 +54,8 @@
   .hamburger.open span:nth-child(2){ opacity:0; }
   .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
   .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+  .episode-nested{ transition:transform .3s ease, box-shadow .3s ease; }
+  .episode-nested:hover{ box-shadow:0 20px 40px -18px rgba(11,14,19,.2); }
 </style>
 </head>
 <body class="bg-surface">
@@ -70,8 +72,8 @@
     <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
       <a href="index.html#about" class="nav-link text-white/90 hover:text-white">About</a>
       <a href="events.html" class="nav-link text-white/90 hover:text-white">Events</a>
-      <a href="stories.html" class="nav-link text-white hover:text-white">Stories</a>
-      <a href="podcast.html" class="nav-link text-white/90 hover:text-white">Podcast</a>
+      <a href="stories.html" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="podcast.html" class="nav-link text-white hover:text-white">Podcast</a>
       <a href="index.html#board" class="nav-link text-white/90 hover:text-white">Board</a>
       <a href="index.html#get-involved" class="nav-link text-white/90 hover:text-white">Get Involved</a>
       <a href="index.html#contact" class="nav-link text-white/90 hover:text-white">Contact</a>
@@ -101,30 +103,34 @@
 </div>
 
 <main id="main" class="pt-32 pb-24">
-  <div class="max-w-5xl mx-auto px-6 lg:px-10">
-    <a href="stories.html" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
+  <div class="max-w-4xl mx-auto px-6 lg:px-10">
+    <a href="podcast.html" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
-      Back to stories
+      Back to podcast
     </a>
 
-    <div id="story-loading" class="text-muted">Loading story…</div>
-    <div id="story-notfound" class="hidden text-center py-24">
-      <p class="font-display font-semibold text-2xl mb-3">Story not found</p>
-      <p class="text-muted mb-6">This story may have been removed or the link is incorrect.</p>
-      <a href="stories.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm inline-flex"><span>Back to all stories</span></a>
+    <div id="ep-loading" class="text-muted">Loading episode…</div>
+    <div id="ep-notfound" class="hidden text-center py-24">
+      <p class="font-display font-semibold text-2xl mb-3">Episode not found</p>
+      <p class="text-muted mb-6">This episode may have been removed or the link is incorrect.</p>
+      <a href="podcast.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm inline-flex"><span>Back to all episodes</span></a>
     </div>
 
-    <div id="story-content" class="hidden">
-      <div id="story-player" class="relative aspect-video rounded-2xl overflow-hidden border border-line bg-ink"></div>
-      <div class="mt-8 max-w-3xl">
-        <h1 id="story-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-5"></h1>
-        <p id="story-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
-        <div class="mt-10 pt-8 border-t border-line">
-          <p class="text-muted text-sm mb-4">Watch more stories from the people we work with.</p>
-          <div class="flex flex-wrap gap-3">
-            <a href="stories.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more stories</span></a>
-            <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-5 py-2.5 rounded-full text-sm border border-line hover:border-ink transition-colors">Donate</a>
-          </div>
+    <div id="ep-content" class="hidden">
+      <p id="ep-eyebrow" class="eyebrow text-blue mb-3"></p>
+      <h1 id="ep-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-4"></h1>
+      <p id="ep-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line mb-8"></p>
+
+      <div id="ep-embed"></div>
+      <p id="ep-embed-fallback" class="text-muted text-sm mt-4 hidden"></p>
+
+      <div id="ep-nested" class="mt-10 space-y-6"></div>
+
+      <div class="mt-10 pt-8 border-t border-line">
+        <p class="text-muted text-sm mb-4">Interested in more from All Voices Society?</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="podcast.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more episodes</span></a>
+          <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-5 py-2.5 rounded-full text-sm border border-line hover:border-ink transition-colors">Donate</a>
         </div>
       </div>
     </div>
@@ -137,7 +143,7 @@
     <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
     <div class="flex gap-6">
       <a href="index.html" class="hover:text-cyan transition-colors">Home</a>
-      <a href="events.html" class="hover:text-cyan transition-colors">Events</a>
+      <a href="stories.html" class="hover:text-cyan transition-colors">Stories</a>
       <a href="podcast.html" class="hover:text-cyan transition-colors">Podcast</a>
       <a href="admin.html" class="hover:text-cyan transition-colors">Admin</a>
     </div>
@@ -162,12 +168,54 @@
     document.body.style.overflow = '';
   }));
 
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts' };
+
+  function embedFor(item){
+    if(item.platform === 'youtube'){
+      const vid = AVSStore.youtubeId(item.url);
+      if(!vid) return '';
+      return `<div style="width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;">
+        <iframe style="width:100%;height:100%;" src="https://www.youtube.com/embed/${vid}" title="${escapeHtml(item.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>`;
+    }
+    if(item.platform === 'spotify'){
+      const embed = AVSStore.spotifyEmbedUrl(item.url);
+      if(!embed) return '';
+      return `<div style="width:100%;height:152px;border-radius:12px;overflow:hidden;">
+        <iframe style="width:100%;height:152px;" src="${embed}" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>`;
+    }
+    if(item.platform === 'apple'){
+      const embed = AVSStore.appleEmbedUrl(item.url);
+      if(!embed) return '';
+      return `<div style="width:100%;height:175px;border-radius:12px;overflow:hidden;">
+        <iframe style="width:100%;height:175px;" src="${embed}" frameborder="0" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation" allow="autoplay *; encrypted-media *;" loading="lazy"></iframe>
+      </div>`;
+    }
+    return '';
+  }
+
+  function nestedEpisodeBlock(item){
+    const embed = embedFor(item);
+    return `
+      <article class="episode-nested bg-alt rounded-2xl border border-line p-5 sm:p-6">
+        <p class="eyebrow text-blue mb-2">${PLATFORM_LABEL[item.platform] || item.platform}</p>
+        <h3 class="font-display font-semibold text-lg sm:text-xl mb-3">${escapeHtml(item.title || 'Untitled episode')}</h3>
+        ${item.description ? `<p class="text-muted text-[15px] leading-relaxed mb-4">${escapeHtml(item.description)}</p>` : ''}
+        ${embed || `<p class="text-muted text-sm">This link couldn't be embedded — <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.</p>`}
+      </article>`;
+  }
+
   async function init(){
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
-    const loading = document.getElementById('story-loading');
-    const notfound = document.getElementById('story-notfound');
-    const content = document.getElementById('story-content');
+    const loading = document.getElementById('ep-loading');
+    const notfound = document.getElementById('ep-notfound');
+    const content = document.getElementById('ep-content');
 
     if(!id || !window.AVSStore){
       loading.classList.add('hidden');
@@ -175,23 +223,40 @@
       return;
     }
 
-    const story = await AVSStore.getStory(id);
+    const ep = await AVSStore.getPodcastEpisode(id);
     loading.classList.add('hidden');
 
-    if(!story){
+    if(!ep){
       notfound.classList.remove('hidden');
       return;
     }
 
-    const yid = AVSStore.youtubeId(story.youtubeUrl);
-    document.title = `${story.title} | All Voices Society`;
-    document.getElementById('story-title').textContent = story.title;
-    document.getElementById('story-description').textContent = story.description || 'No description provided.';
+    document.title = `${ep.title || 'Episode'} | All Voices Society`;
+    document.getElementById('ep-eyebrow').textContent = ep.isPlaylist ? 'Playlist' : (PLATFORM_LABEL[ep.platform] || ep.platform);
+    document.getElementById('ep-title').textContent = ep.title || 'Untitled episode';
+    document.getElementById('ep-description').textContent = ep.description || '';
+    document.getElementById('ep-description').classList.toggle('hidden', !ep.description);
 
-    const player = document.getElementById('story-player');
-    player.innerHTML = yid
-      ? `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yid}" title="${story.title.replace(/"/g,'&quot;')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-      : `<div class="absolute inset-0 flex items-center justify-center text-white/60 text-sm">Video unavailable</div>`;
+    const embedWrap = document.getElementById('ep-embed');
+    const fallback = document.getElementById('ep-embed-fallback');
+    const embed = embedFor(ep);
+    if(embed){
+      embedWrap.innerHTML = embed;
+    } else {
+      fallback.textContent = "This link couldn't be embedded — open it directly.";
+      fallback.classList.remove('hidden');
+      fallback.innerHTML = `This link couldn't be embedded — <a href="${escapeHtml(ep.url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.`;
+    }
+
+    if(ep.isPlaylist){
+      let all = [];
+      try { all = await AVSStore.getPodcastEpisodes(); } catch (e) { console.error('Could not load playlist episodes', e); }
+      const nested = all.filter((p) => p.playlistId === ep.id);
+      const nestedWrap = document.getElementById('ep-nested');
+      if(nested.length){
+        nestedWrap.innerHTML = `<p class="eyebrow text-blue mb-1">In this playlist</p>` + nested.map(nestedEpisodeBlock).join('');
+      }
+    }
 
     content.classList.remove('hidden');
   }

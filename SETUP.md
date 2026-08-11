@@ -31,7 +31,7 @@ Total time: ~20 minutes.
 1. Go to **Databases → Create database**. Name it (e.g. `avs_content`) and
    note its **Database ID** (you can set a custom one, e.g. `avs_content`,
    or use the generated one).
-2. Inside it, create three **Tables** (Appwrite's newer term for what used
+2. Inside it, create four **Tables** (Appwrite's newer term for what used
    to be called "collections" — rows are the old "documents"):
 
 ### Table: `board_members`
@@ -57,11 +57,21 @@ Total time: ~20 minutes.
 | `title` | String, size 255 | yes | |
 | `description` | String, size 2000 | no | |
 
-For each table, set its **ID** to match what's in `assets/appwrite-config.js`
-(`board_members`, `events`, `stories`) — or use your own IDs and update the
-config file to match.
+### Table: `podcast_episodes`
+| Column | Type | Required | Notes |
+|---|---|---|---|
+| `platform` | String, size 20 | yes | one of `youtube`, `spotify`, `apple` |
+| `url` | String, size 500 | yes | video / playlist / show / episode link |
+| `title` | String, size 255 | yes | |
+| `description` | String, size 2000 | no | |
+| `isPlaylist` | Boolean | no, default `false` | marks a YouTube row as a playlist header |
+| `playlistId` | String, size 64 | no | row ID of the playlist header this episode belongs to |
 
-### Permissions (each of the 3 tables)
+For each table, set its **ID** to match what's in `assets/appwrite-config.js`
+(`board_members`, `events`, `stories`, `podcast_episodes`) — or use your own
+IDs and update the config file to match.
+
+### Permissions (each of the 4 tables)
 Open each table's **Settings → Permissions** and add:
 - **Read** → Role: **Any** (so the public pages can display content without logging in)
 - **Create / Update / Delete** → Role: **Team**, choose the `Admins` team you'll create in step 5
@@ -105,6 +115,7 @@ window.AVS_CONFIG = {
     board: 'board_members',
     events: 'events',
     stories: 'stories',
+    podcast: 'podcast_episodes',
   },
   bucketId: 'avs_media',                             // your bucket ID from step 4
 };

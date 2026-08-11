@@ -193,21 +193,19 @@
 <header id="site-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" style="background:transparent;">
   <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20 lg:pl-[70px]">
     <a href="#home" class="flex items-center gap-2.5 group">
-      <span class="relative w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
-        <span class="absolute inset-0 rounded-full animate-ping opacity-20" style="background:var(--cyan);"></span>
-        <span class="text-white font-display font-bold text-sm relative">AV</span>
-      </span>
-      <span id="nav-logo-text" class="font-display font-semibold tracking-tight text-white text-[15px] leading-tight">All Voices<br class="hidden sm:block"/> Society</span>
+      <img src="assets/img/logo.png" alt="All Voices Society" class="h-11 w-auto" />
+      <span id="nav-logo-text" class="sr-only">All Voices Society</span>
     </a>
 
     <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
       <a href="#about" id="nav-link-1" class="nav-link text-white/90 hover:text-white">About</a>
       <a href="events.html" id="nav-link-2" class="nav-link text-white/90 hover:text-white">Events</a>
       <a href="stories.html" id="nav-link-3" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="podcast.html" class="nav-link text-white/90 hover:text-white">Podcast</a>
       <a href="#board" id="nav-link-6" class="nav-link text-white/90 hover:text-white">Board</a>
       <a href="#get-involved" id="nav-link-4" class="nav-link text-white/90 hover:text-white">Get Involved</a>
       <a href="#contact" id="nav-link-5" class="nav-link text-white/90 hover:text-white">Contact</a>
-      <a href="#donate" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
+      <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
     </nav>
 
     <button id="hamburger" class="hamburger lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] relative z-[70]" aria-label="Toggle menu" aria-expanded="false">
@@ -224,10 +222,11 @@
     <a href="#about" class="m-link nav-link w-fit">About</a>
     <a href="events.html" class="m-link nav-link w-fit">Events</a>
     <a href="stories.html" class="m-link nav-link w-fit">Stories</a>
+    <a href="podcast.html" class="m-link nav-link w-fit">Podcast</a>
     <a href="#board" class="m-link nav-link w-fit">Board</a>
     <a href="#get-involved" class="m-link nav-link w-fit">Get Involved</a>
     <a href="#contact" class="m-link nav-link w-fit">Contact</a>
-    <a href="#donate" class="m-link btn btn-primary w-fit px-6 py-3 rounded-full text-lg mt-4"><span>Donate</span></a>
+    <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="m-link btn btn-primary w-fit px-6 py-3 rounded-full text-lg mt-4"><span>Donate</span></a>
   </nav>
   <p class="m-link text-white/40 eyebrow mt-14">Halifax, Nova Scotia — Registry ID 4739049</p>
 </div>
@@ -487,60 +486,25 @@
         <p class="text-muted">Take part in a programme, give your time as a volunteer, or support us financially so that more people can tell their stories.</p>
       </div>
 
-      <div class="reveal-stagger grid lg:grid-cols-3 gap-6 mb-20">
-        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt">
+      <div class="reveal-stagger grid lg:grid-cols-3 gap-6">
+        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt flex flex-col">
           <span class="eyebrow text-blue">Participate</span>
           <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Tell your story</h3>
-          <p class="text-muted text-[15px] leading-relaxed">Our programmes are free to participants. No previous experience with cameras, writing, or editing is needed — we'll teach you what you need to know.</p>
+          <p class="text-muted text-[15px] leading-relaxed mb-6 flex-1">Our programmes are free to participants. No previous experience with cameras, writing, or editing is needed; we'll teach you what you need to know. Tell us a little about what you'd like to make, and we will be in touch.</p>
+          <a href="https://forms.gle/UuzHQ6PbkLcCHU687" target="_blank" rel="noopener" class="btn btn-primary px-6 py-3 rounded-full text-sm self-start"><span>Get started</span></a>
         </div>
-        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt">
+        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt flex flex-col">
           <span class="eyebrow text-blue">Volunteer</span>
           <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Lend your time</h3>
-          <p class="text-muted text-[15px] leading-relaxed">Help run workshops, support screenings, and keep the equipment moving. Skills help — enthusiasm counts for just as much.</p>
+          <p class="text-muted text-[15px] leading-relaxed mb-6 flex-1">Help run workshops, support screenings, and help tell stories. Skills help but enthusiasm counts for just as much.</p>
+          <a href="https://forms.gle/TKY9iD87HsCad5zb9" target="_blank" rel="noopener" class="btn btn-primary px-6 py-3 rounded-full text-sm self-start"><span>Get started</span></a>
         </div>
-        <div id="donate" class="tilt-card rounded-2xl p-8 text-white relative overflow-hidden" style="background:linear-gradient(150deg,#1E7BFF,#29B6F6);">
+        <div id="donate" class="tilt-card rounded-2xl p-8 text-white relative overflow-hidden flex flex-col" style="background:linear-gradient(150deg,#1E7BFF,#29B6F6);">
           <span class="eyebrow text-white/80">Donate</span>
           <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Widen the circle</h3>
-          <p class="text-white/85 text-[15px] leading-relaxed mb-5">Every donation goes directly into programming — camera time, editing software, and facilitator hours.</p>
-          <a href="mailto:info@allvoicessociety.com?subject=Donation%20enquiry" class="btn px-5 py-2.5 rounded-full text-sm bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform inline-block">Give today</a>
+          <p class="text-white/85 text-[15px] leading-relaxed mb-6 flex-1">Every donation goes directly into programming: camera time, editing software, and facilitator hours.</p>
+          <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-6 py-3 rounded-full text-sm bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform self-start">Give today</a>
         </div>
-      </div>
-
-      <!-- expression of interest form -->
-      <div class="reveal grid lg:grid-cols-12 gap-10 bg-alt rounded-3xl p-8 sm:p-12 border border-line">
-        <div class="lg:col-span-4">
-          <h3 class="font-display font-semibold text-2xl mb-3">Express your interest</h3>
-          <p class="text-muted text-[15px] leading-relaxed">Tell us a little about what you'd like to make, and someone from our team will be in touch.</p>
-        </div>
-        <form id="interest-form" class="lg:col-span-8 grid sm:grid-cols-2 gap-5" novalidate>
-          <div class="sm:col-span-1">
-            <label for="name" class="eyebrow text-muted block mb-2">Name</label>
-            <input id="name" name="name" type="text" required class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors" />
-          </div>
-          <div class="sm:col-span-1">
-            <label for="contact" class="eyebrow text-muted block mb-2">Email or phone</label>
-            <input id="contact" name="contact" type="text" required class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors" />
-          </div>
-          <div class="sm:col-span-2">
-            <label for="programme" class="eyebrow text-muted block mb-2">Programme</label>
-            <select id="programme" name="programme" class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors">
-              <option>This Is My Story</option>
-              <option>Voices Rising</option>
-              <option>Voices Within</option>
-              <option>Beyond The Screen</option>
-              <option>CISF Connect</option>
-              <option>Not sure yet</option>
-            </select>
-          </div>
-          <div class="sm:col-span-2">
-            <label for="message" class="eyebrow text-muted block mb-2">What would you like to make?</label>
-            <textarea id="message" name="message" rows="3" class="w-full bg-surface border border-line rounded-lg px-4 py-3 text-[15px] focus:border-blue transition-colors"></textarea>
-          </div>
-          <div class="sm:col-span-2 flex items-center gap-4">
-            <button type="submit" class="btn btn-primary px-7 py-3.5 rounded-full text-[15px]"><span>Submit interest</span></button>
-            <span id="interest-status" class="text-sm text-muted"></span>
-          </div>
-        </form>
       </div>
     </div>
   </section>
@@ -560,34 +524,10 @@
         </dl>
       </div>
 
-      <form id="contact-form" class="lg:col-span-7 reveal grid sm:grid-cols-2 gap-5" style="transition-delay:.12s" novalidate>
-        <div>
-          <label for="c-name" class="eyebrow text-white/50 block mb-2">Name</label>
-          <input id="c-name" required type="text" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors" />
-        </div>
-        <div>
-          <label for="c-email" class="eyebrow text-white/50 block mb-2">Email</label>
-          <input id="c-email" required type="email" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors" />
-        </div>
-        <div class="sm:col-span-2">
-          <label for="c-subject" class="eyebrow text-white/50 block mb-2">Subject</label>
-          <select id="c-subject" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white focus:border-cyan transition-colors">
-            <option class="text-ink">General enquiry</option>
-            <option class="text-ink">Programme participation</option>
-            <option class="text-ink">Partnership</option>
-            <option class="text-ink">Media / press</option>
-            <option class="text-ink">Donation</option>
-          </select>
-        </div>
-        <div class="sm:col-span-2">
-          <label for="c-message" class="eyebrow text-white/50 block mb-2">Message</label>
-          <textarea id="c-message" required rows="4" class="w-full bg-white/5 border border-white/15 rounded-lg px-4 py-3 text-[15px] text-white placeholder-white/30 focus:border-cyan transition-colors"></textarea>
-        </div>
-        <div class="sm:col-span-2 flex items-center gap-4">
-          <button type="submit" class="btn px-7 py-3.5 rounded-full text-[15px] bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform">Send message</button>
-          <span id="contact-status" class="text-sm text-white/50"></span>
-        </div>
-      </form>
+      <div class="lg:col-span-7 reveal flex flex-col items-start justify-center gap-6 bg-white/5 border border-white/10 rounded-3xl p-10 sm:p-12" style="transition-delay:.12s">
+        <p class="text-white/70 leading-relaxed max-w-md">Send us a message through our contact form and someone from our team will get back to you.</p>
+        <a href="https://forms.gle/omUQksvVs9UuR5X27" target="_blank" rel="noopener" class="btn px-7 py-3.5 rounded-full text-[15px] bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform"><span>Open contact form</span></a>
+      </div>
     </div>
   </section>
 
@@ -599,14 +539,11 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
       <div class="lg:col-span-2">
         <div class="flex items-center gap-2.5 mb-4">
-          <span class="w-9 h-9 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--blue),var(--cyan));"><span class="text-white font-display font-bold text-sm">AV</span></span>
-          <span class="font-display font-semibold text-white">All Voices Society</span>
+          <img src="assets/img/logo.png" alt="All Voices Society" class="h-10 w-auto" />
         </div>
         <p class="text-sm leading-relaxed max-w-xs">Unity, diversity, and social inclusion through media and storytelling.</p>
         <div class="flex gap-3 mt-6">
-          <a href="PASTE_INSTAGRAM_URL_HERE" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-          <a href="PASTE_FACEBOOK_URL_HERE" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8h2V4h-2c-2.2 0-4 1.8-4 4v2H9v4h2v6h4v-6h2.5l.5-4H15V8Z"/></svg></a>
-          <a href="PASTE_YOUTUBE_URL_HERE" target="_blank" rel="noopener" aria-label="YouTube" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 10l4 2-4 2v-4Z" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.instagram.com/allvoicessociety" target="_blank" rel="noopener" aria-label="Instagram" class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.5"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         </div>
       </div>
 
@@ -615,7 +552,8 @@
         <ul class="space-y-2.5 text-sm">
           <li><a href="events.html" class="hover:text-cyan transition-colors">Events</a></li>
           <li><a href="stories.html" class="hover:text-cyan transition-colors">Stories</a></li>
-          <li><a href="#donate" class="hover:text-cyan transition-colors">Donate</a></li>
+          <li><a href="podcast.html" class="hover:text-cyan transition-colors">Podcast</a></li>
+          <li><a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="hover:text-cyan transition-colors">Donate</a></li>
           <li><a href="#contact" class="hover:text-cyan transition-colors">Contact</a></li>
         </ul>
       </div>
@@ -631,14 +569,7 @@
       </div>
 
       <div>
-        <p class="eyebrow text-white/40 mb-4">Stay in touch</p>
-        <form id="newsletter-form" class="flex gap-2" novalidate>
-          <label for="newsletter-email" class="sr-only">Email address</label>
-          <input id="newsletter-email" type="email" required placeholder="you@email.com" class="min-w-0 flex-1 bg-white/5 border border-white/15 rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/30 focus:border-cyan transition-colors" />
-          <button type="submit" aria-label="Subscribe" class="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,var(--blue),var(--cyan));">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </form>
+        
         <p id="newsletter-status" class="text-xs text-white/40 mt-2"></p>
       </div>
     </div>
@@ -737,7 +668,7 @@
   const barEls = [];
   if(railGroup){
     for(let i=0;i<BAR_COUNT;i++){
-      const w = 14 + Math.abs(Math.sin(i*0.7))*10 + Math.random()*6;
+      const w = 4 + Math.abs(Math.sin(i*0.7))*3 + Math.random()*2;
       const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
       rect.setAttribute('x', (44-w)/2);
       rect.setAttribute('width', w);
@@ -909,10 +840,15 @@
     }).join('');
   }
 
-  renderBoard();
-  renderHomeEvents();
-  renderFeaturedStory();
-  renderHomeStories();
+  Promise.all([renderBoard(), renderHomeEvents(), renderFeaturedStory(), renderHomeStories()]).then(() => {
+    // Sections above #board/#get-involved/#contact load content asynchronously,
+    // which changes page height after the browser's initial hash-jump on load.
+    // Re-align to the target section once that content has settled.
+    if (location.hash) {
+      const target = document.querySelector(location.hash);
+      if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }));
+    }
+  });
 
   /* ---------- Forms (front-end only) ---------- */
   function wireForm(formId, statusId, msg){
@@ -926,57 +862,6 @@
       form.reset();
     });
   }
-
-  /* Forms with no backend send their content as a pre-filled email instead.
-     window.location.href alone can silently fail if the browser has no
-     default mail app registered, or the page is inside a sandboxed preview
-     — so we also drop a real clickable mailto link in as a guaranteed fallback. */
-  function wireMailtoForm(formId, statusId, buildSubjectAndBody){
-    const form = document.getElementById(formId);
-    const status = document.getElementById(statusId);
-    if(!form) return;
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if(!form.checkValidity()){ form.reportValidity(); return; }
-      const { subject, body } = buildSubjectAndBody();
-      const mailto = `mailto:info@allvoicessociety.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-      // Try to launch the mail app directly via a real anchor click —
-      // more reliable across browsers than setting window.location.href.
-      const link = document.createElement('a');
-      link.href = mailto;
-      link.rel = 'noopener';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Always show a manual fallback too, in case nothing opened.
-      status.innerHTML = `Didn't open automatically? <a href="${mailto}" class="underline">Click here to email us</a>.`;
-      form.reset();
-    });
-  }
-
-  wireMailtoForm('interest-form', 'interest-status', () => {
-    const name = document.getElementById('name').value.trim();
-    const contact = document.getElementById('contact').value.trim();
-    const programme = document.getElementById('programme').value;
-    const message = document.getElementById('message').value.trim();
-    return {
-      subject: `Expression of interest — ${programme}`,
-      body: `Name: ${name}\nEmail/phone: ${contact}\nProgramme: ${programme}\n\n${message}`,
-    };
-  });
-
-  wireMailtoForm('contact-form', 'contact-status', () => {
-    const name = document.getElementById('c-name').value.trim();
-    const email = document.getElementById('c-email').value.trim();
-    const subject = document.getElementById('c-subject').value;
-    const message = document.getElementById('c-message').value.trim();
-    return {
-      subject: `${subject} — from ${name}`,
-      body: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-    };
-  });
 
   wireForm('newsletter-form','newsletter-status','Subscribed — welcome aboard.');
 

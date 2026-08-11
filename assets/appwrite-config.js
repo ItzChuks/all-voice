@@ -19,6 +19,7 @@ window.AVS_CONFIG = {
     board: 'board_members',
     events: 'events',
     stories: 'stories',
+    podcast: 'podcast_episodes',
   },
   bucketId: 'avs_media',
 };

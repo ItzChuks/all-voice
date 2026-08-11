@@ -1,87 +1,251 @@
 {
-  "organizationId": "69a5df2700007a71db8c",
-  "projectId": "6a6a534f897f8951b70e",
-  "projectName": "All voice",
-  "endpoint": "https://fra.cloud.appwrite.io/v1",
-  "tablesDB": [
-    {
-      "$id": "avs_content",
-      "name": "AVS Content",
-      "enabled": true
-    }
-  ],
-  "tables": [
-    {
-      "$id": "board_members",
-      "$permissions": [
-        "read(\"any\")",
-        "create(\"team:admins\")",
-        "update(\"team:admins\")",
-        "delete(\"team:admins\")"
-      ],
-      "databaseId": "avs_content",
-      "name": "Board Members",
-      "enabled": true,
-      "rowSecurity": false,
-      "columns": [
-        { "key": "name", "type": "string", "size": 255, "required": true, "default": null, "array": false },
-        { "key": "role", "type": "string", "size": 255, "required": false, "array": false },
-        { "key": "bio", "type": "string", "size": 2000, "required": false, "array": false },
-        { "key": "photoId", "type": "string", "size": 64, "required": false, "array": false }
-      ]
-    },
-    {
-      "$id": "events",
-      "$permissions": [
-        "read(\"any\")",
-        "create(\"team:admins\")",
-        "update(\"team:admins\")",
-        "delete(\"team:admins\")"
-      ],
-      "databaseId": "avs_content",
-      "name": "Events",
-      "enabled": true,
-      "rowSecurity": false,
-      "columns": [
-        { "key": "title", "type": "string", "size": 255, "required": true, "default": null },
-        { "key": "date", "type": "string", "size": 255, "required": false },
-        { "key": "description", "type": "string", "size": 2000, "required": false },
-        { "key": "imageIds", "type": "string", "size": 64, "required": false, "array": true }
-      ]
-    },
-    {
-      "$id": "stories",
-      "$permissions": [
-        "read(\"any\")",
-        "create(\"team:admins\")",
-        "update(\"team:admins\")",
-        "delete(\"team:admins\")"
-      ],
-      "databaseId": "avs_content",
-      "name": "Stories",
-      "enabled": true,
-      "rowSecurity": false,
-      "columns": [
-        { "key": "youtubeUrl", "type": "string", "size": 500, "required": true, "default": null },
-        { "key": "title", "type": "string", "size": 255, "required": true, "default": null },
-        { "key": "description", "type": "string", "size": 2000, "required": false }
-      ]
-    }
-  ],
-  "buckets": [
-    {
-      "$id": "avs_media",
-      "$permissions": [
-        "read(\"any\")",
-        "create(\"team:admins\")",
-        "update(\"team:admins\")",
-        "delete(\"team:admins\")"
-      ],
-      "fileSecurity": false,
-      "name": "AVS Media",
-      "enabled": true,
-      "maximumFileSize": 10485760,
-      "allowedFileExtensions": ["jpg", "jpeg", "png", "webp"]
-    }
-  ]
+    "organizationId": "69a5df2700007a71db8c",
+    "projectId": "6a6a534f897f8951b70e",
+    "projectName": "All voice",
+    "endpoint": "https://fra.cloud.appwrite.io/v1",
+    "tablesDB": [
+        {
+            "$id": "avs_content",
+            "name": "AVS Content",
+            "enabled": true
+        }
+    ],
+    "tables": [
+        {
+            "$id": "board_members",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"team:admins\")",
+                "update(\"team:admins\")",
+                "delete(\"team:admins\")"
+            ],
+            "databaseId": "avs_content",
+            "name": "Board Members",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "role",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "bio",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "photoId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "events",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"team:admins\")",
+                "update(\"team:admins\")",
+                "delete(\"team:admins\")"
+            ],
+            "databaseId": "avs_content",
+            "name": "Events",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "date",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "imageIds",
+                    "type": "string",
+                    "required": false,
+                    "array": true,
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "stories",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"team:admins\")",
+                "update(\"team:admins\")",
+                "delete(\"team:admins\")"
+            ],
+            "databaseId": "avs_content",
+            "name": "Stories",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "youtubeUrl",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 500,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2000,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "podcast_episodes",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"team:admins\")",
+                "update(\"team:admins\")",
+                "delete(\"team:admins\")"
+            ],
+            "databaseId": "avs_content",
+            "name": "Podcast Episodes",
+            "enabled": true,
+            "rowSecurity": false,
+            "columns": [
+                {
+                    "key": "platform",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 20,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "url",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 500,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "title",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "isPlaylist",
+                    "type": "boolean",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "playlistId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "avs_media",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"team:admins\")",
+                "update(\"team:admins\")",
+                "delete(\"team:admins\")"
+            ],
+            "fileSecurity": false,
+            "name": "AVS Media",
+            "enabled": true,
+            "maximumFileSize": 10485760,
+            "allowedFileExtensions": [
+                "jpg",
+                "jpeg",
+                "png",
+                "webp"
+            ]
+        }
+    ]
 }
