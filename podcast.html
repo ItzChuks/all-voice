@@ -243,12 +243,7 @@
           <h3 class="font-display font-semibold text-lg sm:text-xl text-white truncate mb-1">${escapeHtml(item.title || 'Untitled episode')}</h3>
           <p class="text-white/45 text-[13px] mb-4">${escapeHtml(opts.eyebrow || 'Episode')} &middot; All Voices Society Podcast${opts.badgeText ? ` &middot; ${escapeHtml(opts.badgeText)}` : ''}</p>
 
-          <div class="flex items-center gap-3 mb-3 text-white/40 text-[11px] font-mono">
-            <span>00:00:00</span>
-            <div class="progress-track flex-1"><div class="progress-fill"></div></div>
-            <span>Tap to play</span>
-          </div>
-          ${controlIcons()}
+          
         </div>
       </a>`;
   }
