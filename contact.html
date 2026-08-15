@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Story | All Voices Society</title>
-<meta name="description" content="A participant-made film from All Voices Society." />
+<title>Contact | All Voices Society</title>
+<meta name="description" content="Get in touch with All Voices Society in Halifax, Nova Scotia." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,16 +37,20 @@
   body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#FFFFFF; -webkit-font-smoothing:antialiased; font-size:17px; line-height:1.7; }
   h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
   .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
-  a:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
-  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
+  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease, background .35s ease, color .35s ease; }
   .btn-primary{ background:var(--ink); color:#fff; }
   .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(30,123,255,.55); }
   .btn-primary::after{ content:''; position:absolute; inset:0; background:linear-gradient(95deg,var(--blue),var(--cyan)); opacity:0; transition:opacity .35s ease; z-index:0; }
   .btn-primary:hover::after{ opacity:1; }
   .btn-primary span{ position:relative; z-index:1; display:flex; align-items:center; gap:.5rem;}
+  .btn-dark-ghost{ border:1.5px solid var(--ink); color:var(--ink); }
+  .btn-dark-ghost:hover{ transform:translateY(-3px); background:var(--ink); color:#fff; }
   .nav-link{ position:relative; }
   .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1); }
   .nav-link:hover::after{ width:100%; }
+  .tilt-card{ transition:transform .5s cubic-bezier(.16,.84,.44,1), box-shadow .5s ease; }
+  .tilt-card:hover{ transform:translateY(-8px) rotate(-0.4deg); box-shadow:0 30px 60px -20px rgba(11,14,19,.25); }
   #mobile-menu{ transform:translateY(-100%); transition:transform .55s cubic-bezier(.16,.84,.44,1); }
   #mobile-menu.open{ transform:translateY(0); }
   .hamburger span{ transition:transform .35s ease, opacity .35s ease; transform-origin:center; }
@@ -54,6 +58,7 @@
   .hamburger.open span:nth-child(2){ opacity:0; }
   .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
   .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+  section[id]{ scroll-margin-top: 96px; }
 </style>
 </head>
 <body class="bg-surface">
@@ -70,11 +75,11 @@
     <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
       <a href="about.html" class="nav-link text-white/90 hover:text-white">About</a>
       <a href="events.html" class="nav-link text-white/90 hover:text-white">Events</a>
-      <a href="stories.html" class="nav-link text-white hover:text-white">Stories</a>
+      <a href="stories.html" class="nav-link text-white/90 hover:text-white">Stories</a>
       <a href="podcast.html" class="nav-link text-white/90 hover:text-white">Podcast</a>
       <a href="board.html" class="nav-link text-white/90 hover:text-white">Board</a>
       <a href="get-involved.html" class="nav-link text-white/90 hover:text-white">Get Involved</a>
-      <a href="contact.html" class="nav-link text-white/90 hover:text-white">Contact</a>
+      <a href="contact.html" class="nav-link text-white hover:text-white">Contact</a>
       <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
     </nav>
 
@@ -100,35 +105,38 @@
   </nav>
 </div>
 
-<main id="main" class="pt-32 pb-24">
-  <div class="max-w-5xl mx-auto px-6 lg:px-10">
-    <a href="stories.html" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
-      Back to stories
-    </a>
+<main id="main">
+  <!-- HERO / CONTACT -->
+  <section class="relative bg-ink text-white pt-40 pb-24 overflow-hidden">
+    <div class="absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full opacity-25" style="background:var(--cyan); filter:blur(80px);"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative grid lg:grid-cols-12 gap-12">
+      <div class="lg:col-span-5">
+        <p class="eyebrow text-cyan mb-4">Contact</p>
+        <h1 class="font-display font-semibold text-4xl sm:text-5xl leading-[1.05] mb-6">We'd like to hear from you.</h1>
+        <p class="text-white/60 leading-relaxed mb-10">Whether you have a story to tell, a partnership to propose, or a question about our work.</p>
 
-    <div id="story-loading" class="text-muted">Loading story…</div>
-    <div id="story-notfound" class="hidden text-center py-24">
-      <p class="font-display font-semibold text-2xl mb-3">Story not found</p>
-      <p class="text-muted mb-6">This story may have been removed or the link is incorrect.</p>
-      <a href="stories.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm inline-flex"><span>Back to all stories</span></a>
-    </div>
+        <dl class="space-y-5 text-[15px]">
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Address</dt><dd class="text-white/85">159 Radcliffe Drive, Apartment 103<br/>Halifax, Nova Scotia B3M 4K2</dd></div>
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Phone</dt><dd class="text-white/85"><a href="tel:+19023058172" class="hover:text-cyan transition-colors">902-305-8172</a></dd></div>
+          <div class="flex gap-4"><dt class="text-white/40 w-20 shrink-0 eyebrow pt-0.5">Email</dt><dd class="text-white/85"><a href="mailto:info@allvoicessociety.com" class="hover:text-cyan transition-colors">info@allvoicessociety.com</a></dd></div>
+        </dl>
+      </div>
 
-    <div id="story-content" class="hidden">
-      <div id="story-player" class="relative aspect-video rounded-2xl overflow-hidden border border-line bg-ink"></div>
-      <div class="mt-8 max-w-3xl">
-        <h1 id="story-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-5"></h1>
-        <p id="story-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
-        <div class="mt-10 pt-8 border-t border-line">
-          <p class="text-muted text-sm mb-4">Watch more stories from the people we work with.</p>
-          <div class="flex flex-wrap gap-3">
-            <a href="stories.html" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more stories</span></a>
-            <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-5 py-2.5 rounded-full text-sm border border-line hover:border-ink transition-colors">Donate</a>
-          </div>
+      <div class="lg:col-span-7 flex flex-col items-start justify-center gap-6 bg-white/5 border border-white/10 rounded-3xl p-10 sm:p-12">
+        <p class="text-white/70 leading-relaxed max-w-md">Send us a message through our contact form and someone from our team will get back to you.</p>
+        <a href="https://forms.gle/omUQksvVs9UuR5X27" target="_blank" rel="noopener" class="btn px-7 py-3.5 rounded-full text-[15px] bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform"><span>Open contact form</span></a>
+
+        <div class="w-full border-t border-white/10 pt-6 mt-2">
+          <p class="eyebrow text-white/40 mb-3">Stay in touch</p>
+          <form id="newsletter-form" class="flex gap-2">
+            <input type="email" required placeholder="you@email.com" aria-label="Email address" class="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/15 text-white placeholder-white/40 outline-none focus:border-cyan text-sm" />
+            <button type="submit" class="btn btn-primary px-5 py-3 rounded-full text-sm shrink-0"><span>Subscribe</span></button>
+          </form>
+          <p id="newsletter-status" class="text-xs text-white/40 mt-2"></p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </main>
 
 <!-- FOOTER -->
@@ -137,7 +145,7 @@
     <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
     <div class="flex gap-6">
       <a href="index.html" class="hover:text-cyan transition-colors">Home</a>
-      <a href="events.html" class="hover:text-cyan transition-colors">Events</a>
+      <a href="stories.html" class="hover:text-cyan transition-colors">Stories</a>
       <a href="podcast.html" class="hover:text-cyan transition-colors">Podcast</a>
       <a href="admin.html" class="hover:text-cyan transition-colors">Admin</a>
     </div>
@@ -162,41 +170,18 @@
     document.body.style.overflow = '';
   }));
 
-  async function init(){
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    const loading = document.getElementById('story-loading');
-    const notfound = document.getElementById('story-notfound');
-    const content = document.getElementById('story-content');
-
-    if(!id || !window.AVSStore){
-      loading.classList.add('hidden');
-      notfound.classList.remove('hidden');
-      return;
-    }
-
-    const story = await AVSStore.getStory(id);
-    loading.classList.add('hidden');
-
-    if(!story){
-      notfound.classList.remove('hidden');
-      return;
-    }
-
-    const yid = AVSStore.youtubeId(story.youtubeUrl);
-    document.title = `${story.title} | All Voices Society`;
-    document.getElementById('story-title').textContent = story.title;
-    document.getElementById('story-description').textContent = story.description || 'No description provided.';
-
-    const player = document.getElementById('story-player');
-    player.innerHTML = yid
-      ? `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yid}" title="${story.title.replace(/"/g,'&quot;')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-      : `<div class="absolute inset-0 flex items-center justify-center text-white/60 text-sm">Video unavailable</div>`;
-
-    content.classList.remove('hidden');
+  function wireForm(formId, statusId, msg){
+    const form = document.getElementById(formId);
+    const status = document.getElementById(statusId);
+    if(!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(!form.checkValidity()){ form.reportValidity(); return; }
+      status.textContent = msg;
+      form.reset();
+    });
   }
-
-  init();
+  wireForm('newsletter-form','newsletter-status','Subscribed — welcome aboard.');
 })();
 </script>
 
