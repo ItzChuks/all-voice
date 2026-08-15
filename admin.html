@@ -221,17 +221,19 @@
           <h2 id="podcast-form-title" class="font-display font-semibold text-lg mb-4">Add to the podcast</h2>
           <form id="podcast-form" class="space-y-4">
             <input type="hidden" id="podcast-id" />
+
+            <!-- Listen links — one episode can have several (YouTube, Spotify, Apple, or a custom
+                 embeddable player link like Captivate/Anchor/Buzzsprout). The first one is the
+                 "primary" link used for the card artwork/preview. -->
             <div>
-              <label class="eyebrow text-muted block mb-2" for="podcast-platform">Platform</label>
-              <select id="podcast-platform" class="field-input">
-                <option value="youtube">YouTube</option>
-                <option value="spotify">Spotify</option>
-                <option value="apple">Apple Podcasts</option>
-              </select>
+              <label class="eyebrow text-muted block mb-2">Listen links</label>
+              <div id="podcast-links-list" class="space-y-3"></div>
+              <button type="button" id="podcast-add-link" class="btn btn-ghost px-4 py-2 rounded-full text-xs mt-3">+ Add another link</button>
+              <p class="text-xs text-muted mt-2">The first link sets the episode's cover style. Add YouTube, Spotify, Apple Podcasts, or paste any other embeddable player link (Captivate, Anchor, Buzzsprout, etc.) as "Other".</p>
             </div>
 
-            <!-- YouTube-only options -->
-            <div id="podcast-yt-options" class="space-y-4">
+            <!-- YouTube-only options (apply to the first/primary link) -->
+            <div id="podcast-yt-options" class="space-y-4 hidden">
               <label class="flex items-center gap-2 text-sm">
                 <input type="checkbox" id="podcast-is-playlist" class="w-4 h-4" />
                 This is a playlist (a group of episodes)
@@ -244,11 +246,6 @@
               </div>
             </div>
 
-            <div>
-              <label id="podcast-url-label" class="eyebrow text-muted block mb-2" for="podcast-url">YouTube video link</label>
-              <input id="podcast-url" class="field-input" placeholder="https://www.youtube.com/watch?v=..." required />
-              <p id="podcast-url-hint" class="text-xs text-muted mt-2"></p>
-            </div>
             <div>
               <label class="eyebrow text-muted block mb-2" for="podcast-title">Title / label</label>
               <input id="podcast-title" class="field-input" required />
@@ -732,63 +729,132 @@
   /* ==================== PODCAST ==================== */
   const podcastForm = document.getElementById('podcast-form');
   const podcastIdField = document.getElementById('podcast-id');
-  const podcastPlatform = document.getElementById('podcast-platform');
+  const podcastLinksList = document.getElementById('podcast-links-list');
+  const podcastAddLinkBtn = document.getElementById('podcast-add-link');
   const podcastYtOptions = document.getElementById('podcast-yt-options');
   const podcastIsPlaylist = document.getElementById('podcast-is-playlist');
   const podcastParentWrap = document.getElementById('podcast-parent-wrap');
   const podcastParent = document.getElementById('podcast-parent');
-  const podcastUrlLabel = document.getElementById('podcast-url-label');
-  const podcastUrlInput = document.getElementById('podcast-url');
-  const podcastUrlHint = document.getElementById('podcast-url-hint');
   const podcastCancelBtn = document.getElementById('podcast-cancel');
   const podcastSubmitBtn = podcastForm.querySelector('button[type="submit"]');
   let podcastCache = [];
+  let podcastLinkRowSeq = 0;
 
+  const PODCAST_PLATFORM_LABELS = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts', custom: 'Other' };
   const PODCAST_URL_LABELS = {
     youtube: { playlist: 'YouTube playlist link', video: 'YouTube video link' },
     spotify: 'Spotify link (episode or show)',
     apple: 'Apple Podcasts link (episode or show)',
+    custom: 'Embed / player link (Captivate, Anchor, Buzzsprout, etc.)',
   };
   const PODCAST_URL_PLACEHOLDERS = {
     youtube: { playlist: 'https://www.youtube.com/playlist?list=...', video: 'https://www.youtube.com/watch?v=...' },
     spotify: 'https://open.spotify.com/show/...',
     apple: 'https://podcasts.apple.com/us/podcast/.../id...',
+    custom: 'https://player.captivate.fm/episode/...',
   };
 
-  function refreshPodcastFormMode(){
-    const platform = podcastPlatform.value;
-    podcastYtOptions.classList.toggle('hidden', platform !== 'youtube');
-    if(platform !== 'youtube'){
-      podcastIsPlaylist.checked = false;
-    }
-    podcastParentWrap.classList.toggle('hidden', platform !== 'youtube' || podcastIsPlaylist.checked);
+  /* ---- Dynamic "listen links" rows ---- */
+  function addPodcastLinkRow(link){
+    link = link || { platform: 'youtube', url: '' };
+    const rowId = 'plink-' + (++podcastLinkRowSeq);
+    const row = document.createElement('div');
+    row.className = 'border border-line rounded-xl p-3 space-y-2';
+    row.dataset.rowId = rowId;
+    row.innerHTML = `
+      <div class="flex items-center gap-2">
+        <select class="field-input flex-1 podcast-link-platform">
+          <option value="youtube">YouTube</option>
+          <option value="spotify">Spotify</option>
+          <option value="apple">Apple Podcasts</option>
+          <option value="custom">Other (Captivate, Anchor, Buzzsprout…)</option>
+        </select>
+        <button type="button" class="btn btn-ghost px-3 py-1.5 rounded-full text-xs podcast-link-remove" title="Remove link">Remove</button>
+      </div>
+      <label class="eyebrow text-muted block podcast-link-label"></label>
+      <input class="field-input podcast-link-url" placeholder="" />
+      <p class="text-xs text-muted podcast-link-hint"></p>
+    `;
+    podcastLinksList.appendChild(row);
 
-    if(platform === 'youtube'){
-      podcastUrlLabel.textContent = podcastIsPlaylist.checked ? PODCAST_URL_LABELS.youtube.playlist : PODCAST_URL_LABELS.youtube.video;
-      podcastUrlInput.placeholder = podcastIsPlaylist.checked ? PODCAST_URL_PLACEHOLDERS.youtube.playlist : PODCAST_URL_PLACEHOLDERS.youtube.video;
-    } else {
-      podcastUrlLabel.textContent = PODCAST_URL_LABELS[platform];
-      podcastUrlInput.placeholder = PODCAST_URL_PLACEHOLDERS[platform];
+    const platformSel = row.querySelector('.podcast-link-platform');
+    const urlInput = row.querySelector('.podcast-link-url');
+    const removeBtn = row.querySelector('.podcast-link-remove');
+    platformSel.value = link.platform || 'youtube';
+    urlInput.value = link.url || '';
+
+    function refreshRow(){
+      const isFirst = podcastLinksList.firstElementChild === row;
+      const platform = platformSel.value;
+      const label = row.querySelector('.podcast-link-label');
+      if(platform === 'youtube' && isFirst){
+        label.textContent = podcastIsPlaylist.checked ? PODCAST_URL_LABELS.youtube.playlist : PODCAST_URL_LABELS.youtube.video;
+        urlInput.placeholder = podcastIsPlaylist.checked ? PODCAST_URL_PLACEHOLDERS.youtube.playlist : PODCAST_URL_PLACEHOLDERS.youtube.video;
+      } else if(platform === 'youtube'){
+        label.textContent = PODCAST_URL_LABELS.youtube.video;
+        urlInput.placeholder = PODCAST_URL_PLACEHOLDERS.youtube.video;
+      } else {
+        label.textContent = PODCAST_URL_LABELS[platform];
+        urlInput.placeholder = PODCAST_URL_PLACEHOLDERS[platform];
+      }
+      row.querySelector('.podcast-link-hint').textContent = '';
+      refreshPodcastYtOptionsVisibility();
     }
-    podcastUrlHint.textContent = '';
+
+    platformSel.addEventListener('change', refreshRow);
+    urlInput.addEventListener('input', () => {
+      const platform = platformSel.value;
+      const val = urlInput.value.trim();
+      const hint = row.querySelector('.podcast-link-hint');
+      if(!val){ hint.textContent = ''; return; }
+      let ok = false;
+      const isFirst = podcastLinksList.firstElementChild === row;
+      if(platform === 'youtube'){
+        ok = (isFirst && podcastIsPlaylist.checked) ? !!AVSStore.youtubePlaylistId(val) : !!AVSStore.youtubeId(val);
+      } else if(platform === 'spotify'){
+        ok = !!AVSStore.spotifyEmbedUrl(val);
+      } else if(platform === 'apple'){
+        ok = !!AVSStore.appleEmbedUrl(val);
+      } else if(platform === 'custom'){
+        ok = !!AVSStore.customEmbedUrl(val);
+      }
+      hint.textContent = ok ? 'Looks good.' : "This doesn't look like a valid link yet.";
+    });
+    removeBtn.addEventListener('click', () => {
+      if(podcastLinksList.children.length <= 1) return; // keep at least one
+      row.remove();
+      refreshAllPodcastLinkRows();
+    });
+
+    refreshRow();
+    return row;
   }
-  podcastPlatform.addEventListener('change', refreshPodcastFormMode);
-  podcastIsPlaylist.addEventListener('change', refreshPodcastFormMode);
 
-  podcastUrlInput.addEventListener('input', () => {
-    const platform = podcastPlatform.value;
-    const val = podcastUrlInput.value.trim();
-    if(!val){ podcastUrlHint.textContent = ''; return; }
-    let ok = false;
-    if(platform === 'youtube'){
-      ok = podcastIsPlaylist.checked ? !!AVSStore.youtubePlaylistId(val) : !!AVSStore.youtubeId(val);
-    } else if(platform === 'spotify'){
-      ok = !!AVSStore.spotifyEmbedUrl(val);
-    } else if(platform === 'apple'){
-      ok = !!AVSStore.appleEmbedUrl(val);
-    }
-    podcastUrlHint.textContent = ok ? 'Looks good.' : "This doesn't look like a valid link yet.";
+  function refreshAllPodcastLinkRows(){
+    Array.from(podcastLinksList.children).forEach((row) => {
+      row.querySelector('.podcast-link-platform').dispatchEvent(new Event('change'));
+    });
+  }
+
+  function refreshPodcastYtOptionsVisibility(){
+    const firstRow = podcastLinksList.firstElementChild;
+    const primaryIsYoutube = firstRow && firstRow.querySelector('.podcast-link-platform').value === 'youtube';
+    podcastYtOptions.classList.toggle('hidden', !primaryIsYoutube);
+    if(!primaryIsYoutube) podcastIsPlaylist.checked = false;
+    podcastParentWrap.classList.toggle('hidden', !primaryIsYoutube || podcastIsPlaylist.checked);
+  }
+  podcastIsPlaylist.addEventListener('change', refreshAllPodcastLinkRows);
+
+  podcastAddLinkBtn.addEventListener('click', () => {
+    addPodcastLinkRow({ platform: 'youtube', url: '' });
   });
+
+  function collectPodcastLinks(){
+    return Array.from(podcastLinksList.children).map((row) => ({
+      platform: row.querySelector('.podcast-link-platform').value,
+      url: row.querySelector('.podcast-link-url').value.trim(),
+    }));
+  }
 
   function populatePodcastParentOptions(excludeId){
     const playlists = podcastCache.filter(p => p.platform === 'youtube' && p.isPlaylist && p.id !== excludeId);
@@ -799,9 +865,10 @@
   function resetPodcastForm(){
     podcastForm.reset();
     podcastIdField.value = '';
-    podcastUrlHint.textContent = '';
+    podcastLinksList.innerHTML = '';
+    addPodcastLinkRow({ platform: 'youtube', url: '' });
     populatePodcastParentOptions('');
-    refreshPodcastFormMode();
+    refreshPodcastYtOptionsVisibility();
     document.getElementById('podcast-form-title').textContent = 'Add to the podcast';
     podcastCancelBtn.classList.add('hidden');
   }
@@ -809,24 +876,33 @@
 
   podcastForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const platform = podcastPlatform.value;
-    const url = podcastUrlInput.value.trim();
-    const isPlaylist = platform === 'youtube' && podcastIsPlaylist.checked;
-    const playlistId = (platform === 'youtube' && !isPlaylist) ? podcastParent.value : '';
-
-    let valid = false;
-    if(platform === 'youtube') valid = isPlaylist ? !!AVSStore.youtubePlaylistId(url) : !!AVSStore.youtubeId(url);
-    else if(platform === 'spotify') valid = !!AVSStore.spotifyEmbedUrl(url);
-    else if(platform === 'apple') valid = !!AVSStore.appleEmbedUrl(url);
-    if(!valid){
-      alert('That link doesn\'t look right for the selected platform — please double check it.');
+    const links = collectPodcastLinks();
+    if(links.length === 0 || !links[0].url){
+      alert('Add at least one listen link.');
       return;
+    }
+    const primaryIsYoutube = links[0].platform === 'youtube';
+    const isPlaylist = primaryIsYoutube && podcastIsPlaylist.checked;
+    const playlistId = (primaryIsYoutube && !isPlaylist) ? podcastParent.value : '';
+
+    for(let i = 0; i < links.length; i++){
+      const { platform, url } = links[i];
+      if(!url){ alert('Every link needs a URL — remove any empty rows.'); return; }
+      let valid = false;
+      if(platform === 'youtube'){
+        valid = (i === 0 && isPlaylist) ? !!AVSStore.youtubePlaylistId(url) : !!AVSStore.youtubeId(url);
+      } else if(platform === 'spotify') valid = !!AVSStore.spotifyEmbedUrl(url);
+      else if(platform === 'apple') valid = !!AVSStore.appleEmbedUrl(url);
+      else if(platform === 'custom') valid = !!AVSStore.customEmbedUrl(url);
+      if(!valid){
+        alert(`Link ${i + 1} doesn't look right for the selected platform — please double check it.`);
+        return;
+      }
     }
 
     const id = podcastIdField.value;
     const data = {
-      platform,
-      url,
+      links,
       title: document.getElementById('podcast-title').value.trim(),
       description: document.getElementById('podcast-description').value.trim(),
       isPlaylist,
@@ -852,14 +928,15 @@
     const item = podcastCache.find(p => p.id === id);
     if(!item) return;
     podcastIdField.value = item.id;
-    podcastPlatform.value = item.platform || 'youtube';
+    podcastLinksList.innerHTML = '';
+    const links = (item.links && item.links.length) ? item.links : [{ platform: item.platform || 'youtube', url: item.url || '' }];
+    links.forEach((l) => addPodcastLinkRow(l));
     podcastIsPlaylist.checked = !!item.isPlaylist;
     populatePodcastParentOptions(item.id);
     podcastParent.value = item.playlistId || '';
-    podcastUrlInput.value = item.url || '';
     document.getElementById('podcast-title').value = item.title || '';
     document.getElementById('podcast-description').value = item.description || '';
-    refreshPodcastFormMode();
+    refreshPodcastYtOptionsVisibility();
     document.getElementById('podcast-form-title').textContent = 'Edit podcast item';
     podcastCancelBtn.classList.remove('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -885,14 +962,16 @@
       return `<div class="w-14 h-14 rounded-lg bg-alt flex items-center justify-center text-muted shrink-0">▶</div>`;
     }
     if(item.platform === 'spotify') return `<div class="w-14 h-14 rounded-lg bg-[#1DB954]/10 flex items-center justify-center text-[#1DB954] font-display font-bold text-xs shrink-0">Spotify</div>`;
-    return `<div class="w-14 h-14 rounded-lg bg-alt flex items-center justify-center text-muted font-display font-bold text-xs shrink-0">Apple</div>`;
+    if(item.platform === 'apple') return `<div class="w-14 h-14 rounded-lg bg-alt flex items-center justify-center text-muted font-display font-bold text-xs shrink-0">Apple</div>`;
+    return `<div class="w-14 h-14 rounded-lg bg-alt flex items-center justify-center text-muted shrink-0">🎧</div>`;
   }
 
   function podcastItemRow(item, opts){
     opts = opts || {};
+    const links = (item.links && item.links.length) ? item.links : [{ platform: item.platform, url: item.url }];
     const badge = item.isPlaylist
       ? '<span class="eyebrow text-blue">Playlist</span>'
-      : `<span class="eyebrow text-muted">${item.platform === 'youtube' ? 'YouTube' : item.platform === 'spotify' ? 'Spotify' : 'Apple Podcasts'}</span>`;
+      : `<span class="eyebrow text-muted">${links.map(l => PODCAST_PLATFORM_LABELS[l.platform] || l.platform).join(' · ')}</span>`;
     return `
       <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4${opts.nested ? ' ml-8' : ''}">
         ${podcastThumb(item)}
@@ -937,7 +1016,8 @@
     list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editPodcastItem(b.dataset.edit)));
     list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deletePodcastItem(b.dataset.delete)));
   }
-  refreshPodcastFormMode();
+  addPodcastLinkRow({ platform: 'youtube', url: '' });
+  refreshPodcastYtOptionsVisibility();
 })();
 </script>
 

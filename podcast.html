@@ -141,7 +141,9 @@
     <div class="max-w-4xl mx-auto px-6 lg:px-10">
       <p class="eyebrow text-blue mb-4">About the show</p>
       <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-6">A podcast about the people we work with, in their own words.</h2>
-      
+      <p class="text-muted text-lg leading-relaxed">
+        [ Replace this paragraph with your show description — who it's for, what it covers, and how often new episodes will land. ]
+      </p>
     </div>
   </section>
 
@@ -163,7 +165,15 @@
     </div>
   </section>
 
- 
+  <!-- SUBSCRIBE / NOTIFY -->
+  <section class="bg-alt text-ink py-20 lg:py-24">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10 text-center">
+      <p class="eyebrow text-blue mb-4">Stay tuned</p>
+      <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-6">Want to know when the first episode drops?</h2>
+      <p class="text-muted leading-relaxed max-w-xl mx-auto mb-8">Reach out and we'll let you know as soon as it's live.</p>
+      <a href="contact.html" class="btn btn-primary px-7 py-3.5 rounded-full text-[15px]"><span>Get in touch</span></a>
+    </div>
+  </section>
 
 </main>
 
@@ -201,7 +211,7 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts' };
+  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts', custom: 'Listen' };
   const grads = ['150deg,#1E7BFF,#0B0E13','150deg,#29B6F6,#0B0E13','150deg,#1E7BFF,#29B6F6','150deg,#0B0E13,#1E7BFF'];
 
   const CORNER_FRAME = `
@@ -318,8 +328,15 @@
       const searchText = `${pl.title} ${pl.description || ''} playlist ${eps.map((e) => e.title).join(' ')}`;
       allCards.push({ item: pl, opts: { eyebrow: 'Playlist', badgeText: eps.length ? `${eps.length} episode${eps.length > 1 ? 's' : ''}` : '', thumbVideoId: firstVid }, searchText });
     });
-    standaloneYoutube.forEach((ep) => allCards.push({ item: ep, opts: {}, searchText: `${ep.title} ${ep.description || ''} ${PLATFORM_LABEL[ep.platform] || ''}` }));
-    others.forEach((ep) => allCards.push({ item: ep, opts: {}, searchText: `${ep.title} ${ep.description || ''} ${PLATFORM_LABEL[ep.platform] || ''}` }));
+    function extraLinksBadge(ep){
+      const extra = (ep.links && ep.links.length > 1) ? ep.links.length - 1 : 0;
+      return extra ? `+${extra} more way${extra > 1 ? 's' : ''} to listen` : '';
+    }
+    function linksSearchText(ep){
+      return (ep.links || []).map((l) => PLATFORM_LABEL[l.platform] || l.platform).join(' ');
+    }
+    standaloneYoutube.forEach((ep) => allCards.push({ item: ep, opts: { badgeText: extraLinksBadge(ep) }, searchText: `${ep.title} ${ep.description || ''} ${linksSearchText(ep)}` }));
+    others.forEach((ep) => allCards.push({ item: ep, opts: { badgeText: extraLinksBadge(ep) }, searchText: `${ep.title} ${ep.description || ''} ${linksSearchText(ep)}` }));
 
     applyEpisodesFilter();
   }

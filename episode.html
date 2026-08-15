@@ -171,6 +171,7 @@
 
       <div id="ep-embed"></div>
       <p id="ep-embed-fallback" class="text-muted text-sm mt-4 hidden"></p>
+      <div id="ep-listen-links"></div>
 
       <div id="ep-nested" class="mt-10 space-y-6"></div>
 
@@ -220,14 +221,16 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts' };
+  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts', custom: 'Listen' };
 
+  /* item here is a {platform, url, title?} pair — either the full episode
+     (for the primary embed) or one entry from ep.links (for the others). */
   function embedFor(item){
     if(item.platform === 'youtube'){
       const vid = AVSStore.youtubeId(item.url);
       if(!vid) return '';
       return `<div style="width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;">
-        <iframe style="width:100%;height:100%;" src="https://www.youtube.com/embed/${vid}" title="${escapeHtml(item.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <iframe style="width:100%;height:100%;" src="https://www.youtube.com/embed/${vid}" title="${escapeHtml(item.title || '')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>`;
     }
     if(item.platform === 'spotify'){
@@ -244,17 +247,39 @@
         <iframe style="width:100%;height:175px;" src="${embed}" frameborder="0" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation" allow="autoplay *; encrypted-media *;" loading="lazy"></iframe>
       </div>`;
     }
+    if(item.platform === 'custom'){
+      const embed = AVSStore.customEmbedUrl(item.url);
+      if(!embed) return '';
+      return `<div style="width:100%;height:200px;border-radius:12px;overflow:hidden;">
+        <iframe style="width:100%;height:200px;" src="${embed}" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>`;
+    }
     return '';
   }
 
+  /* "Listen on ..." row of buttons for every link on the episode. */
+  function listenLinksRow(links, activeIdx){
+    if(!links || links.length < 2) return '';
+    return `
+      <div class="flex flex-wrap gap-2 mt-4">
+        ${links.map((l, i) => `
+          <a href="${escapeHtml(l.url)}" target="_blank" rel="noopener"
+             class="eyebrow px-3 py-2 rounded-full border ${i === activeIdx ? 'border-cyan text-cyan' : 'border-line text-muted hover:border-ink hover:text-ink'} transition-colors">
+            ${escapeHtml(PLATFORM_LABEL[l.platform] || l.platform)}
+          </a>`).join('')}
+      </div>`;
+  }
+
   function nestedEpisodeBlock(item){
-    const embed = embedFor(item);
+    const links = (item.links && item.links.length) ? item.links : [{ platform: item.platform, url: item.url }];
+    const embed = embedFor({ platform: links[0].platform, url: links[0].url, title: item.title });
     return `
       <article class="episode-nested bg-alt rounded-2xl border border-line p-5 sm:p-6">
-        <p class="eyebrow text-blue mb-2">${PLATFORM_LABEL[item.platform] || item.platform}</p>
+        <p class="eyebrow text-blue mb-2">${PLATFORM_LABEL[links[0].platform] || links[0].platform}</p>
         <h3 class="font-display font-semibold text-lg sm:text-xl mb-3">${escapeHtml(item.title || 'Untitled episode')}</h3>
         ${item.description ? `<p class="text-muted text-[15px] leading-relaxed mb-4">${escapeHtml(item.description)}</p>` : ''}
-        ${embed || `<p class="text-muted text-sm">This link couldn't be embedded — <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.</p>`}
+        ${embed || `<p class="text-muted text-sm">This link couldn't be embedded — <a href="${escapeHtml(links[0].url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.</p>`}
+        ${listenLinksRow(links, 0)}
       </article>`;
   }
 
@@ -300,16 +325,18 @@
       document.getElementById('ep-hero-title-audio').textContent = ep.title || 'Untitled episode';
     }
 
+    const links = (ep.links && ep.links.length) ? ep.links : [{ platform: ep.platform, url: ep.url }];
     const embedWrap = document.getElementById('ep-embed');
     const fallback = document.getElementById('ep-embed-fallback');
-    const embed = embedFor(ep);
+    const embed = embedFor({ platform: links[0].platform, url: links[0].url, title: ep.title });
     if(embed){
       embedWrap.innerHTML = embed;
+      fallback.classList.add('hidden');
     } else {
-      fallback.textContent = "This link couldn't be embedded — open it directly.";
       fallback.classList.remove('hidden');
-      fallback.innerHTML = `This link couldn't be embedded — <a href="${escapeHtml(ep.url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.`;
+      fallback.innerHTML = `This link couldn't be embedded — <a href="${escapeHtml(links[0].url)}" target="_blank" rel="noopener" class="underline">open it directly</a>.`;
     }
+    document.getElementById('ep-listen-links').innerHTML = listenLinksRow(links, 0);
 
     if(ep.isPlaylist){
       let all = [];

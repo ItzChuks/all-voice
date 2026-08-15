@@ -243,8 +243,33 @@ const AVSStore = {
        - a YouTube playlist "header" (isPlaylist:true) — its own url is the
          playlist URL, used to render a playlist embed + label
        - an episode tagged under a playlist (isPlaylist:false, playlistId:<header row id>)
-     platform is one of 'youtube' | 'spotify' | 'apple'. Playlists only apply
-     to the youtube platform. */
+
+     An episode can carry MORE THAN ONE listen link (e.g. YouTube + Spotify +
+     a custom player like Captivate/Anchor/Buzzsprout). These live in the
+     `links` column — a string array where each entry is a JSON string:
+       {"platform":"youtube"|"spotify"|"apple"|"custom", "url":"..."}
+     The first link is the "primary" one — it decides the card style
+     (video vs audio) and is also mirrored into the legacy `platform`/`url`
+     columns so older rows (and the table's required fields) keep working. */
+  _decodeLinks(r) {
+    let links = [];
+    if (Array.isArray(r.links) && r.links.length) {
+      links = r.links
+        .map((s) => {
+          try {
+            const obj = JSON.parse(s);
+            return obj && obj.url ? { platform: obj.platform || 'youtube', url: obj.url } : null;
+          } catch (e) {
+            return null;
+          }
+        })
+        .filter(Boolean);
+    }
+    if (links.length === 0 && r.url) {
+      links = [{ platform: r.platform || 'youtube', url: r.url }];
+    }
+    return links;
+  },
   async getPodcastEpisodes() {
     try {
       const res = await avsTables.listRows({
@@ -252,15 +277,19 @@ const AVSStore = {
         tableId: AVS_TABLES.podcast,
         queries: [Query.orderAsc('$createdAt'), Query.limit(500)],
       });
-      return res.rows.map((r) => ({
-        id: r.$id,
-        platform: r.platform || 'youtube',
-        url: r.url || '',
-        title: r.title || '',
-        description: r.description || '',
-        isPlaylist: !!r.isPlaylist,
-        playlistId: r.playlistId || '',
-      }));
+      return res.rows.map((r) => {
+        const links = AVSStore._decodeLinks(r);
+        return {
+          id: r.$id,
+          links,
+          platform: (links[0] && links[0].platform) || r.platform || 'youtube',
+          url: (links[0] && links[0].url) || r.url || '',
+          title: r.title || '',
+          description: r.description || '',
+          isPlaylist: !!r.isPlaylist,
+          playlistId: r.playlistId || '',
+        };
+      });
     } catch (e) {
       console.error('AVSStore.getPodcastEpisodes failed', e);
       return [];
@@ -269,10 +298,12 @@ const AVSStore = {
   async getPodcastEpisode(id) {
     try {
       const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id });
+      const links = AVSStore._decodeLinks(r);
       return {
         id: r.$id,
-        platform: r.platform || 'youtube',
-        url: r.url || '',
+        links,
+        platform: (links[0] && links[0].platform) || r.platform || 'youtube',
+        url: (links[0] && links[0].url) || r.url || '',
         title: r.title || '',
         description: r.description || '',
         isPlaylist: !!r.isPlaylist,
@@ -284,13 +315,15 @@ const AVSStore = {
     }
   },
   async addPodcastEpisode(p) {
+    const links = Array.isArray(p.links) && p.links.length ? p.links : [{ platform: p.platform || 'youtube', url: p.url || '' }];
     return avsTables.createRow({
       databaseId: AVS_DB,
       tableId: AVS_TABLES.podcast,
       rowId: ID.unique(),
       data: {
-        platform: p.platform || 'youtube',
-        url: p.url || '',
+        platform: links[0].platform || 'youtube',
+        url: links[0].url || '',
+        links: links.map((l) => JSON.stringify({ platform: l.platform, url: l.url })),
         title: p.title || '',
         description: p.description || '',
         isPlaylist: !!p.isPlaylist,
@@ -299,7 +332,13 @@ const AVSStore = {
     });
   },
   async updatePodcastEpisode(id, updates) {
-    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id, data: updates });
+    const data = { ...updates };
+    if (Array.isArray(updates.links) && updates.links.length) {
+      data.platform = updates.links[0].platform || 'youtube';
+      data.url = updates.links[0].url || '';
+      data.links = updates.links.map((l) => JSON.stringify({ platform: l.platform, url: l.url }));
+    }
+    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id, data });
   },
   async deletePodcastEpisode(id) {
     return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id });
@@ -341,6 +380,19 @@ const AVSStore = {
       const u = new URL(url);
       if (!/(^|\.)podcasts\.apple\.com$/.test(u.hostname)) return '';
       return url.replace('podcasts.apple.com', 'embed.podcasts.apple.com');
+    } catch (e) {
+      return '';
+    }
+  },
+  /* Generic embeddable player link — Captivate, Anchor, Buzzsprout, etc.
+     These platforms hand out a URL that's already meant to be dropped
+     straight into an <iframe>, so we just validate it's a real https link. */
+  customEmbedUrl(url) {
+    if (!url) return '';
+    try {
+      const u = new URL(url);
+      if (u.protocol !== 'https:') return '';
+      return url;
     } catch (e) {
       return '';
     }
