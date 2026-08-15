@@ -135,7 +135,7 @@
       <div id="ep-hero-audio" class="now-playing hidden rounded-3xl p-6 sm:p-8 mb-8">
         <div class="flex flex-col sm:flex-row gap-7">
           <div class="player-art w-40 h-40 sm:w-48 sm:h-48 shrink-0 rounded-2xl mx-auto sm:mx-0" style="background:linear-gradient(150deg,#1E7BFF,#0B0E13,#29B6F6);">
-            <div id="ep-hero-art-label" class="absolute inset-0 flex items-center justify-center frame-label text-white/70 text-[11px] text-center px-4"></div>
+            <div id="ep-hero-art-label" class="absolute inset-0 flex items-center justify-center p-8"><img src="assets/img/logo.png" alt="" class="max-w-[60%] max-h-[60%] object-contain opacity-90" /></div>
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="corner-frame" aria-hidden="true">
               <path d="M0,18 L0,0 L18,0"/><path d="M82,0 L100,0 L100,18"/>
               <path d="M100,82 L100,100 L82,100"/><path d="M18,100 L0,100 L0,82"/>
@@ -320,7 +320,6 @@
       heroAudio.classList.remove('hidden');
       heroVideo.classList.add('hidden');
       document.getElementById('ep-hero-badge').textContent = label;
-      document.getElementById('ep-hero-art-label').textContent = `[ ${label} ]`;
       document.getElementById('ep-hero-meta').textContent = `${label} · All Voices Society Podcast`;
       document.getElementById('ep-hero-title-audio').textContent = ep.title || 'Untitled episode';
     }
