@@ -1,0 +1,15 @@
+# Clean URLs: serve the .html file when the extension-less path is requested
+/about                /about.html                200
+/admin                /admin.html                200
+/board                /board.html                200
+/contact              /contact.html              200
+/episode              /episode.html              200
+/event                /event.html                200
+/events               /events.html               200
+/get-involved         /get-involved.html         200
+/podcasts             /podcasts.html             200
+/stories              /stories.html              200
+/story                /story.html                200
+
+# Custom 404 for anything else that doesn't match a real file
+/*                    /404.html                  404

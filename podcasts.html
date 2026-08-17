@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Podcasts | All Voices Society</title>
+<meta name="description" content="This Is My Story and more from the All Voices Society Podcast Network — stories from the people we work with across Nova Scotia, told in their own words." />
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0E13', ink2: '#161B24',
+          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
+          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
+          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
+  *{ scroll-behavior: smooth; }
+  body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#FFFFFF; -webkit-font-smoothing:antialiased; font-size:17px; line-height:1.7; }
+  h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
+  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease, background .35s ease, color .35s ease; }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(30,123,255,.55); }
+  .btn-primary::after{ content:''; position:absolute; inset:0; background:linear-gradient(95deg,var(--blue),var(--cyan)); opacity:0; transition:opacity .35s ease; z-index:0; }
+  .btn-primary:hover::after{ opacity:1; }
+  .btn-primary span{ position:relative; z-index:1; display:flex; align-items:center; gap:.5rem;}
+  .btn-dark-ghost{ border:1.5px solid var(--ink); color:var(--ink); }
+  .btn-dark-ghost:hover{ transform:translateY(-3px); background:var(--ink); color:#fff; }
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1); }
+  .nav-link:hover::after{ width:100%; }
+  .tilt-card{ transition:transform .5s cubic-bezier(.16,.84,.44,1), box-shadow .5s ease; }
+  .tilt-card:hover{ transform:translateY(-8px) rotate(-0.4deg); box-shadow:0 30px 60px -20px rgba(11,14,19,.25); }
+  #mobile-menu{ transform:translateY(-100%); transition:transform .55s cubic-bezier(.16,.84,.44,1); }
+  #mobile-menu.open{ transform:translateY(0); }
+  .hamburger span{ transition:transform .35s ease, opacity .35s ease; transform-origin:center; }
+  .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+  section[id]{ scroll-margin-top: 96px; }
+
+  /* ---- Podcast player-card styling (matches reference episode UI) ---- */
+  .player-row{ background:#12161e; border:1px solid rgba(255,255,255,.08); transition:border-color .3s ease, transform .3s ease; }
+  .player-row:hover{ border-color:rgba(41,182,246,.4); transform:translateY(-2px); }
+  .corner-frame{ position:absolute; inset:9px; pointer-events:none; }
+  .corner-frame path{ stroke:rgba(255,255,255,.6); stroke-width:2.2; fill:none; }
+  .progress-track{ height:4px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden; }
+  .progress-fill{ height:100%; width:6%; border-radius:999px; background:linear-gradient(95deg,var(--blue),var(--cyan)); }
+  .ctrl-btn{ color:rgba(255,255,255,.5); transition:color .2s ease, transform .2s ease; }
+  .player-row:hover .ctrl-btn{ color:rgba(255,255,255,.85); }
+  .play-chip{ background:linear-gradient(135deg,var(--blue),var(--cyan)); box-shadow:0 8px 20px -8px rgba(41,182,246,.6); }
+  .speed-pill{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:.15rem .5rem; color:rgba(255,255,255,.65); }
+  .watch-badge{ font-family:'IBM Plex Mono',monospace; letter-spacing:.1em; font-size:.65rem; text-transform:uppercase; }
+</style>
+</head>
+<body class="bg-surface">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+
+<!-- NAV -->
+<header id="site-nav" class="fixed top-0 left-0 right-0 z-50" style="background:rgba(11,14,19,0.92); backdrop-filter:blur(10px);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <img src="assets/img/logo.png" alt="All Voices Society" class="h-11 w-auto" />
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
+      <a href="/about" class="nav-link text-white/90 hover:text-white">About</a>
+      <a href="/events" class="nav-link text-white/90 hover:text-white">Events</a>
+      <a href="/stories" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="/podcasts" class="nav-link text-white hover:text-white">Podcasts</a>
+      <a href="/board" class="nav-link text-white/90 hover:text-white">Board</a>
+      <a href="/get-involved" class="nav-link text-white/90 hover:text-white">Get Involved</a>
+      <a href="/contact" class="nav-link text-white/90 hover:text-white">Contact</a>
+      <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
+    </nav>
+
+    <button id="hamburger" class="hamburger lg:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] relative z-[70]" aria-label="Toggle menu" aria-expanded="false">
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+      <span class="block w-6 h-[1.5px] bg-white"></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" class="fixed inset-0 bg-ink z-[60] flex flex-col justify-center px-10 lg:hidden">
+  <nav class="flex flex-col gap-6 font-display text-4xl font-semibold text-white">
+    <a href="/about" class="nav-link w-fit">About</a>
+    <a href="/events" class="nav-link w-fit">Events</a>
+    <a href="/stories" class="nav-link w-fit">Stories</a>
+    <a href="/podcasts" class="nav-link w-fit">Podcasts</a>
+    <a href="/board" class="nav-link w-fit">Board</a>
+    <a href="/get-involved" class="nav-link w-fit">Get Involved</a>
+    <a href="/contact" class="nav-link w-fit">Contact</a>
+    <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn btn-primary w-fit px-6 py-3 rounded-full text-lg mt-4"><span>Donate</span></a>
+  </nav>
+</div>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="relative bg-ink text-white pt-40 pb-20 overflow-hidden">
+    <div class="absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full opacity-25" style="background:var(--cyan); filter:blur(80px);"></div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <p class="eyebrow text-cyan mb-4">Podcasts</p>
+      <h1 class="font-display font-semibold text-4xl sm:text-6xl leading-[1.02] max-w-3xl">Stories, in their own voice.</h1>
+      <p class="font-serif text-lg text-white/70 max-w-xl mt-6">The All Voices Podcast Network carries the voices of the people we work with across Nova Scotia, told in their own words and at their own pace.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EDITABLE TEXT — feel free to edit this paragraph directly.
+       Episodes below are managed from the Admin page (Podcasts tab),
+       not edited here — add/edit/remove them at /admin.
+  ============================================================= -->
+
+  <!-- ABOUT THE SHOW -->
+  <section id="about-podcast" class="bg-surface py-20 lg:py-24 border-b border-line">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-12 items-start">
+      <div class="lg:col-span-7">
+        <p class="eyebrow text-blue mb-4">About the show</p>
+        <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-2">Stories, in their own voice.</h2>
+        <p class="font-serif text-muted text-lg mt-6 leading-relaxed">Some stories are meant to be heard. Our podcast carries the voices of the people we work with across Nova Scotia, told in their own words and at their own pace. We are beginning with <em>This Is My Story</em>, a series created with seniors at Northwood Care, and the collection will grow as new voices join.</p>
+        <p class="font-serif text-muted text-lg mt-4 leading-relaxed">Listen here on this page, or follow the show on Spotify, Apple Podcasts, or wherever you find your podcasts.</p>
+
+        <div class="mt-8">
+          <p class="eyebrow text-muted mb-4">Follow the show</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="https://open.spotify.com/show/78oJz4J0IUk0LDrCvYVMdj" target="_blank" rel="noopener" class="btn btn-dark-ghost px-5 py-2.5 rounded-full text-sm"><span>Spotify</span></a>
+            <a href="https://podcasts.apple.com/us/podcast/this-is-my-story/id6802352970" target="_blank" rel="noopener" class="btn btn-dark-ghost px-5 py-2.5 rounded-full text-sm"><span>Apple Podcasts</span></a>
+            <a href="https://this-is-my-story.captivate.fm/listen" target="_blank" rel="noopener" class="btn btn-dark-ghost px-5 py-2.5 rounded-full text-sm"><span>Captivate</span></a>
+            <a href="https://feeds.captivate.fm/this-is-my-story/" target="_blank" rel="noopener" class="btn btn-dark-ghost px-5 py-2.5 rounded-full text-sm"><span>RSS feed</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-5 flex items-center justify-center">
+        <img src="/assets/img/podcast-network-logo.png" alt="All Voices Podcast Network" class="w-full max-w-xs" />
+      </div>
+    </div>
+  </section>
+
+  <!-- EPISODES (rendered from Appwrite — managed at /admin → Podcasts tab) -->
+  <section id="episodes" class="bg-ink py-20 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <p class="eyebrow text-cyan mb-4">Episodes</p>
+      <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-12 text-white">Listen</h2>
+
+      <div class="mb-10 max-w-md">
+        <div class="relative">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="episodes-search" placeholder="Search episodes…" aria-label="Search episodes" class="w-full pl-11 pr-4 py-3 rounded-full border border-white/15 bg-white/5 text-white placeholder-white/40 focus:bg-white/10 focus:border-cyan outline-none transition-colors text-[15px]" />
+        </div>
+      </div>
+      <div id="episodes-list" class="flex flex-col gap-5"><p class="text-white/50 text-center py-6">Loading episodes…</p></div>
+      <p id="episodes-empty" class="text-white/50 text-center py-6 hidden">Episodes will appear here once they're added from the admin page.</p>
+      <p id="episodes-no-results" class="text-white/50 text-center py-6 hidden">No episodes match your search.</p>
+    </div>
+  </section>
+
+  
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-ink text-white/70 pt-16 pb-8 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col sm:flex-row justify-between gap-4 text-xs text-white/40">
+    <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
+    <div class="flex gap-6">
+      <a href="/" class="hover:text-cyan transition-colors">Home</a>
+      <a href="/stories" class="hover:text-cyan transition-colors">Stories</a>
+      <a href="/admin" class="hover:text-cyan transition-colors">Admin</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/appwrite-config.js"></script>
+<script src="assets/store.js"></script>
+<script>
+(function(){
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.remove('open'); hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }));
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  const PLATFORM_LABEL = { youtube: 'YouTube', spotify: 'Spotify', apple: 'Apple Podcasts', custom: 'Listen' };
+  const grads = ['150deg,#1E7BFF,#0B0E13','150deg,#29B6F6,#0B0E13','150deg,#1E7BFF,#29B6F6','150deg,#0B0E13,#1E7BFF'];
+
+  const CORNER_FRAME = `
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="corner-frame" aria-hidden="true">
+      <path d="M0,16 L0,0 L16,0"/>
+      <path d="M84,0 L100,0 L100,16"/>
+      <path d="M100,84 L100,100 L84,100"/>
+      <path d="M16,100 L0,100 L0,84"/>
+    </svg>`;
+
+  function controlIcons(){
+    return `
+      <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+        <span class="ctrl-btn" title="Back 15s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 1 2.5 5.8"/><path d="M4 12V6M4 12h6"/></svg></span>
+        <span class="play-chip w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5Z"/></svg>
+        </span>
+        <span class="ctrl-btn" title="Forward 30s"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a8 8 0 1 0-2.5 5.8"/><path d="M20 12V6M20 12h-6"/></svg></span>
+        <span class="speed-pill hidden sm:inline-block">1&times;</span>
+        <span class="ctrl-btn hidden sm:inline-flex" title="Volume"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6h4l5 5V4L8 9H4Z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg></span>
+        <span class="ctrl-btn hidden sm:inline-flex" title="More"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></span>
+      </div>`;
+  }
+
+  /* Audio-style row (Spotify / Apple Podcasts) — matches the reference "now playing" card:
+     framed square art, title + meta line, playback bar with transport controls. */
+  function audioPlayerRow(item, idx, opts){
+    opts = opts || {};
+    const label = (PLATFORM_LABEL[item.platform] || item.platform || '').toUpperCase();
+    return `
+      <a href="/episode?id=${encodeURIComponent(item.id)}" class="player-row group flex flex-col sm:flex-row gap-5 rounded-2xl p-4 sm:p-5">
+        <div class="player-art relative w-full sm:w-32 lg:w-36 aspect-square shrink-0 rounded-xl overflow-hidden" style="background:linear-gradient(${grads[idx % grads.length]});">
+          <div class="absolute inset-0 flex items-center justify-center p-6"><img src="assets/img/logo.png" alt="" class="max-w-[60%] max-h-[60%] object-contain opacity-90" /></div>
+          ${CORNER_FRAME}
+          <span class="watch-badge absolute top-3 left-3 text-white/70">${escapeHtml(opts.eyebrow || label)}</span>
+        </div>
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
+          <h3 class="font-display font-semibold text-lg sm:text-xl text-white truncate mb-1">${escapeHtml(item.title || 'Untitled episode')}</h3>
+          <p class="text-white/45 text-[13px] mb-4">${escapeHtml(opts.eyebrow || 'Episode')} &middot; All Voices Society Podcast${opts.badgeText ? ` &middot; ${escapeHtml(opts.badgeText)}` : ''}</p>
+
+          
+        </div>
+      </a>`;
+  }
+
+  /* Video-style row (YouTube) — cinematic 16:9 treatment, big center play, "WATCH" badge. */
+  function videoPlayerRow(item, idx, opts){
+    opts = opts || {};
+    const vid = opts.thumbVideoId || AVSStore.youtubeId(item.url);
+    const cover = vid
+      ? `<img src="https://img.youtube.com/vi/${vid}/hqdefault.jpg" alt="" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />`
+      : `<div class="absolute inset-0 flex items-center justify-center frame-label text-white/70 text-[11px] text-center px-4">[ ${escapeHtml(item.title || 'Untitled episode')} ]</div>`;
+    return `
+      <a href="/episode?id=${encodeURIComponent(item.id)}" class="player-row group flex flex-col sm:flex-row gap-5 rounded-2xl p-4 sm:p-5 overflow-hidden">
+        <div class="player-art relative w-full sm:w-64 lg:w-72 aspect-video shrink-0 rounded-xl overflow-hidden" style="background:linear-gradient(${grads[idx % grads.length]});">
+          ${cover}
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          ${CORNER_FRAME}
+          <span class="watch-badge absolute top-3 left-3 text-white/85 bg-black/40 px-2 py-1 rounded backdrop-blur">&#9679; Watch</span>
+          ${opts.badgeText ? `<span class="eyebrow absolute bottom-3 right-3 bg-white/15 text-white px-2 py-1 rounded backdrop-blur text-[10px]">${escapeHtml(opts.badgeText)}</span>` : ''}
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="play-chip w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7L8 5Z"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
+          <p class="text-cyan text-[13px] eyebrow mb-2">${escapeHtml(opts.eyebrow || 'YouTube')}</p>
+          <h3 class="font-display font-semibold text-xl sm:text-2xl text-white mb-2 leading-snug">${escapeHtml(item.title || 'Untitled episode')}</h3>
+          <p class="text-white/50 text-[14px] leading-relaxed line-clamp-2 mb-4">${escapeHtml(item.description || '')}</p>
+          <div class="flex items-center gap-3 text-white/40 text-[11px] font-mono max-w-sm">
+            <div class="progress-track flex-1"><div class="progress-fill" style="width:0%"></div></div>
+            <span class="shrink-0 inline-flex items-center gap-1 text-white/60 font-display font-semibold text-[13px] not-italic normal-case tracking-normal group-hover:text-cyan transition-colors">Watch now
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>`;
+  }
+
+  function episodePlayerRow(item, idx, opts){
+    return item.platform === 'youtube' ? videoPlayerRow(item, idx, opts) : audioPlayerRow(item, idx, opts);
+  }
+
+  async function renderPodcast(){
+    const wrap = document.getElementById('episodes-list');
+    const empty = document.getElementById('episodes-empty');
+    let items = [];
+    try {
+      items = await AVSStore.getPodcastEpisodes();
+    } catch (e) {
+      console.error('Could not load podcast episodes', e);
+    }
+    if(items.length === 0){
+      wrap.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+
+    const playlists = items.filter((p) => p.platform === 'youtube' && p.isPlaylist);
+    const standaloneYoutube = items.filter((p) => p.platform === 'youtube' && !p.isPlaylist && !p.playlistId);
+    const others = items.filter((p) => p.platform !== 'youtube');
+
+    allCards = [];
+    playlists.forEach((pl) => {
+      const eps = items.filter((p) => p.playlistId === pl.id);
+      const firstVid = eps.map((e) => AVSStore.youtubeId(e.url)).find(Boolean) || '';
+      const searchText = `${pl.title} ${pl.description || ''} playlist ${eps.map((e) => e.title).join(' ')}`;
+      allCards.push({ item: pl, opts: { eyebrow: 'Playlist', badgeText: eps.length ? `${eps.length} episode${eps.length > 1 ? 's' : ''}` : '', thumbVideoId: firstVid }, searchText });
+    });
+    function extraLinksBadge(ep){
+      const extra = (ep.links && ep.links.length > 1) ? ep.links.length - 1 : 0;
+      return extra ? `+${extra} more way${extra > 1 ? 's' : ''} to listen` : '';
+    }
+    function linksSearchText(ep){
+      return (ep.links || []).map((l) => PLATFORM_LABEL[l.platform] || l.platform).join(' ');
+    }
+    standaloneYoutube.forEach((ep) => allCards.push({ item: ep, opts: { badgeText: extraLinksBadge(ep) }, searchText: `${ep.title} ${ep.description || ''} ${linksSearchText(ep)}` }));
+    others.forEach((ep) => allCards.push({ item: ep, opts: { badgeText: extraLinksBadge(ep) }, searchText: `${ep.title} ${ep.description || ''} ${linksSearchText(ep)}` }));
+
+    applyEpisodesFilter();
+  }
+
+  let allCards = [];
+
+  function applyEpisodesFilter(){
+    const wrap = document.getElementById('episodes-list');
+    const noResults = document.getElementById('episodes-no-results');
+    const q = document.getElementById('episodes-search').value.trim().toLowerCase();
+    const filtered = q
+      ? allCards.filter((c) => c.searchText.toLowerCase().includes(q))
+      : allCards;
+    if(filtered.length === 0){
+      wrap.innerHTML = '';
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
+      wrap.innerHTML = filtered.map((c, idx) => episodePlayerRow(c.item, idx, c.opts)).join('');
+    }
+  }
+
+  document.getElementById('episodes-search').addEventListener('input', applyEpisodesFilter);
+
+  renderPodcast();
+})();
+</script>
+
+</body>
+</html>

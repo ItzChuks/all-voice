@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page not found | All Voices Society</title>
+<meta name="description" content="This page couldn't be found on the All Voices Society site." />
+<meta name="robots" content="noindex" />
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/img/favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0E13', ink2: '#161B24',
+          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
+          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
+          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
+  *{ scroll-behavior: smooth; }
+  body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#0B0E13; -webkit-font-smoothing:antialiased; font-size:17px; line-height:1.7; }
+  h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
+  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease, background .35s ease, color .35s ease; }
+  .btn-primary{ background:#fff; color:var(--ink); }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(41,182,246,.45); }
+  .btn-ghost{ border:1.5px solid rgba(255,255,255,.25); color:#fff; }
+  .btn-ghost:hover{ transform:translateY(-3px); border-color:rgba(255,255,255,.6); }
+  .nav-link{ position:relative; }
+  .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1); }
+  .nav-link:hover::after{ width:100%; }
+  .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
+
+  /* Signature: a "dropped signal" waveform — the voice that didn't come through */
+  .waveform{ display:flex; align-items:flex-end; gap:5px; height:64px; }
+  .waveform span{ display:block; width:5px; border-radius:3px; background:linear-gradient(180deg,var(--cyan),var(--blue)); opacity:.85; animation: wave 1.8s ease-in-out infinite; }
+  .waveform span:nth-child(1){ height:22%; animation-delay:-1.2s; }
+  .waveform span:nth-child(2){ height:55%; animation-delay:-0.9s; }
+  .waveform span:nth-child(3){ height:85%; animation-delay:-0.6s; }
+  .waveform span:nth-child(4){ height:40%; animation-delay:-1.5s; }
+  .waveform span:nth-child(5){ height:100%; opacity:.25; animation:none; }
+  .waveform span:nth-child(6){ height:30%; opacity:.18; animation:none; }
+  .waveform span:nth-child(7){ height:15%; opacity:.12; animation:none; }
+  @keyframes wave{ 0%,100%{ transform:scaleY(.4);} 50%{ transform:scaleY(1);} }
+  @media (prefers-reduced-motion: reduce){ .waveform span{ animation:none; } }
+</style>
+</head>
+<body class="bg-ink">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+
+<!-- NAV -->
+<header id="site-nav" class="fixed top-0 left-0 right-0 z-50" style="background:rgba(11,14,19,0.92); backdrop-filter:blur(10px);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
+    <a href="/" class="flex items-center gap-2.5 group">
+      <img src="assets/img/logo.png" alt="All Voices Society" class="h-11 w-auto" />
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 font-display text-[14.5px] font-medium">
+      <a href="/about" class="nav-link text-white/90 hover:text-white">About</a>
+      <a href="/events" class="nav-link text-white/90 hover:text-white">Events</a>
+      <a href="/stories" class="nav-link text-white/90 hover:text-white">Stories</a>
+      <a href="/podcasts" class="nav-link text-white/90 hover:text-white">Podcasts</a>
+      <a href="/contact" class="nav-link text-white/90 hover:text-white">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden">
+    <div class="absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full opacity-20" style="background:var(--cyan); filter:blur(90px);"></div>
+    <div class="absolute -bottom-40 -left-20 w-[380px] h-[380px] rounded-full opacity-10" style="background:var(--blue); filter:blur(90px);"></div>
+
+    <div class="max-w-3xl mx-auto px-6 lg:px-10 relative text-white text-center">
+      <div class="waveform mx-auto mb-10" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <p class="eyebrow text-cyan mb-4">404 — Signal lost</p>
+      <h1 class="font-display font-semibold text-4xl sm:text-5xl leading-[1.05] mb-5">This page hasn't found its story yet.</h1>
+      <p class="font-serif text-lg text-white/60 max-w-xl mx-auto mb-10">The link may be outdated, or the page may have moved. Let's get you back to something worth hearing.</p>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-14">
+        <a href="/" class="btn btn-primary px-7 py-3.5 rounded-full text-[15px]"><span>Back to home</span></a>
+        <a href="/contact" class="btn btn-ghost px-7 py-3.5 rounded-full text-[15px]"><span>Tell us it's broken</span></a>
+      </div>
+
+      <div class="border-t border-white/10 pt-8">
+        <p class="frame-label text-white/35 text-[11px] mb-5">Or try one of these</p>
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-display text-[14.5px] font-medium">
+          <a href="/about" class="nav-link text-white/80 hover:text-white">About</a>
+          <a href="/events" class="nav-link text-white/80 hover:text-white">Events</a>
+          <a href="/stories" class="nav-link text-white/80 hover:text-white">Stories</a>
+          <a href="/podcasts" class="nav-link text-white/80 hover:text-white">Podcasts</a>
+          <a href="/get-involved" class="nav-link text-white/80 hover:text-white">Get Involved</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
