@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Get Involved | All Voices Society</title>
-<meta name="description" content="Take part in a programme, volunteer, or donate to All Voices Society." />
+<title>Board member | All Voices Society</title>
+<meta name="description" content="Meet a member of the All Voices Society Board of Directors." />
 
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/img/favicon-32.png" type="image/png">
@@ -15,25 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          ink: '#0B0E13', ink2: '#161B24',
-          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
-          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
-          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
-        },
-        fontFamily: {
-          display: ['"Space Grotesk"', 'sans-serif'],
-          serif: ['"Source Serif 4"', 'serif'],
-          mono: ['"IBM Plex Mono"', 'monospace'],
-        },
-      }
-    }
-  }
-</script>
+<script src="assets/tailwind-config.js"></script>
 
 <style>
   :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
@@ -41,20 +23,16 @@
   body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#FFFFFF; -webkit-font-smoothing:antialiased; font-size:17px; line-height:1.7; }
   h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
   .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
-  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease, background .35s ease, color .35s ease; }
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--cyan); outline-offset:3px; border-radius:2px; }
+  .btn{ position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:.5rem; font-family:'Space Grotesk',sans-serif; font-weight:600; letter-spacing:-0.01em; transition:transform .35s cubic-bezier(.16,.84,.44,1), box-shadow .35s ease; }
   .btn-primary{ background:var(--ink); color:#fff; }
   .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(30,123,255,.55); }
   .btn-primary::after{ content:''; position:absolute; inset:0; background:linear-gradient(95deg,var(--blue),var(--cyan)); opacity:0; transition:opacity .35s ease; z-index:0; }
   .btn-primary:hover::after{ opacity:1; }
   .btn-primary span{ position:relative; z-index:1; display:flex; align-items:center; gap:.5rem;}
-  .btn-dark-ghost{ border:1.5px solid var(--ink); color:var(--ink); }
-  .btn-dark-ghost:hover{ transform:translateY(-3px); background:var(--ink); color:#fff; }
   .nav-link{ position:relative; }
   .nav-link::after{ content:''; position:absolute; left:0; bottom:-4px; width:0; height:1.5px; background:linear-gradient(95deg,var(--blue),var(--cyan)); transition:width .35s cubic-bezier(.16,.84,.44,1); }
   .nav-link:hover::after{ width:100%; }
-  .tilt-card{ transition:transform .5s cubic-bezier(.16,.84,.44,1), box-shadow .5s ease; }
-  .tilt-card:hover{ transform:translateY(-8px) rotate(-0.4deg); box-shadow:0 30px 60px -20px rgba(11,14,19,.25); }
   #mobile-menu{ transform:translateY(-100%); transition:transform .55s cubic-bezier(.16,.84,.44,1); }
   #mobile-menu.open{ transform:translateY(0); }
   .hamburger span{ transition:transform .35s ease, opacity .35s ease; transform-origin:center; }
@@ -62,7 +40,12 @@
   .hamburger.open span:nth-child(2){ opacity:0; }
   .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
   .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
-  section[id]{ scroll-margin-top: 96px; }
+
+  /* Bio text: shows the layout the admin typed — a blank line is a new
+     paragraph, Enter is a line break, and leading spaces/tabs are kept as
+     indentation (that is what pre-wrap is for). */
+  .bio p{ margin:0; white-space:pre-wrap; tab-size:4; overflow-wrap:break-word; }
+  .bio p + p{ margin-top:1.2em; }
 </style>
 </head>
 <body class="bg-surface">
@@ -81,8 +64,8 @@
       <a href="/events" class="nav-link text-white/90 hover:text-white">Events</a>
       <a href="/stories" class="nav-link text-white/90 hover:text-white">Stories</a>
       <a href="/podcasts" class="nav-link text-white/90 hover:text-white">Podcasts</a>
-      <a href="/board" class="nav-link text-white/90 hover:text-white">Board</a>
-      <a href="/get-involved" class="nav-link text-white hover:text-white">Get Involved</a>
+      <a href="/board" class="nav-link text-white hover:text-white">Board</a>
+      <a href="/get-involved" class="nav-link text-white/90 hover:text-white">Get Involved</a>
       <a href="/contact" class="nav-link text-white/90 hover:text-white">Contact</a>
       <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn btn-primary px-5 py-2.5 rounded-full text-[14px]"><span>Donate</span></a>
     </nav>
@@ -109,42 +92,33 @@
   </nav>
 </div>
 
-<main id="main">
-  <!-- HERO -->
-  <section class="relative bg-ink text-white pt-40 pb-20 overflow-hidden">
-    <div class="absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full opacity-25" style="background:var(--cyan); filter:blur(80px);"></div>
-    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
-      <p class="eyebrow text-cyan mb-4">Get Involved</p>
-      <h1 class="font-display font-semibold text-4xl sm:text-6xl leading-[1.02] max-w-3xl">There are several ways into this work.</h1>
-      <p class="font-serif text-lg text-white/70 max-w-xl mt-6">Take part in a programme, give your time as a volunteer, or support us financially so that more people can tell their stories.</p>
-    </div>
-  </section>
+<main id="main" class="pt-32 pb-24">
+  <div class="max-w-5xl mx-auto px-6 lg:px-10">
+    <a href="/board" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
+      Back to the board
+    </a>
 
-  <!-- WAYS TO GET INVOLVED -->
-  <section class="bg-surface py-20 lg:py-28">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="grid lg:grid-cols-3 gap-6">
-        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt flex flex-col">
-          <span class="eyebrow text-blue">Participate</span>
-          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Tell your story</h3>
-          <p class="text-muted text-[15px] leading-relaxed mb-6 flex-1">Our programmes are free to participants. No previous experience with cameras, writing, or editing is needed; we'll teach you what you need to know. Tell us a little about what you'd like to make, and we will be in touch.</p>
-          <a href="https://forms.gle/UuzHQ6PbkLcCHU687" target="_blank" rel="noopener" class="btn btn-primary px-6 py-3 rounded-full text-sm self-start"><span>Get started</span></a>
-        </div>
-        <div class="tilt-card rounded-2xl border border-line p-8 bg-alt flex flex-col">
-          <span class="eyebrow text-blue">Volunteer</span>
-          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Lend your time</h3>
-          <p class="text-muted text-[15px] leading-relaxed mb-6 flex-1">Help run workshops, support screenings, and help tell stories. Skills help but enthusiasm counts for just as much.</p>
-          <a href="https://forms.gle/TKY9iD87HsCad5zb9" target="_blank" rel="noopener" class="btn btn-primary px-6 py-3 rounded-full text-sm self-start"><span>Get started</span></a>
-        </div>
-        <div id="donate" class="tilt-card rounded-2xl p-8 text-white relative overflow-hidden flex flex-col" style="background:linear-gradient(150deg,#1E7BFF,#29B6F6);">
-          <span class="eyebrow text-white/80">Donate</span>
-          <h3 class="font-display font-semibold text-2xl mt-3 mb-3">Widen the circle</h3>
-          <p class="text-white/85 text-[15px] leading-relaxed mb-6 flex-1">Every donation goes directly into programming: camera time, editing software, and facilitator hours.</p>
-          <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-6 py-3 rounded-full text-sm bg-white text-ink font-display font-semibold hover:-translate-y-1 transition-transform self-start">Give today</a>
+    <div id="member-loading" class="text-muted">Loading…</div>
+    <div id="member-notfound" class="hidden text-center py-24">
+      <p class="font-display font-semibold text-2xl mb-3">Board member not found</p>
+      <p class="text-muted mb-6">This profile may have been removed or the link is incorrect.</p>
+      <a href="/board" class="btn btn-primary px-5 py-2.5 rounded-full text-sm inline-flex"><span>Back to the board</span></a>
+    </div>
+
+    <div id="member-content" class="hidden grid sm:grid-cols-[220px_1fr] gap-10 sm:gap-14">
+      <div class="text-center sm:text-left">
+        <div id="member-avatar-wrap"></div>
+        <h1 id="member-name" class="font-display font-semibold text-2xl mt-6"></h1>
+        <p id="member-role" class="text-cyan text-sm mt-1"></p>
+        <div class="hidden sm:block mt-6 pt-6 border-t border-line">
+          <p class="eyebrow text-muted">Board of directors</p>
         </div>
       </div>
+
+      <div class="bio text-[17px] text-[#1a1d24] max-w-[62ch]" id="member-bio"></div>
     </div>
-  </section>
+  </div>
 </main>
 
 <!-- FOOTER -->
@@ -153,7 +127,7 @@
     <p>&copy; 2026 All Voices Society. Nova Scotia Registry ID 4739049.</p>
     <div class="flex gap-6">
       <a href="/" class="hover:text-cyan transition-colors">Home</a>
-      <a href="/stories" class="hover:text-cyan transition-colors">Stories</a>
+      <a href="/board" class="hover:text-cyan transition-colors">Board</a>
       <a href="/podcasts" class="hover:text-cyan transition-colors">Podcasts</a>
       <a href="/admin" class="hover:text-cyan transition-colors">Admin</a>
     </div>
@@ -164,22 +138,8 @@
 <script src="assets/localdev.js"></script>
 <script src="assets/appwrite-config.js"></script>
 <script src="assets/store.js"></script>
-<script>
-(function(){
-  const hamburger = document.getElementById('hamburger');
-  const menu = document.getElementById('mobile-menu');
-  hamburger.addEventListener('click', () => {
-    const open = menu.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-    document.body.style.overflow = open ? 'hidden' : '';
-  });
-  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    menu.classList.remove('open'); hamburger.classList.remove('open');
-    document.body.style.overflow = '';
-  }));
-})();
-</script>
+<script src="assets/nav.js"></script>
+<script src="assets/member.js"></script>
 
 </body>
 </html>

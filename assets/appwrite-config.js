@@ -22,4 +22,10 @@ window.AVS_CONFIG = {
     podcast: 'podcast_episodes',
   },
   bucketId: 'avs_media',
+
+  // Longest board-member bio the admin will accept. This must not be more than
+  // the size of the `bio` column in Appwrite (Databases -> avs_content ->
+  // board_members -> Columns -> bio). To allow longer bios, raise the column
+  // size there first, then raise this number to match.
+  limits: { bioMax: 2000 },
 };

@@ -1,0 +1,13 @@
+{
+  "name": "all-voices-society",
+  "private": true,
+  "description": "All Voices Society static site (Appwrite-backed).",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "dev:open": "node dev-server.js --open",
+    "start": "node dev-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

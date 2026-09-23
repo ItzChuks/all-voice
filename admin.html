@@ -56,6 +56,17 @@
   .field-input:focus{ border-color:var(--blue); }
   .thumb{ position:relative; }
   .thumb button{ position:absolute; top:-8px; right:-8px; width:22px; height:22px; border-radius:999px; background:#B3261E; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1; }
+
+  /* Bio editor + preview */
+  .bio-toolbar{ display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; padding:.4rem; background:#F4F6F8; border:1px solid var(--line); border-bottom:0; border-radius:.5rem .5rem 0 0; }
+  .bio-toolbar button{ font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; min-width:2rem; height:2rem; padding:0 .7rem; border:1px solid var(--line); background:#fff; border-radius:.4rem; cursor:pointer; }
+  .bio-toolbar button:hover{ border-color:var(--ink); }
+  .bio-toolbar .sep{ width:1px; height:1.2rem; background:var(--line); margin:0 .2rem; }
+  .bio-textarea{ border-radius:0 0 .5rem .5rem; tab-size:4; line-height:1.55; resize:vertical; white-space:pre-wrap; min-height:14rem; }
+  .bio-preview{ background:#fff; border:1px dashed #C9D1DB; border-radius:.5rem; padding:1rem 1.15rem; font-size:16px; line-height:1.7; max-height:24rem; overflow:auto; }
+  .bio p{ margin:0; white-space:pre-wrap; tab-size:4; overflow-wrap:break-word; }
+  .bio p + p{ margin-top:1.2em; }
+  #board-bio-count.over{ color:#B3261E; font-weight:600; }
 </style>
 </head>
 <body>
@@ -108,7 +119,7 @@
     <!-- ============ BOARD TAB ============ -->
     <section id="tab-board" class="tab-panel">
       <div class="grid lg:grid-cols-5 gap-8">
-        <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
+        <div class="lg:col-span-3 bg-white border border-line rounded-2xl p-6 h-fit">
           <h2 id="board-form-title" class="font-display font-semibold text-lg mb-4">Add a board member</h2>
           <form id="board-form" class="space-y-4">
             <input type="hidden" id="board-id" />
@@ -121,8 +132,25 @@
               <input id="board-role" class="field-input" placeholder="e.g. President &amp; Director" />
             </div>
             <div>
-              <label class="eyebrow text-muted block mb-2" for="board-bio">Bio</label>
-              <textarea id="board-bio" rows="4" class="field-input"></textarea>
+              <div class="flex items-end justify-between mb-2">
+                <label class="eyebrow text-muted" for="board-bio">Bio</label>
+                <span id="board-bio-count" class="eyebrow text-muted">0 / 2,000</span>
+              </div>
+              <div id="board-bio-toolbar" class="bio-toolbar" role="toolbar" aria-label="Bio formatting">
+                <button type="button" data-fmt="bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+                <button type="button" data-fmt="italic" title="Italic (Ctrl+I)"><em>I</em></button>
+                <span class="sep" aria-hidden="true"></span>
+                <button type="button" data-fmt="outdent" title="Outdent (Shift+Tab)">Outdent</button>
+                <button type="button" data-fmt="indent" title="Indent (Tab)">Indent</button>
+              </div>
+              <textarea id="board-bio" rows="12" class="field-input bio-textarea" spellcheck="true" placeholder="Paste or type the biography here…"></textarea>
+              <p class="text-muted text-xs mt-1.5 leading-relaxed">
+                <strong>Blank line</strong> = new paragraph &middot; <strong>Enter</strong> = line break &middot; <strong>Tab</strong> / Indent = indent (Shift+Tab to undo).
+                Wrap words in <code>**two stars**</code> for bold or <code>*one star*</code> for italic.
+                Pasted text keeps its paragraphs and indents. Press Esc, then Tab, to leave the box with the keyboard.
+              </p>
+              <p class="eyebrow text-muted mt-5 mb-2">Live preview &mdash; how it will look on the site</p>
+              <div id="board-bio-preview" class="bio bio-preview"></div>
             </div>
             <div>
               <label class="eyebrow text-muted block mb-2" for="board-photo">Photo</label>
@@ -138,7 +166,7 @@
           </form>
         </div>
 
-        <div class="lg:col-span-3">
+        <div class="lg:col-span-2">
           <h2 class="font-display font-semibold text-lg mb-4">Current board (<span id="board-count">0</span>)</h2>
           <div id="board-list" class="space-y-3"></div>
         </div>
@@ -275,8 +303,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/localdev.js"></script>
 <script src="assets/appwrite-config.js"></script>
 <script src="assets/store.js"></script>
+<script src="assets/bio-editor.js"></script>
 <script>
 (function(){
   const loginScreen = document.getElementById('login-screen');
@@ -356,6 +386,17 @@
   let boardCache = [];
   let boardPhotoUploading = false; // true while a photo is compressing/uploading — blocks Save
 
+  // Bio editor: toolbar, Tab-to-indent, live preview and character counter (assets/bio-editor.js)
+  const BIO_MAX = (window.AVS_CONFIG && window.AVS_CONFIG.limits && window.AVS_CONFIG.limits.bioMax) || 2000;
+  const bioField = document.getElementById('board-bio');
+  const bioEditor = AVSBioEditor.init({
+    textarea: bioField,
+    preview: document.getElementById('board-bio-preview'),
+    counter: document.getElementById('board-bio-count'),
+    toolbar: document.getElementById('board-bio-toolbar'),
+    max: BIO_MAX,
+  });
+
   boardPhotoInput.addEventListener('change', async () => {
     const file = boardPhotoInput.files[0];
     if(!file) return;
@@ -379,6 +420,7 @@
 
   function resetBoardForm(){
     boardForm.reset();
+    bioEditor.refresh();
     boardIdField.value = '';
     pendingBoardPhotoId = '';
     currentBoardPhotoId = '';
@@ -395,10 +437,16 @@
       return;
     }
     const id = boardIdField.value;
+    const bio = bioEditor.clean(bioField.value);
+    if(bio.length > BIO_MAX){
+      alert('The bio is ' + bio.length.toLocaleString() + ' characters and the limit is ' + BIO_MAX.toLocaleString() + '. Please shorten it by ' + (bio.length - BIO_MAX).toLocaleString() + ' characters.');
+      bioField.focus();
+      return;
+    }
     const data = {
       name: document.getElementById('board-name').value.trim(),
       role: document.getElementById('board-role').value.trim(),
-      bio: document.getElementById('board-bio').value.trim(),
+      bio,
     };
     if(pendingBoardPhotoId) data.photoId = pendingBoardPhotoId;
     setBusy(boardSubmitBtn, true, 'Saving…');
@@ -428,7 +476,8 @@
     boardIdField.value = member.id;
     document.getElementById('board-name').value = member.name || '';
     document.getElementById('board-role').value = member.role || '';
-    document.getElementById('board-bio').value = member.bio || '';
+    bioField.value = member.bio || '';
+    bioEditor.refresh();
     pendingBoardPhotoId = '';
     currentBoardPhotoId = member.photoId || '';
     if(member.photo){
@@ -466,6 +515,7 @@
           <p class="text-cyan text-sm truncate">${escapeHtml(m.role || '')}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
+          <a href="/member?id=${encodeURIComponent(m.id)}" target="_blank" rel="noopener" class="btn btn-ghost px-3 py-1.5 rounded-full text-xs">View</a>
           <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-edit="${m.id}">Edit</button>
           <button class="btn btn-danger px-3 py-1.5 rounded-full text-xs" data-delete="${m.id}">Delete</button>
         </div>

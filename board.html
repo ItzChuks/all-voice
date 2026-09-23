@@ -15,25 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          ink: '#0B0E13', ink2: '#161B24',
-          blue: { DEFAULT: '#1E7BFF', 50:'#EAF2FF' },
-          cyan: { DEFAULT: '#29B6F6', 50:'#E8F8FF' },
-          surface: '#FFFFFF', alt: '#F4F6F8', muted: '#5B6472', line: '#E4E8ED',
-        },
-        fontFamily: {
-          display: ['"Space Grotesk"', 'sans-serif'],
-          serif: ['"Source Serif 4"', 'serif'],
-          mono: ['"IBM Plex Mono"', 'monospace'],
-        },
-      }
-    }
-  }
-</script>
+<script src="assets/tailwind-config.js"></script>
 
 <style>
   :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
@@ -144,55 +126,11 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="assets/localdev.js"></script>
 <script src="assets/appwrite-config.js"></script>
 <script src="assets/store.js"></script>
-<script>
-(function(){
-  const hamburger = document.getElementById('hamburger');
-  const menu = document.getElementById('mobile-menu');
-  hamburger.addEventListener('click', () => {
-    const open = menu.classList.toggle('open');
-    hamburger.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-    document.body.style.overflow = open ? 'hidden' : '';
-  });
-  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    menu.classList.remove('open'); hamburger.classList.remove('open');
-    document.body.style.overflow = '';
-  }));
-
-  function escapeHtml(s){
-    return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  async function renderBoard(){
-    const grid = document.getElementById('board-grid');
-    if(!grid || !window.AVSStore) return;
-    const members = await AVSStore.getBoard();
-    if(members.length === 0){
-      grid.innerHTML = '<p class="text-muted">Board member profiles will appear here soon.</p>';
-      return;
-    }
-    const grads = ['135deg,#1E7BFF,#29B6F6','135deg,#29B6F6,#1E7BFF','135deg,#0B0E13,#1E7BFF','135deg,#1E7BFF,#0B0E13','135deg,#29B6F6,#0B0E13','135deg,#1E7BFF,#29B6F6'];
-    grid.innerHTML = members.map((m, i) => {
-      const avatar = m.photo
-        ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}" class="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover shrink-0 ring-4 ring-white shadow-xl" />`
-        : `<div class="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full flex items-center justify-center font-display font-bold text-2xl sm:text-3xl text-white shrink-0 ring-4 ring-white shadow-xl" style="background:linear-gradient(${grads[i % grads.length]});">${escapeHtml(AVSStore.initials(m.name))}</div>`;
-      return `
-        <div class="bg-alt rounded-2xl p-6 sm:p-8 border border-line flex flex-col items-center text-center">
-          ${avatar}
-          <div class="mt-5">
-            <h3 class="font-display font-semibold text-lg">${escapeHtml(m.name)}</h3>
-            <p class="text-cyan text-sm mb-2">${escapeHtml(m.role || '')}</p>
-            <p class="text-muted text-sm">${escapeHtml(m.bio || 'Full biography coming soon.')}</p>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  renderBoard();
-})();
-</script>
+<script src="assets/nav.js"></script>
+<script src="assets/board.js"></script>
 
 </body>
 </html>

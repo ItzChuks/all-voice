@@ -134,6 +134,25 @@ const AVSStore = {
     if (photoId) await avsDeleteFile(photoId);
     return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.board, rowId: id });
   },
+  async getBoardMember(id) {
+    try {
+      const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.board, rowId: id });
+      return {
+        id: r.$id,
+        name: r.name || '',
+        role: r.role || '',
+        bio: r.bio || '',
+        photoId: r.photoId || '',
+        photo: avsFileUrl(r.photoId),
+      };
+    } catch (e) {
+      // 404 = this member really doesn't exist. Anything else (network, CORS,
+      // permissions) is a real problem, so let the page show it.
+      if (e && e.code === 404) return null;
+      console.error('AVSStore.getBoardMember failed', e);
+      throw e;
+    }
+  },
 
   /* ---- Events ---- */
   async getEvents() {
@@ -405,6 +424,63 @@ const AVSStore = {
       .map((w) => w[0])
       .join('')
       .toUpperCase();
+  },
+  /* Split a bio (or any long-text field) into paragraphs on blank lines. */
+  splitParagraphs(text) {
+    return String(text || '')
+      .replace(/\r\n?/g, '\n')
+      .trim()
+      .split(/\n[ \t]*\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+  },
+  /* Remove the **bold** / *italic* markers, leaving plain text (for previews). */
+  stripFormatting(text) {
+    return String(text || '')
+      .replace(/\*\*([^\s*](?:[^*]*[^\s*])?)\*\*/g, '$1')
+      .replace(/(^|[^*\w])\*([^\s*](?:[^*]*[^\s*])?)\*(?![*\w])/g, '$1$2');
+  },
+  /* Turn text typed in the admin into safe HTML that keeps the writer's layout:
+       - a blank line starts a new paragraph
+       - a single Enter is a line break inside the paragraph
+       - spaces / tabs at the start of a line are kept as indentation
+       - **bold** and *italic* are supported
+     Everything else is escaped, so bios can never inject markup.
+     Style the result with  white-space: pre-wrap  on the <p> (see .bio in
+     member.html) so the indentation shows. */
+  formatRichText(text) {
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const inline = (line) =>
+      esc(line)
+        .replace(/\*\*([^\s*](?:[^*]*[^\s*])?)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*\w])\*([^\s*](?:[^*]*[^\s*])?)\*(?![*\w])/g, '$1<em>$2</em>');
+
+    const paragraphs = [];
+    let current = [];
+    String(text || '')
+      .replace(/\r\n?/g, '\n')
+      .replace(/\u00a0/g, ' ')
+      .split('\n')
+      .forEach((line) => {
+        if (line.trim() === '') {
+          if (current.length) paragraphs.push(current);
+          current = [];
+        } else {
+          current.push(line.replace(/\s+$/, ''));
+        }
+      });
+    if (current.length) paragraphs.push(current);
+
+    return paragraphs.map((lines) => '<p>' + lines.map(inline).join('<br>') + '</p>').join('');
+  },
+  /* Short single-line preview for cards/lists — first paragraph only,
+     truncated at a word boundary near maxLen. */
+  previewText(text, maxLen) {
+    const limit = maxLen || 140;
+    const first = AVSStore.stripFormatting(AVSStore.splitParagraphs(text)[0] || '');
+    const collapsed = first.replace(/\s+/g, ' ').trim();
+    if (collapsed.length <= limit) return collapsed;
+    return collapsed.slice(0, limit).replace(/\s+\S*$/, '') + '…';
   },
 };
 
