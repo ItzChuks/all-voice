@@ -123,6 +123,15 @@
       <div class="mt-8 max-w-3xl">
         <h1 id="story-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-5"></h1>
         <p id="story-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <button type="button" id="share-btn" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">
+            <span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+              <span id="share-label">Share this story</span>
+            </span>
+          </button>
+          <a href="/contact" class="text-sm text-muted hover:text-blue underline underline-offset-4 transition-colors">Moved by this story? Let us know why</a>
+        </div>
         <div class="mt-10 pt-8 border-t border-line">
           <p class="text-muted text-sm mb-4">Watch more stories from the people we work with.</p>
           <div class="flex flex-wrap gap-3">
@@ -199,6 +208,31 @@
       : `<div class="absolute inset-0 flex items-center justify-center text-white/60 text-sm">Video unavailable</div>`;
 
     content.classList.remove('hidden');
+
+    /* Share button: native share sheet where available (phones), copy-link fallback elsewhere */
+    const shareBtn = document.getElementById('share-btn');
+    const shareLabel = document.getElementById('share-label');
+    const shareUrl = location.href;
+    function flash(text){
+      shareLabel.textContent = text;
+      setTimeout(() => { shareLabel.textContent = 'Share this story'; }, 2200);
+    }
+    shareBtn.addEventListener('click', async () => {
+      if(navigator.share){
+        try {
+          await navigator.share({ title: story.title, text: `Watch "${story.title}" — All Voices Society`, url: shareUrl });
+          return;
+        } catch (e) {
+          if(e && e.name === 'AbortError') return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        flash('Link copied!');
+      } catch (e) {
+        window.prompt('Copy this link to share:', shareUrl);
+      }
+    });
   }
 
   init();
