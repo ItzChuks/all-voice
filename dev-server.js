@@ -166,7 +166,7 @@ function listen(port, attempt) {
   server.listen(port, () => {
     const url = `http://localhost:${port}`;
     console.log(`\n  All Voices Society dev server\n  ${url}\n`);
-    console.log('  Use "localhost" (not 127.0.0.1) — Appwrite only allows the hostnames you registered as Web platforms.\n');
+    console.log('  Content loads from the PocketBase URL in assets/pocketbase-config.js.\n');
     if (OPEN_BROWSER) {
       const cmd = process.platform === 'win32' ? `start "" "${url}"` : process.platform === 'darwin' ? `open "${url}"` : `xdg-open "${url}"`;
       exec(cmd);

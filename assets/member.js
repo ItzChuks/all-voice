@@ -25,7 +25,7 @@
       const isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
       notfound.querySelector('p.text-muted').textContent = isLocal
         ? (err && err.message ? err.message : 'Network error') +
-          ' — open the site at http://localhost (not 127.0.0.1) and make sure "localhost" is added as a Web platform in Appwrite.'
+          ' — make sure PocketBase is running and the URL in assets/pocketbase-config.js is correct.'
         : 'Something went wrong while loading this page. Please try again in a moment.';
       notfound.classList.remove('hidden');
       return;

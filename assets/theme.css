@@ -1,0 +1,95 @@
+/* ==========================================================================
+   All Voices Society — shared polish layer
+   Loaded last on every public page, so it refines the per-page styles
+   without changing the layout or the brand (ink + blue/cyan, Space Grotesk,
+   Source Serif, IBM Plex Mono).
+   ========================================================================== */
+:root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; --line:#E4E8ED; --muted:#5B6472; }
+
+/* ---- Typography ---- */
+body{ color:#1C2028; text-rendering:optimizeLegibility; }
+h1,h2,h3{ text-wrap:balance; }
+p{ text-wrap:pretty; }
+.eyebrow{ font-weight:500; }
+
+/* Quieter film grain — texture, not noise */
+.grain{ opacity:.022 !important; }
+
+/* ---- Header ---- */
+#site-nav{ border-bottom:1px solid rgba(255,255,255,.06); }
+#site-nav .nav-link{ font-family:'Space Grotesk',sans-serif; font-weight:500; font-size:14.5px; letter-spacing:-.005em; }
+#site-nav .nav-link.is-active{ color:#fff !important; }
+#site-nav .nav-link.is-active::after{ width:100%; }
+#mobile-menu .m-link.is-active{ color:var(--cyan) !important; }
+
+/* Donate: a clear call to action on the dark header */
+#site-nav .btn-primary,
+#mobile-menu .btn-primary{
+  background:linear-gradient(95deg,var(--blue),var(--cyan));
+  box-shadow:0 8px 22px -10px rgba(41,182,246,.7), inset 0 1px 0 rgba(255,255,255,.25);
+}
+#site-nav .btn-primary::after{ display:none; }
+#site-nav .btn-primary:hover{ box-shadow:0 14px 30px -10px rgba(41,182,246,.85), inset 0 1px 0 rgba(255,255,255,.3); }
+
+/* ---- Buttons ---- */
+.btn{ white-space:nowrap; }
+.btn:active{ transform:translateY(0) scale(.98) !important; }
+.btn-dark-ghost{ border-color:rgba(11,14,19,.85); }
+
+/* ---- Cards ---- */
+.tilt-card{
+  transition:transform .45s cubic-bezier(.16,.84,.44,1), box-shadow .45s ease, border-color .3s ease !important;
+}
+.tilt-card:hover{
+  transform:translateY(-6px) !important;
+  box-shadow:0 24px 50px -24px rgba(11,14,19,.28), 0 2px 6px rgba(11,14,19,.04) !important;
+}
+.bg-white.border-line:hover, .tilt-card.border-line:hover{ border-color:#CBD5E1; }
+.tilt-card img{ transition:transform .7s cubic-bezier(.16,.84,.44,1); }
+.tilt-card:hover img.object-cover{ transform:scale(1.035); }
+
+/* ---- Forms (contact / search) ---- */
+input[type=text], input[type=email], input[type=search], input[type=tel], textarea, select{
+  transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+input[type=text]:focus, input[type=email]:focus, input[type=search]:focus, input[type=tel]:focus, textarea:focus, select:focus{
+  outline:none; border-color:var(--blue) !important; box-shadow:0 0 0 4px rgba(30,123,255,.12);
+}
+
+/* ---- Empty / no-results states ---- */
+#events-empty, #events-no-results, #stories-empty, #stories-no-results,
+#events-grid > p.text-muted:only-child, #stories-grid > p.text-muted:only-child, #board-grid > p.text-muted:only-child{
+  grid-column:1 / -1;
+  border:1px dashed #CBD5E1; border-radius:1rem; background:#FAFBFC;
+  padding:2.5rem 1.5rem; text-align:center; color:var(--muted);
+  font-size:15.5px;
+}
+
+/* ---- Loading skeleton (used while content is fetched) ---- */
+.skel{ position:relative; overflow:hidden; background:#EEF1F5; border-radius:1rem; }
+.skel::after{
+  content:''; position:absolute; inset:0; transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  animation:skel 1.4s ease-in-out infinite;
+}
+.skel.dark{ background:rgba(255,255,255,.06); }
+.skel.dark::after{ background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); }
+@keyframes skel{ to{ transform:translateX(100%); } }
+
+/* ---- Footer ---- */
+footer a{ transition:color .2s ease; }
+footer .eyebrow{ color:rgba(255,255,255,.42); }
+
+/* ---- Media frames ---- */
+iframe{ border-radius:inherit; }
+.aspect-video iframe{ border:0; }
+
+/* Thin, unobtrusive scrollbar */
+html{ scrollbar-color:#C3CBD6 transparent; }
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-thumb{ background:#C3CBD6; border-radius:10px; border:2px solid #fff; }
+
+@media (prefers-reduced-motion: reduce){
+  .tilt-card:hover, .tilt-card:hover img.object-cover{ transform:none !important; }
+  .skel::after{ animation:none; }
+}

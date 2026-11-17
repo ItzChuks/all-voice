@@ -18,9 +18,9 @@ without `.html`, `/about.html` redirects to `/about`, and open tabs reload
 when you save a file. If port 5500 is busy it picks the next free one and
 prints the address.
 
-**Use `localhost`, not `127.0.0.1`.** Appwrite only accepts the hostnames
-registered under Settings -> Platforms. If you see "Failed to fetch" or empty
-lists, this is the first thing to check.
+**Content comes from PocketBase.** Start it with `./pocketbase serve` (see
+`SETUP.md`) and make sure `assets/pocketbase-config.js` points at it. If you
+see empty lists, this is the first thing to check.
 
 **Live Server extension:** links still work (`assets/localdev.js` rewrites
 them to `.html` when it detects a server without clean URLs), but typing
@@ -29,5 +29,6 @@ them to `.html` when it detects a server without clean URLs), but typing
 **VS Code's Simple Browser / Live Preview panel** blocks the page's scripts.
 Use a real browser tab.
 
-See `SETUP.md` for wiring the site up to Appwrite (board members, events,
-stories, podcasts all live there, not in this repo).
+See `SETUP.md` for wiring the site up to PocketBase (board members, events,
+stories, podcasts all live there, not in this repo) and for copying your
+existing Appwrite content across.

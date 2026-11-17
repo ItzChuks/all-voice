@@ -1,6 +1,5 @@
-/* Shared mobile menu toggle — used on every page that has the standard
-   #hamburger / #mobile-menu header markup. Pulled out of inline <script>
-   tags so pages don't depend on inline script execution being allowed. */
+/* Shared header behaviour — used on every page that has the standard
+   #hamburger / #mobile-menu header markup. */
 (function () {
   const hamburger = document.getElementById('hamburger');
   const menu = document.getElementById('mobile-menu');

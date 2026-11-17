@@ -179,6 +179,7 @@
     .word{ transform:none !important; }
   }
 </style>
+<link rel="stylesheet" href="assets/theme.css" />
 </head>
 <body class="bg-surface">
 
@@ -317,7 +318,7 @@
       </div>
 
       <div id="home-events-grid" class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- populated by assets/store.js -->
+        <div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div><div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div><div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div>
       </div>
 
       <div class="mt-12">
@@ -378,7 +379,6 @@
         <p class="eyebrow mt-2 text-white/85">Partner organisations</p>
       </div>
     </div>
-    <p class="text-center lg:text-left max-w-7xl mx-auto px-6 lg:px-10 lg:pl-[86px] mt-6 text-white/70 text-xs eyebrow">Figures for illustration — update as reporting firms up</p>
   </section>
 
   <!-- ============ PARTNERS MARQUEE ============ -->
@@ -412,7 +412,7 @@
       </div>
 
       <div id="home-stories-grid" class="reveal-stagger grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- populated by assets/store.js -->
+        <div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div><div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div><div class="rounded-2xl border border-line bg-white overflow-hidden" aria-hidden="true"><div class="skel" style="aspect-ratio:16/10;border-radius:0"></div><div class="p-6 space-y-3"><div class="skel h-3 w-1/3"></div><div class="skel h-5 w-3/4"></div><div class="skel h-3 w-full"></div></div></div>
       </div>
 
       <div class="mt-10">
@@ -509,9 +509,9 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.29.0/dist/pocketbase.umd.js"></script>
 <script src="assets/localdev.js"></script>
-<script src="assets/appwrite-config.js"></script>
+<script src="assets/pocketbase-config.js"></script>
 <script src="assets/store.js"></script>
 <script>
 (function(){
@@ -742,5 +742,6 @@
 })();
 </script>
 
+<script src="assets/site.js"></script>
 </body>
 </html>

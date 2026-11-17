@@ -1,59 +1,79 @@
 /* ==========================================================================
-   All Voices Society — shared content store (Appwrite-backed)
+   All Voices Society — shared content store (PocketBase-backed)
    --------------------------------------------------------------------------
-   This replaces the old localStorage-only store. Board members, events, and
-   stories now live in an Appwrite database, and photos live in an Appwrite
-   Storage bucket, so content added on the Admin page shows up for every
-   visitor, on any device, immediately.
+   Board members, events, stories and podcast episodes live in PocketBase
+   collections; photos live in a `media` collection (one file per record).
+   Every page talks to PocketBase directly from the visitor's browser.
 
-   Requires assets/appwrite-config.js to be loaded first, and the Appwrite
-   Web SDK to be loaded before this file:
-     <script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
-     <script src="assets/appwrite-config.js"></script>
+   Load order on every page:
+     <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.29.0/dist/pocketbase.umd.js"></script>
+     <script src="assets/pocketbase-config.js"></script>
      <script src="assets/store.js"></script>
+
+   The public API (AVSStore.getBoard(), addEvent(), uploadImage(), ...) is the
+   same shape the pages used with Appwrite, so the HTML didn't need rewriting.
+
+   Photo references: a stored photo id looks like  "<mediaRecordId>/<filename>"
+   so a URL can be built without an extra request:
+     <pbUrl>/api/files/media/<mediaRecordId>/<filename>
    ========================================================================== */
 
-const { Client, TablesDB, Storage, Account, ID, Query, Permission, Role } = Appwrite;
+const AVS_CFG = window.AVS_CONFIG;
+const pb = new PocketBase(AVS_CFG.url);
+pb.autoCancellation(false); // pages fire several list requests in parallel
 
-const avsClient = new Client()
-  .setEndpoint(window.AVS_CONFIG.endpoint)
-  .setProject(window.AVS_CONFIG.projectId);
-
-const avsTables = new TablesDB(avsClient);
-const avsStorage = new Storage(avsClient);
-const avsAccount = new Account(avsClient);
-
-const AVS_DB = window.AVS_CONFIG.databaseId;
-const AVS_TABLES = window.AVS_CONFIG.tables;
-const AVS_BUCKET = window.AVS_CONFIG.bucketId;
+const C = AVS_CFG.collections;
 
 /* ---- helpers ---- */
 
-function avsFileUrl(fileId) {
-  if (!fileId) return '';
-  try {
-    return avsStorage.getFileView({ bucketId: AVS_BUCKET, fileId }).toString();
-  } catch (e) {
-    return '';
-  }
+function avsFileUrl(ref) {
+  if (!ref || typeof ref !== 'string' || ref.indexOf('/') === -1) return '';
+  const [recordId, filename] = ref.split('/');
+  if (!recordId || !filename) return '';
+  return `${AVS_CFG.url.replace(/\/+$/, '')}/api/files/${encodeURIComponent(C.media)}/${encodeURIComponent(recordId)}/${encodeURIComponent(filename)}`;
 }
 
 async function avsUploadFile(file) {
-  const created = await avsStorage.createFile({
-    bucketId: AVS_BUCKET,
-    fileId: ID.unique(),
-    file,
-  });
-  return created.$id;
+  const fd = new FormData();
+  fd.append('file', file);
+  const rec = await pb.collection(C.media).create(fd);
+  return `${rec.id}/${rec.file}`;
 }
 
-async function avsDeleteFile(fileId) {
-  if (!fileId) return;
+async function avsDeleteFile(ref) {
+  if (!ref) return;
+  const recordId = String(ref).split('/')[0];
   try {
-    await avsStorage.deleteFile({ bucketId: AVS_BUCKET, fileId });
+    await pb.collection(C.media).delete(recordId);
   } catch (e) {
     // best-effort — don't block the UI if a stale file is already gone
-    console.warn('Could not delete file', fileId, e);
+    console.warn('Could not delete file', ref, e);
+  }
+}
+
+/* PocketBase errors carry field-level details in e.response.data — surface
+   them so "Could not save" messages are actually useful. */
+function avsErrorMessage(e) {
+  if (!e) return 'Unknown error';
+  if (e.status === 0) return 'Could not reach the server. Check your internet connection and the PocketBase URL in assets/pocketbase-config.js.';
+  const data = e.response && e.response.data;
+  if (data && typeof data === 'object') {
+    const parts = Object.entries(data).map(([k, v]) => `${k}: ${(v && v.message) || v}`);
+    if (parts.length) return `${e.message} (${parts.join('; ')})`;
+  }
+  if (e.status === 403 || e.status === 401) return 'You are not allowed to do that. Sign in again with an admin account.';
+  return e.message || String(e);
+}
+
+/* Wrap a write so thrown errors have a readable .message */
+async function avsWrite(fn) {
+  try {
+    return await fn();
+  } catch (e) {
+    const err = new Error(avsErrorMessage(e));
+    err.status = e && e.status;
+    err.original = e;
+    throw err;
   }
 }
 
@@ -97,79 +117,80 @@ function avsCompressImage(file, maxDim, quality) {
   });
 }
 
+function asArray(v) {
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'string' && v.trim().startsWith('[')) {
+    try { const a = JSON.parse(v); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  return [];
+}
+
+const listAll = (col) => pb.collection(col).getFullList({ sort: 'created', batch: 500 });
+
+const mapBoard = (r) => ({
+  id: r.id,
+  name: r.name || '',
+  role: r.role || '',
+  bio: r.bio || '',
+  photoId: r.photoId || '',
+  photo: avsFileUrl(r.photoId),
+});
+const mapEvent = (r) => {
+  const imageIds = asArray(r.imageIds).filter((x) => typeof x === 'string' && x);
+  return {
+    id: r.id,
+    title: r.title || '',
+    date: r.date || '',
+    description: r.description || '',
+    imageIds,
+    images: imageIds.map(avsFileUrl).filter(Boolean),
+  };
+};
+const mapStory = (r) => ({
+  id: r.id,
+  youtubeUrl: r.youtubeUrl || '',
+  title: r.title || '',
+  description: r.description || '',
+});
+
 const AVSStore = {
   /* ---- Board members ---- */
   async getBoard() {
     try {
-      const res = await avsTables.listRows({
-        databaseId: AVS_DB,
-        tableId: AVS_TABLES.board,
-        queries: [Query.orderAsc('$createdAt'), Query.limit(200)],
-      });
-      return res.rows.map((r) => ({
-        id: r.$id,
-        name: r.name || '',
-        role: r.role || '',
-        bio: r.bio || '',
-        photoId: r.photoId || '',
-        photo: avsFileUrl(r.photoId),
-      }));
+      return (await listAll(C.board)).map(mapBoard);
     } catch (e) {
       console.error('AVSStore.getBoard failed', e);
       return [];
     }
   },
   async addBoardMember(m) {
-    return avsTables.createRow({
-      databaseId: AVS_DB,
-      tableId: AVS_TABLES.board,
-      rowId: ID.unique(),
-      data: { name: m.name || '', role: m.role || '', bio: m.bio || '', photoId: m.photoId || '' },
-    });
+    return avsWrite(() =>
+      pb.collection(C.board).create({ name: m.name || '', role: m.role || '', bio: m.bio || '', photoId: m.photoId || '' })
+    );
   },
   async updateBoardMember(id, updates) {
-    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.board, rowId: id, data: updates });
+    return avsWrite(() => pb.collection(C.board).update(id, updates));
   },
   async deleteBoardMember(id, photoId) {
     if (photoId) await avsDeleteFile(photoId);
-    return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.board, rowId: id });
+    return avsWrite(() => pb.collection(C.board).delete(id));
   },
   async getBoardMember(id) {
     try {
-      const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.board, rowId: id });
-      return {
-        id: r.$id,
-        name: r.name || '',
-        role: r.role || '',
-        bio: r.bio || '',
-        photoId: r.photoId || '',
-        photo: avsFileUrl(r.photoId),
-      };
+      return mapBoard(await pb.collection(C.board).getOne(id));
     } catch (e) {
-      // 404 = this member really doesn't exist. Anything else (network, CORS,
+      // 404 = this member really doesn't exist. Anything else (network,
       // permissions) is a real problem, so let the page show it.
-      if (e && e.code === 404) return null;
+      if (e && e.status === 404) return null;
       console.error('AVSStore.getBoardMember failed', e);
-      throw e;
+      throw new Error(avsErrorMessage(e));
     }
   },
 
   /* ---- Events ---- */
   async getEvents() {
     try {
-      const res = await avsTables.listRows({
-        databaseId: AVS_DB,
-        tableId: AVS_TABLES.events,
-        queries: [Query.orderAsc('$createdAt'), Query.limit(200)],
-      });
-      return res.rows.map((r) => ({
-        id: r.$id,
-        title: r.title || '',
-        date: r.date || '',
-        description: r.description || '',
-        imageIds: Array.isArray(r.imageIds) ? r.imageIds : [],
-        images: (Array.isArray(r.imageIds) ? r.imageIds : []).map(avsFileUrl).filter(Boolean),
-      }));
+      return (await listAll(C.events)).map(mapEvent);
     } catch (e) {
       console.error('AVSStore.getEvents failed', e);
       return [];
@@ -177,51 +198,29 @@ const AVSStore = {
   },
   async getEvent(id) {
     try {
-      const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.events, rowId: id });
-      const imageIds = Array.isArray(r.imageIds) ? r.imageIds : [];
-      return {
-        id: r.$id,
-        title: r.title || '',
-        date: r.date || '',
-        description: r.description || '',
-        imageIds,
-        images: imageIds.map(avsFileUrl).filter(Boolean),
-      };
+      return mapEvent(await pb.collection(C.events).getOne(id));
     } catch (e) {
       console.error('AVSStore.getEvent failed', e);
       return null;
     }
   },
   async addEvent(e) {
-    return avsTables.createRow({
-      databaseId: AVS_DB,
-      tableId: AVS_TABLES.events,
-      rowId: ID.unique(),
-      data: { title: e.title || '', date: e.date || '', description: e.description || '', imageIds: e.imageIds || [] },
-    });
+    return avsWrite(() =>
+      pb.collection(C.events).create({ title: e.title || '', date: e.date || '', description: e.description || '', imageIds: e.imageIds || [] })
+    );
   },
   async updateEvent(id, updates) {
-    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.events, rowId: id, data: updates });
+    return avsWrite(() => pb.collection(C.events).update(id, updates));
   },
   async deleteEvent(id, imageIds) {
     if (Array.isArray(imageIds)) await Promise.all(imageIds.map(avsDeleteFile));
-    return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.events, rowId: id });
+    return avsWrite(() => pb.collection(C.events).delete(id));
   },
 
   /* ---- Stories ---- */
   async getStories() {
     try {
-      const res = await avsTables.listRows({
-        databaseId: AVS_DB,
-        tableId: AVS_TABLES.stories,
-        queries: [Query.orderAsc('$createdAt'), Query.limit(200)],
-      });
-      return res.rows.map((r) => ({
-        id: r.$id,
-        youtubeUrl: r.youtubeUrl || '',
-        title: r.title || '',
-        description: r.description || '',
-      }));
+      return (await listAll(C.stories)).map(mapStory);
     } catch (e) {
       console.error('AVSStore.getStories failed', e);
       return [];
@@ -229,86 +228,65 @@ const AVSStore = {
   },
   async getStory(id) {
     try {
-      const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.stories, rowId: id });
-      return {
-        id: r.$id,
-        youtubeUrl: r.youtubeUrl || '',
-        title: r.title || '',
-        description: r.description || '',
-      };
+      return mapStory(await pb.collection(C.stories).getOne(id));
     } catch (e) {
       console.error('AVSStore.getStory failed', e);
       return null;
     }
   },
   async addStory(s) {
-    return avsTables.createRow({
-      databaseId: AVS_DB,
-      tableId: AVS_TABLES.stories,
-      rowId: ID.unique(),
-      data: { youtubeUrl: s.youtubeUrl || '', title: s.title || '', description: s.description || '' },
-    });
+    return avsWrite(() =>
+      pb.collection(C.stories).create({ youtubeUrl: s.youtubeUrl || '', title: s.title || '', description: s.description || '' })
+    );
   },
   async updateStory(id, updates) {
-    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.stories, rowId: id, data: updates });
+    return avsWrite(() => pb.collection(C.stories).update(id, updates));
   },
   async deleteStory(id) {
-    return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.stories, rowId: id });
+    return avsWrite(() => pb.collection(C.stories).delete(id));
   },
 
   /* ---- Podcast ----
-     Each row is either:
+     Each record is either:
        - a standalone episode  (isPlaylist:false, playlistId:'')
        - a YouTube playlist "header" (isPlaylist:true) — its own url is the
          playlist URL, used to render a playlist embed + label
-       - an episode tagged under a playlist (isPlaylist:false, playlistId:<header row id>)
+       - an episode tagged under a playlist (isPlaylist:false, playlistId:<header id>)
 
-     An episode can carry MORE THAN ONE listen link (e.g. YouTube + Spotify +
-     a custom player like Captivate/Anchor/Buzzsprout). These live in the
-     `links` column — a string array where each entry is a JSON string:
-       {"platform":"youtube"|"spotify"|"apple"|"custom", "url":"..."}
-     The first link is the "primary" one — it decides the card style
-     (video vs audio) and is also mirrored into the legacy `platform`/`url`
-     columns so older rows (and the table's required fields) keep working. */
+     An episode can carry several listen links, stored in the `links` JSON
+     field as  [{ "platform": "youtube"|"spotify"|"apple"|"custom", "url": "..." }].
+     The first link is the "primary" one and is mirrored into `platform`/`url`.
+     (Older rows imported from Appwrite stored each link as a JSON *string* —
+     those are still understood.) */
   _decodeLinks(r) {
-    let links = [];
-    if (Array.isArray(r.links) && r.links.length) {
-      links = r.links
-        .map((s) => {
-          try {
-            const obj = JSON.parse(s);
-            return obj && obj.url ? { platform: obj.platform || 'youtube', url: obj.url } : null;
-          } catch (e) {
-            return null;
-          }
-        })
-        .filter(Boolean);
-    }
-    if (links.length === 0 && r.url) {
-      links = [{ platform: r.platform || 'youtube', url: r.url }];
-    }
+    const links = asArray(r.links)
+      .map((item) => {
+        let obj = item;
+        if (typeof item === 'string') {
+          try { obj = JSON.parse(item); } catch (e) { return null; }
+        }
+        return obj && obj.url ? { platform: obj.platform || 'youtube', url: obj.url } : null;
+      })
+      .filter(Boolean);
+    if (links.length === 0 && r.url) return [{ platform: r.platform || 'youtube', url: r.url }];
     return links;
+  },
+  _mapEpisode(r) {
+    const links = AVSStore._decodeLinks(r);
+    return {
+      id: r.id,
+      links,
+      platform: (links[0] && links[0].platform) || r.platform || 'youtube',
+      url: (links[0] && links[0].url) || r.url || '',
+      title: r.title || '',
+      description: r.description || '',
+      isPlaylist: !!r.isPlaylist,
+      playlistId: r.playlistId || '',
+    };
   },
   async getPodcastEpisodes() {
     try {
-      const res = await avsTables.listRows({
-        databaseId: AVS_DB,
-        tableId: AVS_TABLES.podcast,
-        queries: [Query.orderAsc('$createdAt'), Query.limit(500)],
-      });
-      return res.rows.map((r) => {
-        const links = AVSStore._decodeLinks(r);
-        return {
-          id: r.$id,
-          links,
-          platform: (links[0] && links[0].platform) || r.platform || 'youtube',
-          url: (links[0] && links[0].url) || r.url || '',
-          title: r.title || '',
-          description: r.description || '',
-          isPlaylist: !!r.isPlaylist,
-          playlistId: r.playlistId || '',
-        };
-      });
+      return (await listAll(C.podcast)).map(AVSStore._mapEpisode);
     } catch (e) {
       console.error('AVSStore.getPodcastEpisodes failed', e);
       return [];
@@ -316,18 +294,7 @@ const AVSStore = {
   },
   async getPodcastEpisode(id) {
     try {
-      const r = await avsTables.getRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id });
-      const links = AVSStore._decodeLinks(r);
-      return {
-        id: r.$id,
-        links,
-        platform: (links[0] && links[0].platform) || r.platform || 'youtube',
-        url: (links[0] && links[0].url) || r.url || '',
-        title: r.title || '',
-        description: r.description || '',
-        isPlaylist: !!r.isPlaylist,
-        playlistId: r.playlistId || '',
-      };
+      return AVSStore._mapEpisode(await pb.collection(C.podcast).getOne(id));
     } catch (e) {
       console.error('AVSStore.getPodcastEpisode failed', e);
       return null;
@@ -335,36 +302,35 @@ const AVSStore = {
   },
   async addPodcastEpisode(p) {
     const links = Array.isArray(p.links) && p.links.length ? p.links : [{ platform: p.platform || 'youtube', url: p.url || '' }];
-    return avsTables.createRow({
-      databaseId: AVS_DB,
-      tableId: AVS_TABLES.podcast,
-      rowId: ID.unique(),
-      data: {
+    return avsWrite(() =>
+      pb.collection(C.podcast).create({
         platform: links[0].platform || 'youtube',
         url: links[0].url || '',
-        links: links.map((l) => JSON.stringify({ platform: l.platform, url: l.url })),
+        links: links.map((l) => ({ platform: l.platform, url: l.url })),
         title: p.title || '',
         description: p.description || '',
         isPlaylist: !!p.isPlaylist,
         playlistId: p.playlistId || '',
-      },
-    });
+      })
+    );
   },
   async updatePodcastEpisode(id, updates) {
     const data = { ...updates };
     if (Array.isArray(updates.links) && updates.links.length) {
       data.platform = updates.links[0].platform || 'youtube';
       data.url = updates.links[0].url || '';
-      data.links = updates.links.map((l) => JSON.stringify({ platform: l.platform, url: l.url }));
+      data.links = updates.links.map((l) => ({ platform: l.platform, url: l.url }));
     }
-    return avsTables.updateRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id, data });
+    return avsWrite(() => pb.collection(C.podcast).update(id, data));
   },
   async deletePodcastEpisode(id) {
-    return avsTables.deleteRow({ databaseId: AVS_DB, tableId: AVS_TABLES.podcast, rowId: id });
+    return avsWrite(() => pb.collection(C.podcast).delete(id));
   },
 
   /* ---- Storage helpers (used by admin.html) ---- */
-  uploadImage: avsUploadFile,
+  async uploadImage(file) {
+    return avsWrite(() => avsUploadFile(file));
+  },
   deleteImage: avsDeleteFile,
   compressImage: avsCompressImage,
   fileUrl: avsFileUrl,
@@ -372,7 +338,7 @@ const AVSStore = {
   /* ---- Misc helpers ---- */
   youtubeId(url) {
     if (!url) return '';
-    const m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{6,})/);
+    const m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{6,})/);
     return m ? m[1] : '';
   },
   youtubePlaylistId(url) {
@@ -403,9 +369,7 @@ const AVSStore = {
       return '';
     }
   },
-  /* Generic embeddable player link — Captivate, Anchor, Buzzsprout, etc.
-     These platforms hand out a URL that's already meant to be dropped
-     straight into an <iframe>, so we just validate it's a real https link. */
+  /* Generic embeddable player link — Captivate, Anchor, Buzzsprout, etc. */
   customEmbedUrl(url) {
     if (!url) return '';
     try {
@@ -440,14 +404,9 @@ const AVSStore = {
       .replace(/\*\*([^\s*](?:[^*]*[^\s*])?)\*\*/g, '$1')
       .replace(/(^|[^*\w])\*([^\s*](?:[^*]*[^\s*])?)\*(?![*\w])/g, '$1$2');
   },
-  /* Turn text typed in the admin into safe HTML that keeps the writer's layout:
-       - a blank line starts a new paragraph
-       - a single Enter is a line break inside the paragraph
-       - spaces / tabs at the start of a line are kept as indentation
-       - **bold** and *italic* are supported
-     Everything else is escaped, so bios can never inject markup.
-     Style the result with  white-space: pre-wrap  on the <p> (see .bio in
-     member.html) so the indentation shows. */
+  /* Turn admin-typed text into safe HTML that keeps the writer's layout:
+     blank line = new paragraph, Enter = <br>, leading spaces kept,
+     **bold** and *italic* supported. Everything else is escaped. */
   formatRichText(text) {
     const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const inline = (line) =>
@@ -459,7 +418,7 @@ const AVSStore = {
     let current = [];
     String(text || '')
       .replace(/\r\n?/g, '\n')
-      .replace(/\u00a0/g, ' ')
+      .replace(/ /g, ' ')
       .split('\n')
       .forEach((line) => {
         if (line.trim() === '') {
@@ -473,8 +432,7 @@ const AVSStore = {
 
     return paragraphs.map((lines) => '<p>' + lines.map(inline).join('<br>') + '</p>').join('');
   },
-  /* Short single-line preview for cards/lists — first paragraph only,
-     truncated at a word boundary near maxLen. */
+  /* Short single-line preview for cards/lists. */
   previewText(text, maxLen) {
     const limit = maxLen || 140;
     const first = AVSStore.stripFormatting(AVSStore.splitParagraphs(text)[0] || '');
@@ -484,26 +442,39 @@ const AVSStore = {
   },
 };
 
-/* ---- Admin auth (real Appwrite accounts, not a shared password) ---- */
+/* ---- Admin auth ----
+   Admins are records in the `admins` auth collection. PocketBase superusers
+   can sign in here too (handy for the very first login). The session is kept
+   in localStorage by the SDK, so a refresh keeps you signed in. */
 const AVSAuth = {
   async login(email, password) {
-    return avsAccount.createEmailPasswordSession({ email, password });
-  },
-  async logout() {
     try {
-      await avsAccount.deleteSession({ sessionId: 'current' });
+      return await pb.collection(C.admins).authWithPassword(email, password);
     } catch (e) {
-      /* no active session — fine */
+      if (e && e.status === 0) throw new Error(avsErrorMessage(e));
+      try {
+        return await pb.collection('_superusers').authWithPassword(email, password);
+      } catch (e2) {
+        throw new Error('Sign-in failed. Check your email and password and try again.');
+      }
     }
   },
+  async logout() {
+    pb.authStore.clear();
+  },
   async currentUser() {
+    if (!pb.authStore.isValid || !pb.authStore.record) return null;
     try {
-      return await avsAccount.get();
+      const col = pb.authStore.record.collectionName;
+      await pb.collection(col).authRefresh();
+      return pb.authStore.record;
     } catch (e) {
+      pb.authStore.clear();
       return null;
     }
   },
 };
 
+window.pb = pb;
 window.AVSStore = AVSStore;
 window.AVSAuth = AVSAuth;

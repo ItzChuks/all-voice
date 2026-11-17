@@ -36,7 +36,7 @@
 </script>
 
 <style>
-  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; }
+  :root{ --blue:#1E7BFF; --cyan:#29B6F6; --ink:#0B0E13; --line:#E4E8ED; }
   body{ font-family:'Source Serif 4', serif; color:#1a1d24; background:#F4F6F8; -webkit-font-smoothing:antialiased; }
   h1,h2,h3,h4, .font-display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.02em; }
   .eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; }
@@ -67,54 +67,140 @@
   .bio p{ margin:0; white-space:pre-wrap; tab-size:4; overflow-wrap:break-word; }
   .bio p + p{ margin-top:1.2em; }
   #board-bio-count.over{ color:#B3261E; font-weight:600; }
+
+  /* ===== Admin shell (sidebar dashboard) ===== */
+  body{ background:#F5F7FA; }
+  .shell{ display:grid; grid-template-columns: 264px 1fr; min-height:100vh; }
+  .sidebar{ position:sticky; top:0; height:100vh; background:#0B0E13; color:#fff; display:flex; flex-direction:column; padding:22px 16px; border-right:1px solid rgba(255,255,255,.06); }
+  .sidebar .brand{ display:flex; align-items:center; gap:.7rem; padding:4px 8px 22px; border-bottom:1px solid rgba(255,255,255,.07); margin-bottom:18px; }
+  .side-label{ font-family:'IBM Plex Mono',monospace; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.38); padding:0 10px; margin:6px 0 8px; }
+  .tab-btn{ width:100%; display:flex; align-items:center; gap:.75rem; padding:.68rem .8rem; border-radius:.7rem; color:rgba(255,255,255,.68); font-size:14px; border:1px solid transparent; transition:background .2s, color .2s, border-color .2s; text-align:left; }
+  .tab-btn svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
+  .tab-btn:hover{ background:rgba(255,255,255,.05); color:#fff; }
+  .tab-btn.active{ background:linear-gradient(95deg,rgba(30,123,255,.22),rgba(41,182,246,.10)); color:#fff; border-color:rgba(41,182,246,.25); }
+  .tab-btn .count{ margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; padding:1px 8px; border-radius:999px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.75); }
+  .tab-btn.active .count{ background:#1E7BFF; color:#fff; }
+  .side-foot{ margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,.07); }
+  .avatar-chip{ width:34px; height:34px; border-radius:999px; background:linear-gradient(135deg,#1E7BFF,#29B6F6); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; }
+  .topbar{ position:sticky; top:0; z-index:20; background:rgba(245,247,250,.86); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  #admin-app .tab-panel > .grid > div.bg-white{ border-radius:1rem; box-shadow:0 1px 2px rgba(11,14,19,.04), 0 8px 24px -12px rgba(11,14,19,.10); }
+  #admin-app .tab-panel h2{ font-size:1.05rem; }
+  #admin-app [id$="-list"] > div{ transition:border-color .2s, box-shadow .2s; }
+  #admin-app [id$="-list"] > div:hover{ border-color:#C9D6E6; box-shadow:0 6px 18px -10px rgba(11,14,19,.18); }
+  .field-input{ transition:border-color .2s, box-shadow .2s; }
+  .field-input:focus{ outline:none; border-color:var(--blue); box-shadow:0 0 0 4px rgba(30,123,255,.12); }
+  input[type=file].field-input{ padding:.5rem; font-size:13px; }
+  input[type=file].field-input::file-selector-button{ font-family:'Space Grotesk',sans-serif; font-weight:600; border:0; background:#0B0E13; color:#fff; padding:.45rem .9rem; border-radius:999px; margin-right:.8rem; cursor:pointer; }
+  @media (max-width: 1023px){
+    .shell{ grid-template-columns: minmax(0,1fr); }
+    .sidebar{ min-width:0; }
+    .sidebar{ position:sticky; height:auto; z-index:30; padding:10px 14px; flex-direction:row; flex-wrap:wrap; align-items:center; gap:8px 10px; }
+    .sidebar .brand{ order:1; border:0; margin:0; padding:0; }
+    .sidebar .brand .brand-text, .side-label, .side-foot .who{ display:none; }
+    .side-foot{ order:2; margin:0 0 0 auto; padding:0; border:0; display:flex; gap:4px; }
+    .side-foot .tab-btn span{ display:none; }
+    .sidebar nav{ order:3; width:100%; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+    .sidebar nav > * + *{ margin-top:0 !important; }
+    .tab-btn{ width:auto; white-space:nowrap; padding:.5rem .8rem; }
+    .topbar{ position:static; }
+  }
+  /* ===== Sign-in ===== */
+  .login-wrap{ display:grid; grid-template-columns: 1.05fr 1fr; min-height:100vh; }
+  .login-art{ position:relative; overflow:hidden; background:#0B0E13; color:#fff; padding:48px; display:flex; flex-direction:column; }
+  .login-art .glow{ position:absolute; width:620px; height:620px; border-radius:999px; filter:blur(90px); opacity:.45; background:radial-gradient(circle,#1E7BFF,transparent 65%); right:-200px; top:-160px; }
+  .login-art .glow.b{ background:radial-gradient(circle,#29B6F6,transparent 65%); left:-260px; bottom:-300px; top:auto; right:auto; opacity:.3; }
+  .wave{ display:flex; align-items:center; gap:5px; height:90px; }
+  .wave i{ display:block; width:4px; border-radius:4px; background:linear-gradient(180deg,#29B6F6,#1E7BFF); opacity:.75; animation:wv 1.6s ease-in-out infinite; }
+  @keyframes wv{ 0%,100%{ transform:scaleY(.35);} 50%{ transform:scaleY(1);} }
+  .login-wrap.hidden, #admin-app .hidden{ display:none !important; }
+  .page-sub{ display:none; } @media (min-width:768px){ .page-sub{ display:block; } }
+  @media (max-width: 900px){ .login-wrap{ grid-template-columns:1fr; } .login-art{ display:none; } }
+
+  /* ===== Toasts ===== */
+  #toasts{ position:fixed; right:20px; bottom:20px; z-index:100; display:flex; flex-direction:column; gap:10px; max-width:380px; }
+  .toast{ display:flex; gap:.7rem; align-items:flex-start; background:#0B0E13; color:#fff; padding:.85rem 1rem; border-radius:.8rem; box-shadow:0 18px 40px -16px rgba(11,14,19,.55); font-family:'Space Grotesk',sans-serif; font-size:14px; line-height:1.45; animation:tin .35s cubic-bezier(.16,.84,.44,1); }
+  .toast .dot{ width:8px; height:8px; border-radius:99px; margin-top:.45rem; flex-shrink:0; background:#29B6F6; }
+  .toast.success .dot{ background:#34D399; } .toast.error .dot{ background:#F87171; }
+  .toast.out{ opacity:0; transform:translateY(8px); transition:.3s; }
+  @keyframes tin{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:none;} }
 </style>
 </head>
 <body>
 
 <!-- ============ LOGIN GATE ============ -->
-<div id="login-screen" class="min-h-screen flex items-center justify-center px-6">
-  <div class="max-w-sm w-full bg-white border border-line rounded-2xl p-8">
-    <p class="eyebrow text-blue mb-3">All Voices Society</p>
-    <h1 class="font-display font-semibold text-2xl mb-2">Admin sign-in</h1>
-    <p class="text-muted text-sm mb-6">Sign in with your Appwrite admin account to manage board members, events, and stories.</p>
-    <form id="login-form">
-      <label for="login-email" class="eyebrow text-muted block mb-2">Email</label>
-      <input id="login-email" type="email" class="field-input mb-4" autocomplete="username" required />
-      <label for="login-password" class="eyebrow text-muted block mb-2">Password</label>
-      <input id="login-password" type="password" class="field-input mb-2" autocomplete="current-password" required />
-      <p id="login-error" class="text-sm text-red-600 mb-3 hidden">Sign-in failed. Check your email and password and try again.</p>
-      <button id="login-submit" type="submit" class="btn btn-primary px-6 py-3 rounded-full text-sm w-full justify-center">Sign in</button>
-    </form>
-    <p class="text-xs text-muted mt-6 leading-relaxed">This account is managed in your Appwrite Console (Auth &gt; Users) and must belong to the Admins team to save changes. Content is stored in your Appwrite project, not in this browser.</p>
-    <a href="/" class="text-xs text-muted hover:text-ink underline block mt-4">&larr; Back to the site</a>
+<div id="login-screen" class="login-wrap">
+  <aside class="login-art">
+    <div class="glow"></div><div class="glow b"></div>
+    <a href="/" class="relative flex items-center gap-3"><img src="assets/img/logo.png" alt="All Voices Society" class="h-11 w-auto" /></a>
+    <div class="relative mt-auto">
+      <div class="wave mb-8" aria-hidden="true"><i style="height:30%;animation-delay:0.00s"></i><i style="height:55%;animation-delay:0.07s"></i><i style="height:80%;animation-delay:0.14s"></i><i style="height:45%;animation-delay:0.21s"></i><i style="height:95%;animation-delay:0.28s"></i><i style="height:60%;animation-delay:0.35s"></i><i style="height:35%;animation-delay:0.42s"></i><i style="height:70%;animation-delay:0.49s"></i><i style="height:100%;animation-delay:0.56s"></i><i style="height:50%;animation-delay:0.63s"></i><i style="height:75%;animation-delay:0.70s"></i><i style="height:40%;animation-delay:0.77s"></i><i style="height:88%;animation-delay:0.84s"></i><i style="height:58%;animation-delay:0.91s"></i><i style="height:30%;animation-delay:0.98s"></i><i style="height:66%;animation-delay:1.05s"></i><i style="height:92%;animation-delay:1.12s"></i><i style="height:48%;animation-delay:1.19s"></i><i style="height:72%;animation-delay:1.26s"></i><i style="height:38%;animation-delay:1.33s"></i><i style="height:84%;animation-delay:1.40s"></i><i style="height:56%;animation-delay:1.47s"></i><i style="height:28%;animation-delay:1.54s"></i><i style="height:62%;animation-delay:1.61s"></i></div>
+      <p class="eyebrow text-cyan mb-4">Content studio</p>
+      <h2 class="font-display font-semibold text-4xl xl:text-5xl leading-[1.05] max-w-md">Every voice carries a story.</h2>
+      <p class="text-white/60 mt-4 max-w-sm">Publish board profiles, events, stories and podcast episodes to the All Voices Society website.</p>
+    </div>
+    <p class="relative eyebrow text-white/30 mt-12">Halifax, Nova Scotia</p>
+  </aside>
+  <div class="flex items-center justify-center px-6 py-12 bg-white">
+    <div class="max-w-sm w-full">
+      <img src="assets/img/logo.png" alt="" class="h-10 w-auto mb-8 lg:hidden" />
+      <p class="eyebrow text-blue mb-3">Admin</p>
+      <h1 class="font-display font-semibold text-3xl mb-2">Welcome back</h1>
+      <p class="text-muted text-[15px] mb-8">Sign in to manage the website's content.</p>
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="login-email" class="font-display text-sm font-medium block mb-2">Email</label>
+          <input id="login-email" type="email" class="field-input" autocomplete="username" placeholder="you@allvoicessociety.org" required />
+        </div>
+        <div>
+          <label for="login-password" class="font-display text-sm font-medium block mb-2">Password</label>
+          <input id="login-password" type="password" class="field-input" autocomplete="current-password" placeholder="••••••••" required />
+        </div>
+        <p id="login-error" class="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 hidden">Sign-in failed. Check your email and password and try again.</p>
+        <button id="login-submit" type="submit" class="btn btn-primary px-6 py-3.5 rounded-xl text-[15px] w-full justify-center">Sign in</button>
+      </form>
+      <p class="text-xs text-muted mt-8 leading-relaxed">Admin accounts are managed in the PocketBase dashboard (<code>admins</code> collection). Need access? Ask the site administrator.</p>
+      <a href="/" class="text-sm text-muted hover:text-ink inline-flex items-center gap-1 mt-6">&larr; Back to the site</a>
+    </div>
   </div>
 </div>
 
 <!-- ============ ADMIN APP ============ -->
-<div id="admin-app" class="hidden min-h-screen">
-  <header class="bg-ink text-white">
-    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <img src="assets/img/logo.png" alt="All Voices Society" class="h-9 w-auto" />
-        <div>
-          <p class="eyebrow text-white/50">Admin</p>
-        </div>
+<div id="admin-app" class="hidden">
+ <div class="shell">
+  <aside class="sidebar">
+    <a href="/" class="brand">
+      <img src="assets/img/logo.png" alt="All Voices Society" class="h-9 w-auto" />
+      <span class="brand-text"><span class="block font-display font-semibold text-sm leading-tight">All Voices</span><span class="eyebrow text-white/40" style="font-size:.6rem">Admin</span></span>
+    </a>
+    <p class="side-label">Content</p>
+    <nav class="space-y-1">
+        <button class="tab-btn active" data-tab="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Board members</span><span class="count" data-count-for="board">–</span></button>
+        <button class="tab-btn" data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Events</span><span class="count" data-count-for="events">–</span></button>
+        <button class="tab-btn" data-tab="stories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg><span>Stories</span><span class="count" data-count-for="stories">–</span></button>
+        <button class="tab-btn" data-tab="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Podcasts</span><span class="count" data-count-for="podcast">–</span></button>
+    </nav>
+    <div class="side-foot">
+      <div class="who flex items-center gap-3 px-2 mb-3">
+        <div class="avatar-chip" id="admin-initials">A</div>
+        <div class="min-w-0"><p class="text-sm font-display font-medium truncate" id="admin-name">Admin</p><p class="text-xs text-white/45 truncate" id="admin-email"></p></div>
       </div>
-      <div class="flex items-center gap-4">
-        <a href="/" class="text-sm text-white/70 hover:text-white">View site</a>
-        <button id="logout-btn" class="btn btn-ghost px-4 py-2 rounded-full text-sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.25);">Sign out</button>
-      </div>
+      <a href="/" target="_blank" rel="noopener" class="tab-btn" style="padding:.55rem .8rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg><span>View site</span></a>
+      <button id="logout-btn" class="tab-btn" style="padding:.55rem .8rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span>Sign out</span></button>
     </div>
-  </header>
+  </aside>
 
-  <main class="max-w-6xl mx-auto px-6 py-10">
-    <!-- TABS -->
-    <div class="flex flex-wrap gap-2 mb-10">
-      <button class="tab-btn active px-5 py-2.5 rounded-full text-sm border border-line" data-tab="board">Board members</button>
-      <button class="tab-btn px-5 py-2.5 rounded-full text-sm border border-line" data-tab="events">Events</button>
-      <button class="tab-btn px-5 py-2.5 rounded-full text-sm border border-line" data-tab="stories">Stories</button>
-      <button class="tab-btn px-5 py-2.5 rounded-full text-sm border border-line" data-tab="podcast">Podcasts</button>
+  <div class="min-w-0">
+  <div class="topbar">
+    <div class="max-w-6xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between gap-4">
+      <div>
+        <p class="eyebrow text-muted mb-1">Dashboard</p>
+        <h1 id="page-title" class="font-display font-semibold text-2xl">Board members</h1>
+      </div>
+      <p id="page-sub" class="page-sub text-sm text-muted max-w-sm text-right">Profiles shown on the Board page.</p>
     </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-6 lg:px-10 py-8">
 
     <!-- ============ BOARD TAB ============ -->
     <section id="tab-board" class="tab-panel">
@@ -300,15 +386,69 @@
       </div>
     </section>
   </main>
+  </div>
+ </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.29.0/dist/pocketbase.umd.js"></script>
 <script src="assets/localdev.js"></script>
-<script src="assets/appwrite-config.js"></script>
+<script src="assets/pocketbase-config.js"></script>
 <script src="assets/store.js"></script>
 <script src="assets/bio-editor.js"></script>
 <script>
 (function(){
+  /* ---------- Toasts (replace blocking alert boxes) ---------- */
+  function notify(msg, type){
+    const t = type || (/^Could not|^Please|doesn't look|^Every link|^Only|still uploading|already have|^Add at least|^The bio/.test(String(msg)) ? 'error' : 'info');
+    const host = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast ' + t;
+    el.setAttribute('role', t === 'error' ? 'alert' : 'status');
+    el.innerHTML = '<span class="dot"></span><span></span>';
+    el.lastChild.textContent = String(msg);
+    host.appendChild(el);
+    setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, t === 'error' ? 6500 : 3200);
+  }
+  window.notify = notify;
+
+  /* Success / failure feedback for every save & delete */
+  const SAVE_MSGS = {
+    addBoardMember:'Board member added', updateBoardMember:'Board member updated', deleteBoardMember:'Board member removed',
+    addEvent:'Event published', updateEvent:'Event updated', deleteEvent:'Event deleted',
+    addStory:'Story published', updateStory:'Story updated', deleteStory:'Story deleted',
+    addPodcastEpisode:'Added to the podcast page', updatePodcastEpisode:'Podcast item updated', deletePodcastEpisode:'Podcast item deleted',
+  };
+  Object.keys(SAVE_MSGS).forEach((name) => {
+    const orig = AVSStore[name];
+    AVSStore[name] = async (...args) => {
+      try {
+        const r = await orig.apply(AVSStore, args);
+        notify(SAVE_MSGS[name], 'success');
+        return r;
+      } catch (err) {
+        if (name.startsWith('delete')) notify('Could not delete: ' + (err && err.message ? err.message : err), 'error');
+        throw err;
+      }
+    };
+  });
+
+  /* Mirror the list counts into the sidebar badges */
+  [['board','board-count'],['events','events-count'],['stories','stories-count'],['podcast','podcast-count']].forEach(([key, id]) => {
+    const src = document.getElementById(id), dst = document.querySelector('[data-count-for="' + key + '"]');
+    if (!src || !dst) return;
+    new MutationObserver(() => { dst.textContent = src.textContent; }).observe(src, { childList: true, characterData: true, subtree: true });
+  });
+
+  function showUser(user){
+    if(!user) return;
+    const name = user.name || (user.email || 'Admin').split('@')[0];
+    document.getElementById('admin-name').textContent = name;
+    document.getElementById('admin-email').textContent = user.email || '';
+    document.getElementById('admin-initials').textContent = AVSStore.initials(name) || 'A';
+  }
+
   const loginScreen = document.getElementById('login-screen');
   const adminApp = document.getElementById('admin-app');
   const loginForm = document.getElementById('login-form');
@@ -323,7 +463,7 @@
 
   (async () => {
     const user = await AVSAuth.currentUser();
-    if(user){ unlock(); }
+    if(user){ showUser(user); unlock(); }
   })();
 
   loginForm.addEventListener('submit', async (e) => {
@@ -334,7 +474,8 @@
     try {
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
-      await AVSAuth.login(email, password);
+      const auth = await AVSAuth.login(email, password);
+      showUser(auth && auth.record);
       unlock();
     } catch (err) {
       loginError.textContent = err && err.message ? err.message : 'Sign-in failed. Check your email and password and try again.';
@@ -355,13 +496,22 @@
   }
 
   /* ---------- Tabs ---------- */
-  const tabBtns = document.querySelectorAll('.tab-btn');
+  const PAGE_META = {
+    board: ['Board members', 'Profiles shown on the Board page.'],
+    events: ['Events', 'Screenings, workshops and gatherings shown on the Events page.'],
+    stories: ['Stories', 'YouTube stories shown on the Stories page and homepage.'],
+    podcast: ['Podcasts', 'Episodes and playlists shown on the Podcasts page.'],
+  };
+  const tabBtns = document.querySelectorAll('.tab-btn[data-tab]');
   const panels = { board: document.getElementById('tab-board'), events: document.getElementById('tab-events'), stories: document.getElementById('tab-stories'), podcast: document.getElementById('tab-podcast') };
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       Object.entries(panels).forEach(([key, el]) => el.classList.toggle('hidden', key !== btn.dataset.tab));
+      const meta = PAGE_META[btn.dataset.tab];
+      if(meta){ document.getElementById('page-title').textContent = meta[0]; document.getElementById('page-sub').textContent = meta[1]; }
+      window.scrollTo({ top: 0 });
     });
   });
 
@@ -409,7 +559,7 @@
       boardPhotoPreview.classList.remove('hidden');
       boardPhotoPreview.querySelector('img').src = AVSStore.fileUrl(pendingBoardPhotoId);
     } catch (err) {
-      alert('Could not upload photo: ' + (err && err.message ? err.message : err));
+      notify('Could not upload photo: ' + (err && err.message ? err.message : err));
     } finally {
       boardPhotoInput.disabled = false;
       boardPhotoInput.value = '';
@@ -433,13 +583,13 @@
   boardForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if(boardPhotoUploading){
-      alert('The photo is still uploading — please wait a moment and try again.');
+      notify('The photo is still uploading — please wait a moment and try again.');
       return;
     }
     const id = boardIdField.value;
     const bio = bioEditor.clean(bioField.value);
     if(bio.length > BIO_MAX){
-      alert('The bio is ' + bio.length.toLocaleString() + ' characters and the limit is ' + BIO_MAX.toLocaleString() + '. Please shorten it by ' + (bio.length - BIO_MAX).toLocaleString() + ' characters.');
+      notify('The bio is ' + bio.length.toLocaleString() + ' characters and the limit is ' + BIO_MAX.toLocaleString() + '. Please shorten it by ' + (bio.length - BIO_MAX).toLocaleString() + ' characters.');
       bioField.focus();
       return;
     }
@@ -464,7 +614,7 @@
       resetBoardForm();
       await renderBoardList();
     } catch (err) {
-      alert('Could not save board member: ' + (err && err.message ? err.message : err));
+      notify('Could not save board member: ' + (err && err.message ? err.message : err));
     } finally {
       setBusy(boardSubmitBtn, false);
     }
@@ -559,13 +709,13 @@
     const files = Array.from(eventPhotosInput.files);
     const room = 5 - pendingEventImages.length;
     if(room <= 0){
-      alert('You already have 5 photos on this event. Remove one first.');
+      notify('You already have 5 photos on this event. Remove one first.');
       eventPhotosInput.value = '';
       return;
     }
     const toAdd = files.slice(0, room);
     if(files.length > room){
-      alert(`Only ${room} more photo(s) can be added (max 5 per event). The rest were skipped.`);
+      notify(`Only ${room} more photo(s) can be added (max 5 per event). The rest were skipped.`);
     }
     eventPhotosInput.disabled = true;
     eventPhotosUploading = true;
@@ -578,7 +728,7 @@
         renderEventPhotoPreview();
       }
     } catch (err) {
-      alert('Could not upload photo: ' + (err && err.message ? err.message : err));
+      notify('Could not upload photo: ' + (err && err.message ? err.message : err));
     } finally {
       eventPhotosInput.disabled = false;
       eventPhotosInput.value = '';
@@ -601,7 +751,7 @@
   eventForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if(eventPhotosUploading){
-      alert('Photos are still uploading — please wait a moment and try again.');
+      notify('Photos are still uploading — please wait a moment and try again.');
       return;
     }
     const id = eventIdField.value;
@@ -622,7 +772,7 @@
       resetEventForm();
       await renderEventsList();
     } catch (err) {
-      alert('Could not save event: ' + (err && err.message ? err.message : err));
+      notify('Could not save event: ' + (err && err.message ? err.message : err));
     } finally {
       setBusy(eventSubmitBtn, false);
     }
@@ -707,7 +857,7 @@
     e.preventDefault();
     const youtubeUrl = storyYoutubeInput.value.trim();
     if(!AVSStore.youtubeId(youtubeUrl)){
-      alert('Please enter a valid YouTube video link.');
+      notify('Please enter a valid YouTube video link.');
       return;
     }
     const id = storyIdField.value;
@@ -726,7 +876,7 @@
       resetStoryForm();
       await renderStoriesList();
     } catch (err) {
-      alert('Could not save story: ' + (err && err.message ? err.message : err));
+      notify('Could not save story: ' + (err && err.message ? err.message : err));
     } finally {
       setBusy(storySubmitBtn, false);
     }
@@ -932,7 +1082,7 @@
     e.preventDefault();
     const links = collectPodcastLinks();
     if(links.length === 0 || !links[0].url){
-      alert('Add at least one listen link.');
+      notify('Add at least one listen link.');
       return;
     }
     const primaryIsYoutube = links[0].platform === 'youtube';
@@ -941,7 +1091,7 @@
 
     for(let i = 0; i < links.length; i++){
       const { platform, url } = links[i];
-      if(!url){ alert('Every link needs a URL — remove any empty rows.'); return; }
+      if(!url){ notify('Every link needs a URL — remove any empty rows.'); return; }
       let valid = false;
       if(platform === 'youtube'){
         valid = (i === 0 && isPlaylist) ? !!AVSStore.youtubePlaylistId(url) : !!AVSStore.youtubeId(url);
@@ -949,7 +1099,7 @@
       else if(platform === 'apple') valid = !!AVSStore.appleEmbedUrl(url);
       else if(platform === 'custom') valid = !!AVSStore.customEmbedUrl(url);
       if(!valid){
-        alert(`Link ${i + 1} doesn't look right for the selected platform — please double check it.`);
+        notify(`Link ${i + 1} doesn't look right for the selected platform — please double check it.`);
         return;
       }
     }
@@ -972,7 +1122,7 @@
       resetPodcastForm();
       await renderPodcastList();
     } catch (err) {
-      alert('Could not save: ' + (err && err.message ? err.message : err));
+      notify('Could not save: ' + (err && err.message ? err.message : err));
     } finally {
       setBusy(podcastSubmitBtn, false);
     }

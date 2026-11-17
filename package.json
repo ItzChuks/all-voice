@@ -1,11 +1,12 @@
 {
   "name": "all-voices-society",
   "private": true,
-  "description": "All Voices Society static site (Appwrite-backed).",
+  "description": "All Voices Society static site (PocketBase-backed).",
   "scripts": {
     "dev": "node dev-server.js",
     "dev:open": "node dev-server.js --open",
-    "start": "node dev-server.js"
+    "start": "node dev-server.js",
+    "migrate:appwrite": "node scripts/migrate-from-appwrite.mjs"
   },
   "engines": {
     "node": ">=18"

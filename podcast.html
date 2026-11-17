@@ -73,6 +73,7 @@
   .speed-pill{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:.15rem .5rem; color:rgba(255,255,255,.65); }
   .watch-badge{ font-family:'IBM Plex Mono',monospace; letter-spacing:.1em; font-size:.65rem; text-transform:uppercase; }
 </style>
+<link rel="stylesheet" href="assets/theme.css" />
 </head>
 <body class="bg-surface">
 
@@ -145,7 +146,7 @@
     </div>
   </section>
 
-  <!-- EPISODES (rendered from Appwrite — managed at admin.html → Podcast tab) -->
+  <!-- EPISODES (rendered from PocketBase — managed at admin.html → Podcast tab) -->
   <section id="episodes" class="bg-ink py-20 lg:py-24">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
       <p class="eyebrow text-cyan mb-4">Episodes</p>
@@ -178,9 +179,9 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/appwrite@26"></script>
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.29.0/dist/pocketbase.umd.js"></script>
 <script src="assets/localdev.js"></script>
-<script src="assets/appwrite-config.js"></script>
+<script src="assets/pocketbase-config.js"></script>
 <script src="assets/store.js"></script>
 <script>
 (function(){
@@ -350,5 +351,6 @@
 })();
 </script>
 
+<script src="assets/site.js"></script>
 </body>
 </html>
