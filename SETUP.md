@@ -10,7 +10,7 @@ browser talks to directly. Setup takes ~15 minutes.
 
 1. Download PocketBase **v0.30 or newer** for your OS from
    <https://pocketbase.io/docs/> and unzip it into a folder.
-2. Copy this repo's `pb_migrations/` folder next to the `pocketbase` binary.
+2. Copy `backend/pb_migrations/` next to the `pocketbase` binary.
 3. Start it:
    ```bash
    ./pocketbase serve
@@ -57,21 +57,18 @@ podcast item **and their photos** from Appwrite into PocketBase.
    ```
 Run it once against an empty PocketBase — running it twice creates duplicates.
 
-## 5. Deploy PocketBase
+## 5. Deploy PocketBase on Railway
 
-Any host that runs a binary with a persistent disk works (Railway, Fly.io,
-PocketHost, a VPS). On **Railway**:
+Everything the backend needs is in the `backend/` folder.
 
-1. Deploy a PocketBase template (or a Dockerfile running `pocketbase serve
-   --http=0.0.0.0:8080`) and attach a **volume** mounted at `/pb/pb_data`
-   (otherwise data is wiped on every redeploy).
-2. Upload/copy `pb_migrations/` into the container next to the binary.
-3. Create the superuser at `https://<your-app>/_/`, then repeat steps 2 and 4
-   against the live URL.
-4. Put the live URL in `assets/pocketbase-config.js`.
-
-Recommended in the dashboard: **Settings → Application → Allowed origins**
-(if present) / CORS — restrict to your site's domain once everything works.
+1. Push the project to GitHub.
+2. Railway → **New Project → Deploy from GitHub repo** → pick the repo.
+3. **Settings → Source → Root Directory** → `/backend`
+4. **Variables** → `PB_ADMIN_EMAIL` and `PB_ADMIN_PASSWORD` (your dashboard login).
+5. Right-click the service → **Attach Volume** → mount path `/pb/pb_data`.
+6. **Settings → Networking → Generate Domain** → port `8080`.
+7. Open `https://<your-domain>/_/`, sign in, create the website admin (step 2).
+8. Put the domain in `assets/pocketbase-config.js` and push again.
 
 ## 6. Deploy the website
 
