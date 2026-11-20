@@ -12,7 +12,7 @@
    ========================================================================== */
 
 window.AVS_CONFIG = {
-  url: 'http://127.0.0.1:8090',
+  url: 'https://all-voice-production.up.railway.app',
 
   collections: {
     board: 'board_members',
