@@ -66,6 +66,7 @@
   .thumb-btn.active{ outline:2px solid var(--blue); outline-offset:2px; }
 </style>
 <link rel="stylesheet" href="assets/theme.css" />
+<link rel="stylesheet" href="assets/feed.css" />
 </head>
 <body class="bg-surface">
 
@@ -134,9 +135,11 @@
 
       <!-- Details -->
       <div>
+        <div id="event-post-head"></div>
         <p id="event-date" class="eyebrow text-blue mb-3"></p>
         <h1 id="event-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-6"></h1>
         <p id="event-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
+        <div id="event-post-actions"></div>
         <div class="mt-10 pt-8 border-t border-line">
           <p class="text-muted text-sm mb-4">Interested in more from All Voices Society?</p>
           <div class="flex flex-wrap gap-3">
@@ -180,6 +183,7 @@
 <script src="assets/localdev.js"></script>
 <script src="assets/pocketbase-config.js"></script>
 <script src="assets/store.js"></script>
+<script src="assets/feed.js"></script>
 <script>
 (function(){
   const hamburger = document.getElementById('hamburger');
@@ -284,6 +288,7 @@
     document.getElementById('event-description').textContent = ev.description || 'No description provided.';
     renderGallery(Array.isArray(ev.images) ? ev.images.filter(Boolean) : [], ev.title);
 
+    AVSFeed.detail(document.getElementById('event-post-head'), document.getElementById('event-post-actions'), { id: ev.id, kind: 'Event', createdAt: ev.createdAt, url: '/event?id=' + encodeURIComponent(ev.id), title: ev.title });
     content.classList.remove('hidden');
   }
 

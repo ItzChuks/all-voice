@@ -60,6 +60,7 @@
   .frame-label{ font-family:'IBM Plex Mono',monospace; letter-spacing:.08em; }
 </style>
 <link rel="stylesheet" href="assets/theme.css" />
+<link rel="stylesheet" href="assets/feed.css" />
 </head>
 <body class="bg-surface">
 
@@ -122,8 +123,10 @@
     <div id="story-content" class="hidden">
       <div id="story-player" class="relative aspect-video rounded-2xl overflow-hidden border border-line bg-ink"></div>
       <div class="mt-8 max-w-3xl">
+        <div id="story-post-head"></div>
         <h1 id="story-title" class="font-display font-semibold text-3xl sm:text-4xl leading-tight mb-5"></h1>
         <p id="story-description" class="text-muted text-[17px] leading-relaxed whitespace-pre-line"></p>
+        <div id="story-post-actions"></div>
         <div class="mt-6 flex flex-wrap items-center gap-3">
           <button type="button" id="share-btn" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">
             <span>
@@ -162,6 +165,7 @@
 <script src="assets/localdev.js"></script>
 <script src="assets/pocketbase-config.js"></script>
 <script src="assets/store.js"></script>
+<script src="assets/feed.js"></script>
 <script>
 (function(){
   const hamburger = document.getElementById('hamburger');
@@ -208,6 +212,7 @@
       ? `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yid}" title="${story.title.replace(/"/g,'&quot;')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
       : `<div class="absolute inset-0 flex items-center justify-center text-white/60 text-sm">Video unavailable</div>`;
 
+    AVSFeed.detail(document.getElementById('story-post-head'), document.getElementById('story-post-actions'), { id: story.id, kind: 'Story', createdAt: story.createdAt, url: '/story?id=' + encodeURIComponent(story.id), title: story.title });
     content.classList.remove('hidden');
 
     /* Share button: native share sheet where available (phones), copy-link fallback elsewhere */

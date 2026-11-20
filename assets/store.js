@@ -134,6 +134,7 @@ const mapBoard = (r) => ({
   bio: r.bio || '',
   photoId: r.photoId || '',
   photo: avsFileUrl(r.photoId),
+  createdAt: r.created || '',
 });
 const mapEvent = (r) => {
   const imageIds = asArray(r.imageIds).filter((x) => typeof x === 'string' && x);
@@ -144,6 +145,7 @@ const mapEvent = (r) => {
     description: r.description || '',
     imageIds,
     images: imageIds.map(avsFileUrl).filter(Boolean),
+    createdAt: r.created || '',
   };
 };
 const mapStory = (r) => ({
@@ -151,6 +153,7 @@ const mapStory = (r) => ({
   youtubeUrl: r.youtubeUrl || '',
   title: r.title || '',
   description: r.description || '',
+  createdAt: r.created || '',
 });
 
 const AVSStore = {
@@ -282,6 +285,7 @@ const AVSStore = {
       description: r.description || '',
       isPlaylist: !!r.isPlaylist,
       playlistId: r.playlistId || '',
+      createdAt: r.created || '',
     };
   },
   async getPodcastEpisodes() {
