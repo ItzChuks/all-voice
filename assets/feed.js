@@ -209,11 +209,11 @@
          </a>`;
     const platforms = (ep.links || []).map((l) => PLATFORM[l.platform] || 'Listen').filter((v, i, a) => a.indexOf(v) === i);
     return `
-      <article class="post dark" id="post-${esc(ep.id)}">
+      <article class="post dark${opts.compact ? ' compact' : ''}" id="post-${esc(ep.id)}">
         ${head(kind, ep.createdAt, { url, author: opts.author || 'All Voices Podcast Network', avatar: opts.avatar })}
         ${media}
         ${actions(ep.id, url, ep.title, { href: url, label: ep.isPlaylist ? 'Open playlist' : 'Listen' })}
-        ${caption(ep.title || 'Untitled episode', ep.description, 200)}
+        ${caption(ep.title || 'Untitled episode', ep.description, opts.compact ? 90 : 200)}
         ${platforms.length > 1 ? `<div class="post-tags">${platforms.map((p) => `<span>${esc(p)}</span>`).join('')}</div>` : ''}
       </article>`;
   }
