@@ -93,3 +93,7 @@ html{ scrollbar-color:#C3CBD6 transparent; }
   .tilt-card:hover, .tilt-card:hover img.object-cover{ transform:none !important; }
   .skel::after{ animation:none; }
 }
+
+/* Justified paragraphs (e.g. Podcast Network intro) */
+.text-justify-pretty{ text-align:justify; text-justify:inter-word; hyphens:manual; text-wrap:wrap; }
+@media (max-width:480px){ .text-justify-pretty{ text-align:left; hyphens:manual; } }
