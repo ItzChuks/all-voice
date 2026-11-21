@@ -285,6 +285,7 @@ const AVSStore = {
       description: r.description || '',
       isPlaylist: !!r.isPlaylist,
       playlistId: r.playlistId || '',
+      showId: r.showId || '',
       createdAt: r.created || '',
     };
   },
@@ -315,6 +316,7 @@ const AVSStore = {
         description: p.description || '',
         isPlaylist: !!p.isPlaylist,
         playlistId: p.playlistId || '',
+        showId: p.showId || '',
       })
     );
   },
@@ -329,6 +331,51 @@ const AVSStore = {
   },
   async deletePodcastEpisode(id) {
     return avsWrite(() => pb.collection(C.podcast).delete(id));
+  },
+
+  /* ---- Podcast shows (Network → Show → Episodes) ---- */
+  _mapShow(r) {
+    return {
+      id: r.id,
+      title: r.title || '',
+      host: r.host || '',
+      description: r.description || '',
+      coverId: r.coverId || '',
+      cover: avsFileUrl(r.coverId),
+      sortOrder: typeof r.sortOrder === 'number' ? r.sortOrder : 0,
+      createdAt: r.created || '',
+    };
+  },
+  async getShows() {
+    try {
+      const rows = await pb.collection(C.shows).getFullList({ sort: 'sortOrder,created', batch: 200 });
+      return rows.map(AVSStore._mapShow);
+    } catch (e) {
+      console.error('AVSStore.getShows failed', e);
+      return [];
+    }
+  },
+  async getShow(id) {
+    try {
+      return AVSStore._mapShow(await pb.collection(C.shows).getOne(id));
+    } catch (e) {
+      if (e && e.status === 404) return null;
+      console.error('AVSStore.getShow failed', e);
+      return null;
+    }
+  },
+  async addShow(s) {
+    return avsWrite(() => pb.collection(C.shows).create({ title: s.title || '', host: s.host || '', description: s.description || '', coverId: s.coverId || '', sortOrder: Number(s.sortOrder) || 0 }));
+  },
+  async updateShow(id, updates) {
+    return avsWrite(() => pb.collection(C.shows).update(id, updates));
+  },
+  async deleteShow(id, coverId) {
+    if (coverId) await avsDeleteFile(coverId);
+    // episodes of this show become "unassigned" (not deleted)
+    const eps = await pb.collection(C.podcast).getFullList({ filter: pb.filter('showId = {:id}', { id }) }).catch(() => []);
+    await Promise.all(eps.map((ep) => pb.collection(C.podcast).update(ep.id, { showId: '' }).catch(() => {})));
+    return avsWrite(() => pb.collection(C.shows).delete(id));
   },
 
   /* ---- Storage helpers (used by admin.html) ---- */

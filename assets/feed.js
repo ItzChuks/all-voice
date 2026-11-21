@@ -87,7 +87,7 @@
     const when = timeAgo(createdAt);
     return `
       <header class="post-head">
-        <span class="post-avatar"><img src="${LOGO}" alt="" /></span>
+        <span class="post-avatar${opts.avatar ? ' photo' : ''}"><img src="${esc(opts.avatar || LOGO)}" alt="" /></span>
         <div class="min-w-0 flex-1">
           <p class="post-author">${esc(opts.author || AUTHOR)}</p>
           <p class="post-meta">${esc(kind)}${when ? ` <span aria-hidden="true">·</span> <time datetime="${esc(createdAt)}">${esc(when)}</time>` : ''}</p>
@@ -210,12 +210,36 @@
     const platforms = (ep.links || []).map((l) => PLATFORM[l.platform] || 'Listen').filter((v, i, a) => a.indexOf(v) === i);
     return `
       <article class="post dark" id="post-${esc(ep.id)}">
-        ${head(kind, ep.createdAt, { url, author: 'All Voices Podcast Network' })}
+        ${head(kind, ep.createdAt, { url, author: opts.author || 'All Voices Podcast Network', avatar: opts.avatar })}
         ${media}
         ${actions(ep.id, url, ep.title, { href: url, label: ep.isPlaylist ? 'Open playlist' : 'Listen' })}
         ${caption(ep.title || 'Untitled episode', ep.description, 200)}
         ${platforms.length > 1 ? `<div class="post-tags">${platforms.map((p) => `<span>${esc(p)}</span>`).join('')}</div>` : ''}
       </article>`;
+  }
+
+
+  /* Show card for the Podcast Network page */
+  function showCard(sh, count, latestAt, idx) {
+    idx = idx || 0;
+    const url = `/show?id=${encodeURIComponent(sh.id)}`;
+    const when = timeAgo(latestAt);
+    return `
+      <a href="${url}" class="show-card group">
+        <span class="show-art" style="background:linear-gradient(${GRADS[idx % GRADS.length]})">
+          ${sh.cover ? `<img src="${esc(sh.cover)}" alt="" loading="lazy" />` : `<img src="${LOGO}" alt="" class="logo" />`}
+          <span class="show-count">${count} episode${count === 1 ? '' : 's'}</span>
+        </span>
+        <span class="show-info">
+          <span class="show-title">${esc(sh.title)}</span>
+          ${sh.host ? `<span class="show-host">${esc(sh.host)}</span>` : ''}
+          ${sh.description ? `<span class="show-desc">${esc(AVSStore.previewText(sh.description, 120))}</span>` : ''}
+          <span class="show-foot">
+            <span>${when ? 'Latest · ' + esc(when) : 'Coming soon'}</span>
+            <span class="show-go">View show ${I.arrow}</span>
+          </span>
+        </span>
+      </a>`;
   }
 
   /* Instagram-style highlight rings */
@@ -382,5 +406,5 @@
 
   document.querySelectorAll('[data-sidebar]').forEach((el) => sidebar(el, el.dataset.sidebar));
 
-  window.AVSFeed = { detail, eventPost, storyPost, episodePost, rings, profileCard, sidebar, skeletonPosts, hydrate, timeAgo, toast };
+  window.AVSFeed = { showCard, detail, eventPost, storyPost, episodePost, rings, profileCard, sidebar, skeletonPosts, hydrate, timeAgo, toast };
 })();

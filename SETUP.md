@@ -84,7 +84,8 @@ Unchanged: upload the folder to Netlify / Vercel / any static host.
 | `board_members` | name, role, bio (5000), photoId | admins |
 | `events` | title, date (free text), description, imageIds (JSON list) | admins |
 | `stories` | youtubeUrl, title, description | admins |
-| `podcast_episodes` | platform, url, links (JSON), title, description, isPlaylist, playlistId | admins |
+| `podcast_shows` | title, host, description, coverId, sortOrder | admins |
+| `podcast_episodes` | showId, platform, url, links (JSON), title, description, isPlaylist, playlistId | admins |
 | `media` | file (image, 10 MB max) | admins |
 | `admins` | auth collection — the website's editors | superusers |
 
@@ -105,3 +106,12 @@ Photo references are stored as `<mediaRecordId>/<filename>`; the public URL is
   account, or your session expired: sign out and back in.
 - **Photos won't upload** — must be JPG/PNG/WebP/GIF under 10 MB (the admin
   compresses photos before upload, so this is rare).
+
+## Podcast Network → Shows → Episodes
+
+- `/podcasts` lists every show (admin → **Podcast shows**) and the latest episodes.
+- `/show?id=…` is a show's own page with all its episodes.
+- `/episode?id=…` is a single episode, with a breadcrumb back to its show.
+
+In the admin, create the show first, then pick it in the **Show** dropdown when
+adding or editing an episode. Deleting a show never deletes its episodes.

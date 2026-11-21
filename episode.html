@@ -75,6 +75,7 @@
   .watch-badge{ font-family:'IBM Plex Mono',monospace; letter-spacing:.1em; font-size:.65rem; text-transform:uppercase; }
 </style>
 <link rel="stylesheet" href="assets/theme.css" />
+<link rel="stylesheet" href="assets/feed.css" />
 </head>
 <body class="bg-surface">
 
@@ -122,10 +123,11 @@
 
 <main id="main" class="pt-32 pb-24">
   <div class="max-w-4xl mx-auto px-6 lg:px-10">
-    <a href="/podcasts" class="inline-flex items-center gap-1.5 eyebrow text-muted hover:text-blue transition-colors mb-8">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
-      Back to podcast
-    </a>
+    <nav id="ep-crumbs" class="crumbs light mb-8" aria-label="Breadcrumb">
+      <a href="/podcasts">Podcast Network</a>
+      <span id="ep-crumb-show-wrap" class="hidden"><span class="sep">/</span><a id="ep-crumb-show" href="/podcasts"></a></span>
+      <span class="sep">/</span><span id="ep-crumb-ep" class="text-ink">Episode</span>
+    </nav>
 
     <div id="ep-loading" class="text-muted">Loading episode…</div>
     <div id="ep-notfound" class="hidden text-center py-24">
@@ -171,7 +173,7 @@
       <div class="mt-10 pt-8 border-t border-line">
         <p class="text-muted text-sm mb-4">Interested in more from All Voices Society?</p>
         <div class="flex flex-wrap gap-3">
-          <a href="/podcasts" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more episodes</span></a>
+          <a id="ep-more" href="/podcasts" class="btn btn-primary px-5 py-2.5 rounded-full text-sm"><span>See more episodes</span></a>
           <a href="https://paypal.me/allvoicessociety" target="_blank" rel="noopener" class="btn px-5 py-2.5 rounded-full text-sm border border-line hover:border-ink transition-colors">Donate</a>
         </div>
       </div>
@@ -299,6 +301,18 @@
     }
 
     document.title = `${ep.title || 'Episode'} | All Voices Society`;
+    document.getElementById('ep-crumb-ep').textContent = ep.title || 'Episode';
+    if (ep.showId) {
+      AVSStore.getShow(ep.showId).then((sh) => {
+        if (!sh) return;
+        const href = '/show?id=' + encodeURIComponent(sh.id);
+        const a = document.getElementById('ep-crumb-show');
+        a.textContent = sh.title; a.href = href;
+        document.getElementById('ep-crumb-show-wrap').classList.remove('hidden');
+        const more = document.getElementById('ep-more');
+        more.href = href; more.querySelector('span').textContent = 'More from ' + sh.title;
+      });
+    }
     const label = ep.isPlaylist ? 'Playlist' : (PLATFORM_LABEL[ep.platform] || ep.platform);
     document.getElementById('ep-description').textContent = ep.description || '';
     document.getElementById('ep-description').classList.toggle('hidden', !ep.description);

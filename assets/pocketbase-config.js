@@ -19,6 +19,7 @@ window.AVS_CONFIG = {
     events: 'events',
     stories: 'stories',
     podcast: 'podcast_episodes',
+    shows: 'podcast_shows',
     media: 'media',
     admins: 'admins',
   },

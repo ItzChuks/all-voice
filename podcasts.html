@@ -144,11 +144,30 @@
 
   
 
+  <!-- SHOWS (Podcast Network → Shows → Episodes) — managed at /admin → Podcast shows -->
+  <section id="shows" class="bg-ink pt-20 lg:pt-24 pb-6">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <div>
+          <p class="eyebrow text-cyan mb-4">The network</p>
+          <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] text-white">Our shows</h2>
+        </div>
+        <p class="text-white/55 max-w-sm text-[15px]">Pick a show to see every episode, from the very first to the latest.</p>
+      </div>
+      <div id="shows-grid" class="shows-grid">
+        <div class="show-card" aria-hidden="true"><span class="show-art skel dark" style="border-radius:0"></span><span class="show-info"><span class="skel dark h-5 w-2/3"></span><span class="skel dark h-3 w-1/3 mt-2"></span></span></div>
+        <div class="show-card" aria-hidden="true"><span class="show-art skel dark" style="border-radius:0"></span><span class="show-info"><span class="skel dark h-5 w-2/3"></span><span class="skel dark h-3 w-1/3 mt-2"></span></span></div>
+        <div class="show-card" aria-hidden="true"><span class="show-art skel dark" style="border-radius:0"></span><span class="show-info"><span class="skel dark h-5 w-2/3"></span><span class="skel dark h-3 w-1/3 mt-2"></span></span></div>
+      </div>
+      <p id="shows-empty" class="text-white/50 py-6 hidden">Shows are coming soon.</p>
+    </div>
+  </section>
+
   <!-- EPISODES (rendered from PocketBase — managed at /admin → Podcasts tab) -->
   <section id="episodes" class="bg-ink py-20 lg:py-24">
     <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <div class="max-w-2xl mx-auto"><p class="eyebrow text-cyan mb-4">Episodes</p>
-      <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-10 text-white">Listen</h2></div>
+      <div class="max-w-2xl mx-auto"><p class="eyebrow text-cyan mb-4">Fresh from the network</p>
+      <h2 class="font-display font-semibold text-3xl sm:text-4xl leading-[1.05] mb-10 text-white">Latest episodes</h2></div>
 
       <div class="mb-8 max-w-2xl mx-auto">
         <div class="relative">
@@ -305,11 +324,14 @@
     const wrap = document.getElementById('episodes-list');
     const empty = document.getElementById('episodes-empty');
     let items = [];
+    let shows = [];
     try {
-      items = await AVSStore.getPodcastEpisodes();
+      [items, shows] = await Promise.all([AVSStore.getPodcastEpisodes(), AVSStore.getShows()]);
     } catch (e) {
       console.error('Could not load podcast episodes', e);
     }
+    renderShows(shows, items);
+    showById = Object.fromEntries(shows.map((sh) => [sh.id, sh]));
     if(items.length === 0){
       wrap.innerHTML = '';
       empty.classList.remove('hidden');
@@ -342,20 +364,37 @@
   }
 
   let allCards = [];
+  let showById = {};
+
+  function renderShows(shows, items){
+    const grid = document.getElementById('shows-grid');
+    const empty = document.getElementById('shows-empty');
+    if(!shows.length){ grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+    grid.innerHTML = shows.map((sh, i) => {
+      const eps = items.filter((p) => p.showId === sh.id && !p.isPlaylist);
+      const latest = eps.map((p) => p.createdAt).sort().pop() || '';
+      return AVSFeed.showCard(sh, eps.length, latest, i);
+    }).join('');
+  }
 
   function applyEpisodesFilter(){
     const wrap = document.getElementById('episodes-list');
     const noResults = document.getElementById('episodes-no-results');
     const q = document.getElementById('episodes-search').value.trim().toLowerCase();
     const filtered = q
-      ? allCards.filter((c) => c.searchText.toLowerCase().includes(q))
+      ? allCards.filter((c) => (c.searchText + ' ' + ((showById[c.item.showId] || {}).title || '')).toLowerCase().includes(q))
       : allCards;
     if(filtered.length === 0){
       wrap.innerHTML = '';
       noResults.classList.remove('hidden');
     } else {
       noResults.classList.add('hidden');
-      wrap.innerHTML = filtered.map((c, idx) => AVSFeed.episodePost(c.item, idx, c.opts)).join('');
+      const sorted = filtered.slice().sort((a, b) => String(b.item.createdAt).localeCompare(String(a.item.createdAt)));
+      wrap.innerHTML = sorted.map((c, idx) => {
+        const sh = showById[c.item.showId];
+        return AVSFeed.episodePost(c.item, idx, Object.assign({}, c.opts, sh ? { author: sh.title, avatar: sh.cover } : {}));
+      }).join('');
       AVSFeed.hydrate(wrap);
     }
   }

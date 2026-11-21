@@ -177,7 +177,8 @@
         <button class="tab-btn active" data-tab="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Board members</span><span class="count" data-count-for="board">–</span></button>
         <button class="tab-btn" data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Events</span><span class="count" data-count-for="events">–</span></button>
         <button class="tab-btn" data-tab="stories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="m10 9 5 3-5 3z"/></svg><span>Stories</span><span class="count" data-count-for="stories">–</span></button>
-        <button class="tab-btn" data-tab="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Podcasts</span><span class="count" data-count-for="podcast">–</span></button>
+        <button class="tab-btn" data-tab="shows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Podcast shows</span><span class="count" data-count-for="shows">–</span></button>
+        <button class="tab-btn" data-tab="podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Episodes</span><span class="count" data-count-for="podcast">–</span></button>
     </nav>
     <div class="side-foot">
       <div class="who flex items-center gap-3 px-2 mb-3">
@@ -332,13 +333,60 @@
       </div>
     </section>
 
+    <!-- ============ SHOWS TAB ============ -->
+    <section id="tab-shows" class="tab-panel hidden">
+      <div class="grid lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
+          <h2 id="show-form-title" class="font-display font-semibold text-lg mb-4">Add a show</h2>
+          <form id="show-form" class="space-y-4">
+            <input type="hidden" id="show-id" />
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="show-title">Show name</label>
+              <input id="show-title" class="field-input" placeholder="e.g. This Is My Story" required />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="show-host">Host(s)</label>
+              <input id="show-host" class="field-input" placeholder="e.g. Hosted by Amira Haddad" />
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="show-description">About the show</label>
+              <textarea id="show-description" rows="5" class="field-input"></textarea>
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="show-cover">Cover art (square works best)</label>
+              <input id="show-cover" type="file" accept="image/*" class="field-input" />
+              <div id="show-cover-preview" class="mt-3 hidden"><img class="w-24 h-24 rounded-xl object-cover border border-line" /></div>
+            </div>
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="show-order">Position on the page</label>
+              <input id="show-order" type="number" class="field-input" placeholder="1 = first" />
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-full text-sm">Save show</button>
+              <button type="button" id="show-cancel" class="btn btn-ghost px-5 py-2.5 rounded-full text-sm hidden">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="lg:col-span-3">
+          <h2 class="font-display font-semibold text-lg mb-4">Shows on the network (<span id="shows-count">0</span>)</h2>
+          <div id="shows-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ PODCAST TAB ============ -->
     <section id="tab-podcast" class="tab-panel hidden">
       <div class="grid lg:grid-cols-5 gap-8">
         <div class="lg:col-span-2 bg-white border border-line rounded-2xl p-6 h-fit">
-          <h2 id="podcast-form-title" class="font-display font-semibold text-lg mb-4">Add to the podcast</h2>
+          <h2 id="podcast-form-title" class="font-display font-semibold text-lg mb-4">Add an episode</h2>
           <form id="podcast-form" class="space-y-4">
             <input type="hidden" id="podcast-id" />
+            <div>
+              <label class="eyebrow text-muted block mb-2" for="podcast-show">Show</label>
+              <select id="podcast-show" class="field-input"><option value="">— No show —</option></select>
+              <p class="text-xs text-muted mt-2">The episode appears on this show's page. <button type="button" class="underline hover:text-ink" data-goto-tab="shows">Create a show</button></p>
+            </div>
 
             <!-- Listen links — one episode can have several (YouTube, Spotify, Apple, or a custom
                  embeddable player link like Captivate/Anchor/Buzzsprout). The first one is the
@@ -380,7 +428,7 @@
         </div>
 
         <div class="lg:col-span-3">
-          <h2 class="font-display font-semibold text-lg mb-4">On the podcast page (<span id="podcast-count">0</span>)</h2>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4"><h2 class="font-display font-semibold text-lg">Episodes (<span id="podcast-count">0</span>)</h2><select id="podcast-filter" class="field-input" style="width:auto;min-width:200px;padding:.45rem .8rem;font-size:14px"><option value="">All shows</option></select></div>
           <div id="podcast-list" class="space-y-3"></div>
         </div>
       </div>
@@ -418,7 +466,8 @@
     addBoardMember:'Board member added', updateBoardMember:'Board member updated', deleteBoardMember:'Board member removed',
     addEvent:'Event published', updateEvent:'Event updated', deleteEvent:'Event deleted',
     addStory:'Story published', updateStory:'Story updated', deleteStory:'Story deleted',
-    addPodcastEpisode:'Added to the podcast page', updatePodcastEpisode:'Podcast item updated', deletePodcastEpisode:'Podcast item deleted',
+    addPodcastEpisode:'Episode added', updatePodcastEpisode:'Episode updated', deletePodcastEpisode:'Episode deleted',
+    addShow:'Show created', updateShow:'Show updated', deleteShow:'Show deleted',
   };
   Object.keys(SAVE_MSGS).forEach((name) => {
     const orig = AVSStore[name];
@@ -435,7 +484,7 @@
   });
 
   /* Mirror the list counts into the sidebar badges */
-  [['board','board-count'],['events','events-count'],['stories','stories-count'],['podcast','podcast-count']].forEach(([key, id]) => {
+  [['board','board-count'],['events','events-count'],['stories','stories-count'],['podcast','podcast-count'],['shows','shows-count']].forEach(([key, id]) => {
     const src = document.getElementById(id), dst = document.querySelector('[data-count-for="' + key + '"]');
     if (!src || !dst) return;
     new MutationObserver(() => { dst.textContent = src.textContent; }).observe(src, { childList: true, characterData: true, subtree: true });
@@ -500,10 +549,11 @@
     board: ['Board members', 'Profiles shown on the Board page.'],
     events: ['Events', 'Screenings, workshops and gatherings shown on the Events page.'],
     stories: ['Stories', 'YouTube stories shown on the Stories page and homepage.'],
-    podcast: ['Podcasts', 'Episodes and playlists shown on the Podcasts page.'],
+    shows: ['Podcast shows', 'The shows on the Podcast Network. Each show gets its own page with its episodes.'],
+    podcast: ['Episodes', 'Episodes and playlists. Pick a show for each one so it appears on that show’s page.'],
   };
   const tabBtns = document.querySelectorAll('.tab-btn[data-tab]');
-  const panels = { board: document.getElementById('tab-board'), events: document.getElementById('tab-events'), stories: document.getElementById('tab-stories'), podcast: document.getElementById('tab-podcast') };
+  const panels = { board: document.getElementById('tab-board'), events: document.getElementById('tab-events'), stories: document.getElementById('tab-stories'), podcast: document.getElementById('tab-podcast'), shows: document.getElementById('tab-shows') };
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       tabBtns.forEach(b => b.classList.remove('active'));
@@ -515,7 +565,7 @@
     });
   });
 
-  function renderAll(){ renderBoardList(); renderEventsList(); renderStoriesList(); renderPodcastList(); }
+  function renderAll(){ renderBoardList(); renderEventsList(); renderStoriesList(); renderShowsList().then(renderPodcastList); }
 
   function setBusy(btn, busy, busyLabel, idleLabel){
     if(!btn) return;
@@ -1073,7 +1123,8 @@
     addPodcastLinkRow({ platform: 'youtube', url: '' });
     populatePodcastParentOptions('');
     refreshPodcastYtOptionsVisibility();
-    document.getElementById('podcast-form-title').textContent = 'Add to the podcast';
+    document.getElementById('podcast-form-title').textContent = 'Add an episode';
+    if(showFilterId) podcastShowSel.value = showFilterId;
     podcastCancelBtn.classList.add('hidden');
   }
   podcastCancelBtn.addEventListener('click', resetPodcastForm);
@@ -1111,6 +1162,7 @@
       description: document.getElementById('podcast-description').value.trim(),
       isPlaylist,
       playlistId,
+      showId: podcastShowSel.value || '',
     };
     setBusy(podcastSubmitBtn, true, 'Saving…');
     try {
@@ -1138,6 +1190,7 @@
     podcastIsPlaylist.checked = !!item.isPlaylist;
     populatePodcastParentOptions(item.id);
     podcastParent.value = item.playlistId || '';
+    podcastShowSel.value = item.showId || '';
     document.getElementById('podcast-title').value = item.title || '';
     document.getElementById('podcast-description').value = item.description || '';
     refreshPodcastYtOptionsVisibility();
@@ -1176,11 +1229,13 @@
     const badge = item.isPlaylist
       ? '<span class="eyebrow text-blue">Playlist</span>'
       : `<span class="eyebrow text-muted">${links.map(l => PODCAST_PLATFORM_LABELS[l.platform] || l.platform).join(' · ')}</span>`;
+    const show = item.showId ? showCache.find(sh => sh.id === item.showId) : null;
+    const showBadge = show ? `<span class="inline-block text-[11px] font-display font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue mr-2">${escapeHtml(show.title)}</span>` : (item.isPlaylist || item.playlistId ? '' : '<span class="inline-block text-[11px] font-display font-semibold px-2 py-0.5 rounded-full bg-alt text-muted mr-2">No show</span>');
     return `
       <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4${opts.nested ? ' ml-8' : ''}">
         ${podcastThumb(item)}
         <div class="flex-1 min-w-0">
-          ${badge}
+          ${showBadge}${badge}
           <p class="font-display font-semibold truncate">${escapeHtml(item.title || 'Untitled')}</p>
           <p class="text-muted text-sm truncate">${escapeHtml(item.description || '')}</p>
         </div>
@@ -1194,8 +1249,10 @@
   async function renderPodcastList(){
     const list = document.getElementById('podcast-list');
     list.innerHTML = '<p class="text-muted text-sm">Loading…</p>';
-    podcastCache = (await AVSStore.getPodcastEpisodes()).slice().reverse();
-    document.getElementById('podcast-count').textContent = podcastCache.length;
+    podcastAll = (await AVSStore.getPodcastEpisodes()).slice().reverse();
+    podcastCache = showFilterId ? podcastAll.filter(p => p.showId === showFilterId || (p.playlistId && podcastAll.some(pl => pl.id === p.playlistId && pl.showId === showFilterId))) : podcastAll;
+    document.getElementById('podcast-count').textContent = podcastAll.length;
+    if(typeof drawShows === 'function' && showCache.length) drawShows();
     populatePodcastParentOptions(podcastIdField.value || '');
 
     if(podcastCache.length === 0){
@@ -1220,6 +1277,167 @@
     list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editPodcastItem(b.dataset.edit)));
     list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deletePodcastItem(b.dataset.delete)));
   }
+
+  /* ==================== PODCAST SHOWS ==================== */
+  let showCache = [];
+  let podcastAll = [];
+  let showFilterId = '';
+  const podcastShowSel = document.getElementById('podcast-show');
+  const podcastFilterSel = document.getElementById('podcast-filter');
+  const showForm = document.getElementById('show-form');
+  const showIdField = document.getElementById('show-id');
+  const showCoverInput = document.getElementById('show-cover');
+  const showCoverPreview = document.getElementById('show-cover-preview');
+  const showCancelBtn = document.getElementById('show-cancel');
+  const showSubmitBtn = showForm.querySelector('button[type="submit"]');
+  let pendingShowCoverId = '';
+  let currentShowCoverId = '';
+  let showCoverUploading = false;
+
+  function gotoTab(key){ const b = document.querySelector('.tab-btn[data-tab="' + key + '"]'); if(b) b.click(); }
+  document.addEventListener('click', (e) => { const t = e.target.closest('[data-goto-tab]'); if(t){ e.preventDefault(); gotoTab(t.dataset.gotoTab); } });
+
+  function populateShowSelects(){
+    const opts = showCache.map(sh => `<option value="${sh.id}">${escapeHtml(sh.title)}</option>`).join('');
+    const keep = podcastShowSel.value, keepF = podcastFilterSel.value;
+    podcastShowSel.innerHTML = '<option value="">— No show —</option>' + opts;
+    podcastFilterSel.innerHTML = '<option value="">All shows</option>' + opts;
+    podcastShowSel.value = keep; podcastFilterSel.value = keepF;
+  }
+  podcastFilterSel.addEventListener('change', () => { showFilterId = podcastFilterSel.value; if(!podcastIdField.value) podcastShowSel.value = showFilterId; renderPodcastList(); });
+
+  showCoverInput.addEventListener('change', async () => {
+    const file = showCoverInput.files[0];
+    if(!file) return;
+    showCoverUploading = true;
+    setBusy(showSubmitBtn, true, 'Uploading cover…', 'Save show');
+    try {
+      const compressed = await AVSStore.compressImage(file, 1400, 0.85);
+      if(pendingShowCoverId) AVSStore.deleteImage(pendingShowCoverId);
+      pendingShowCoverId = await AVSStore.uploadImage(compressed);
+      showCoverPreview.classList.remove('hidden');
+      showCoverPreview.querySelector('img').src = AVSStore.fileUrl(pendingShowCoverId);
+    } catch (err) {
+      notify('Could not upload cover: ' + (err && err.message ? err.message : err));
+    } finally {
+      showCoverUploading = false;
+      setBusy(showSubmitBtn, false);
+    }
+  });
+
+  function resetShowForm(){
+    showForm.reset();
+    showIdField.value = '';
+    pendingShowCoverId = '';
+    currentShowCoverId = '';
+    showCoverPreview.classList.add('hidden');
+    document.getElementById('show-form-title').textContent = 'Add a show';
+    showCancelBtn.classList.add('hidden');
+  }
+  showCancelBtn.addEventListener('click', () => {
+    if(pendingShowCoverId) AVSStore.deleteImage(pendingShowCoverId);
+    resetShowForm();
+  });
+
+  showForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(showCoverUploading){ notify('The cover is still uploading — please wait a moment.'); return; }
+    const id = showIdField.value;
+    const data = {
+      title: document.getElementById('show-title').value.trim(),
+      host: document.getElementById('show-host').value.trim(),
+      description: document.getElementById('show-description').value.trim(),
+      sortOrder: Number(document.getElementById('show-order').value) || 0,
+    };
+    if(pendingShowCoverId) data.coverId = pendingShowCoverId;
+    setBusy(showSubmitBtn, true, 'Saving…');
+    try {
+      if(id){
+        await AVSStore.updateShow(id, data);
+        if(pendingShowCoverId && currentShowCoverId && currentShowCoverId !== pendingShowCoverId) AVSStore.deleteImage(currentShowCoverId);
+      } else {
+        await AVSStore.addShow(data);
+      }
+      resetShowForm();
+      await renderShowsList();
+      renderPodcastList();
+    } catch (err) {
+      notify('Could not save show: ' + (err && err.message ? err.message : err));
+    } finally {
+      setBusy(showSubmitBtn, false);
+    }
+  });
+
+  function editShow(id){
+    const sh = showCache.find(x => x.id === id);
+    if(!sh) return;
+    showIdField.value = sh.id;
+    document.getElementById('show-title').value = sh.title;
+    document.getElementById('show-host').value = sh.host;
+    document.getElementById('show-description').value = sh.description;
+    document.getElementById('show-order').value = sh.sortOrder || '';
+    pendingShowCoverId = '';
+    currentShowCoverId = sh.coverId || '';
+    if(sh.cover){ showCoverPreview.classList.remove('hidden'); showCoverPreview.querySelector('img').src = sh.cover; }
+    else showCoverPreview.classList.add('hidden');
+    document.getElementById('show-form-title').textContent = 'Edit show';
+    showCancelBtn.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteShow(id){
+    const sh = showCache.find(x => x.id === id);
+    if(!sh) return;
+    const count = podcastAll.filter(p => p.showId === id).length;
+    if(!confirm(`Delete the show "${sh.title}"?` + (count ? ` Its ${count} episode(s) will NOT be deleted — they'll just have no show.` : '') + ' This cannot be undone.')) return;
+    await AVSStore.deleteShow(id, sh.coverId);
+    await renderShowsList();
+    renderPodcastList();
+  }
+
+  async function renderShowsList(){
+    const list = document.getElementById('shows-list');
+    list.innerHTML = '<p class="text-muted text-sm">Loading…</p>';
+    showCache = await AVSStore.getShows();
+    if(!podcastAll.length) podcastAll = await AVSStore.getPodcastEpisodes();
+    document.getElementById('shows-count').textContent = showCache.length;
+    populateShowSelects();
+    drawShows();
+  }
+
+  function drawShows(){
+    const list = document.getElementById('shows-list');
+    if(showCache.length === 0){
+      list.innerHTML = '<p class="text-muted text-sm">No shows yet. Create your first show — e.g. “This Is My Story”.</p>';
+      return;
+    }
+    list.innerHTML = showCache.map(sh => {
+      const n = podcastAll.filter(p => p.showId === sh.id && !p.isPlaylist).length;
+      return `
+      <div class="bg-white border border-line rounded-xl p-4 flex items-center gap-4">
+        ${sh.cover ? `<img src="${escapeHtml(sh.cover)}" alt="" class="w-16 h-16 rounded-xl object-cover shrink-0" />` : `<div class="w-16 h-16 rounded-xl shrink-0 flex items-center justify-center p-3" style="background:linear-gradient(150deg,#1E7BFF,#0B0E13)"><img src="assets/img/logo.png" alt="" class="max-w-full max-h-full object-contain" /></div>`}
+        <div class="flex-1 min-w-0">
+          <p class="font-display font-semibold truncate">${escapeHtml(sh.title)}</p>
+          <p class="text-muted text-sm truncate">${escapeHtml(sh.host || '')}</p>
+          <p class="eyebrow text-blue mt-1">${n} episode${n === 1 ? '' : 's'}</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-2 shrink-0">
+          <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-show-eps="${sh.id}">Episodes</button>
+          <a href="/show?id=${encodeURIComponent(sh.id)}" target="_blank" rel="noopener" class="btn btn-ghost px-3 py-1.5 rounded-full text-xs">View</a>
+          <button class="btn btn-ghost px-3 py-1.5 rounded-full text-xs" data-show-edit="${sh.id}">Edit</button>
+          <button class="btn btn-danger px-3 py-1.5 rounded-full text-xs" data-show-delete="${sh.id}">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('[data-show-edit]').forEach(b => b.addEventListener('click', () => editShow(b.dataset.showEdit)));
+    list.querySelectorAll('[data-show-delete]').forEach(b => b.addEventListener('click', () => deleteShow(b.dataset.showDelete)));
+    list.querySelectorAll('[data-show-eps]').forEach(b => b.addEventListener('click', () => {
+      showFilterId = b.dataset.showEps; podcastFilterSel.value = showFilterId;
+      if(!podcastIdField.value) podcastShowSel.value = showFilterId;
+      gotoTab('podcast'); renderPodcastList();
+    }));
+  }
+
   addPodcastLinkRow({ platform: 'youtube', url: '' });
   refreshPodcastYtOptionsVisibility();
 })();

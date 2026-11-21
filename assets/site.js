@@ -2,7 +2,7 @@
 (function () {
   /* Highlight the link for the page you're on */
   var path = location.pathname.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
-  var section = { '/member': '/board', '/event': '/events', '/story': '/stories', '/episode': '/podcasts', '/podcast': '/podcasts' }[path] || path;
+  var section = { '/member': '/board', '/event': '/events', '/story': '/stories', '/episode': '/podcasts', '/podcast': '/podcasts', '/show': '/podcasts' }[path] || path;
   document.querySelectorAll('#site-nav a.nav-link, #mobile-menu a.m-link').forEach(function (a) {
     var href = (a.getAttribute('href') || '').replace(/\.html$/, '').replace(/\/+$/, '');
     if (href && href === section) {
